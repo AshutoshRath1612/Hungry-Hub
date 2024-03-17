@@ -2,13 +2,15 @@ import {Button, Image, StyleSheet, Text, View , TouchableOpacity, ImageBackgroun
 import React, { Component } from 'react'
 import {LinearGradient} from 'expo-linear-gradient';
 
+
 export default class LandingPage extends Component {
+
   render() {
     return (
-      <View  style={styles.container}>
-      <Text style={styles.title}>Hungry Hub</Text>
+      <LinearGradient colors={['lightblue' , 'violet']}  style={styles.container}>
+      <Text style={styles.title} >Hungry Hub</Text>
       <LinearGradient style={styles.content} colors={['pink','purple']}>
-      <Image style={styles.landingbg} source={require('../assets/LandingBG1.png')} resizeMode='contain'></Image>
+      <Image style={styles.landingbg} source={require('../assets/LandingBG.png')} resizeMode='contain'></Image>
       <View style={styles.about}>
         <Text style={styles.titleContent}>Great Food</Text>
         <Text style={styles.titleContent}>Is</Text>
@@ -16,7 +18,7 @@ export default class LandingPage extends Component {
       </View>
      <TouchableOpacity style={styles.btn}><Text style={styles.btnText}>Get Started</Text></TouchableOpacity>
       </LinearGradient>
-       </View> 
+       </LinearGradient> 
     )
   }
 }
@@ -48,7 +50,7 @@ const styles = StyleSheet.create({
     },
     title:{
       fontSize:40,
-      fontWeight:'bold'
+      fontFamily:'Ubuntu_700Bold',
     },
     about:{
         display:'flex',

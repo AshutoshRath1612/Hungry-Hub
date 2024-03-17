@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Kha_Lo",
-    "slug": "Kha_Lo",
+    "name": "hungerhub",
+    "slug": "hungerhub",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -25,6 +25,14 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+      "plugins": [
+        [
+          "expo-font",
+          {
+            "fonts": ["node_modules/@expo-google-fonts/ubuntu/Ubuntu_700Bold.ttf"]
+          }
+        ]
+      ]
   }
 }
