@@ -25,14 +25,6 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-      "plugins": [
-        [
-          "expo-font",
-          {
-            "fonts": ["node_modules/@expo-google-fonts/ubuntu/Ubuntu_700Bold.ttf"]
-          }
-        ]
-      ]
+    }
   }
 }

@@ -1,11 +1,10 @@
-import {Button, Image, StyleSheet, Text, View , TouchableOpacity, ImageBackground } from 'react-native'
+import {Button, Image, StyleSheet, Text, View , TouchableOpacity } from 'react-native'
 import React, { Component } from 'react'
 import {LinearGradient} from 'expo-linear-gradient';
 
 
-export default class LandingPage extends Component {
+export default function LandingPage({navigation}){ 
 
-  render() {
     return (
       <LinearGradient colors={['lightblue' , 'violet']}  style={styles.container}>
       <Text style={styles.title} >Hungry Hub</Text>
@@ -16,12 +15,11 @@ export default class LandingPage extends Component {
         <Text style={styles.titleContent}>Is</Text>
         <Text style={styles.titleContent}>Great Mood</Text>
       </View>
-     <TouchableOpacity style={styles.btn}><Text style={styles.btnText}>Get Started</Text></TouchableOpacity>
+     <TouchableOpacity style={styles.btn} onPress={()=>navigation.navigate('Login')}><Text style={styles.btnText}>Get Started</Text></TouchableOpacity>
       </LinearGradient>
        </LinearGradient> 
     )
   }
-}
 const styles = StyleSheet.create({
     container:{
         display:'flex',
@@ -61,19 +59,21 @@ const styles = StyleSheet.create({
     titleContent:{
       fontSize:40,
       color:'white',
+      fontFamily:'Ubuntu_500Medium',
       fontWeight:'bold',
     },
     btn:{
         backgroundColor:'#853dc2',
         borderRadius: 10,
         height:50,
-        width:'40%',
+        width:'50%',
         fontWeight: 'bold',
         alignItems:'center',
         justifyContent:'center',
         padding:5,
         position:'absolute',
-        bottom:'-5%'
+        bottom:'-5%',
+        paddingHorizontal:10
     },
     btnText:{
         fontWeight:'bold',
