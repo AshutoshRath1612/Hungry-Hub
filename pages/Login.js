@@ -51,7 +51,7 @@ const Login = ({navigation}) => {
         value={password}
         style={styles.input}
       />
-      <Pressable style={styles.btn}><Text style={styles.btnText}>Login</Text></Pressable>
+      <Pressable style={styles.btn} onPress={()=>navigation.navigate('Student Home')}><Text style={styles.btnText}>Login</Text></Pressable>
     </View>
     <Text style={{fontSize:18}}>Not a User? <Text style={styles.signup} onPress={()=>navigation.navigate('Choose User')}>Sign up</Text></Text>
     </LinearGradient>

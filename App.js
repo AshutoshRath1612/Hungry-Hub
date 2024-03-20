@@ -6,8 +6,9 @@ import LandingPage from './pages/LandingPage';
 import { useFonts, Ubuntu_700Bold ,Ubuntu_500Medium, Ubuntu_400Regular} from '@expo-google-fonts/ubuntu';
 import ChooseUser from './pages/ChooseUser';
 import Login from './pages/Login';
-import VendorSignUp from './pages/VendorSignUp';
-import StudentSignUp from './pages/StudentSignUp';
+import VendorSignUp from './pages/Vendor/VendorSignUp';
+import StudentSignUp from './pages/Student/StudentSignUp';
+import StudentHome from './pages/Student/StudentHome';
 
 export function FontLoader() {
   let [fontsLoaded, fontError] = useFonts({
@@ -30,12 +31,17 @@ export default function App() {
   return (
     <NavigationContainer>
     {/* <LandingPage /> */}
-    <Stack.Navigator screenOptions={{headerShown: false,}} initialRouteName='Home'>
-    <Stack.Screen name='Home' component={LandingPage}></Stack.Screen>
+    <Stack.Navigator screenOptions={{headerShown: false,}} initialRouteName='Landing'>
+    <Stack.Screen name='Landing' component={LandingPage}></Stack.Screen>
     <Stack.Screen name='Login' component={Login}></Stack.Screen>
     <Stack.Screen name='Choose User' component={ChooseUser}></Stack.Screen>
-    <Stack.Screen name='Vendor Signup' component={VendorSignUp}></Stack.Screen>
+
+    {/* For Student */}
     <Stack.Screen name='Student Signup' component={StudentSignUp}></Stack.Screen>
+    <Stack.Screen name='Student Home' component={StudentHome}></Stack.Screen>
+
+    {/* For vendor */}
+    <Stack.Screen name='Vendor Signup' component={VendorSignUp}></Stack.Screen>
     </Stack.Navigator>
     </NavigationContainer>
   ); 

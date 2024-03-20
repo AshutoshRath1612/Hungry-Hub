@@ -1,32 +1,27 @@
-import { View, Text, StyleSheet, TextInput, Image, Pressable } from 'react-native'
+import { View, Text, StyleSheet, TextInput, Image,Pressable, KeyboardAvoidingView } from 'react-native'
 import React, { useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient';
 
 
-export default function StudentSignUp({navigation}) {
+const VendorSignUp = ({navigation}) => {
   return (
     <LinearGradient colors={['lightblue','pink','violet']} style={styles.container}>
     <View style={styles.topic}>
-    <Image style={styles.logo} resizeMode='contain' source={require('../assets/Logo.png')} />
+    <Image style={styles.logo} resizeMode='contain' source={require('../../assets/Logo.png')} />
       <Text style={styles.title}>SignUp</Text>
     </View>
-    <View style={styles.form}>
+    <KeyboardAvoidingView style={styles.form}>
       <TextInput
-        // onChangeText={handleRegdChange}
-        // value={regdNo}
-        keyboardType='numeric'
-        placeholder='Registration Number'
+        placeholder='Shop Name'
         style={styles.input}
-        // onFocus={changeFocus}
-        // onBlur={changeFocus}
+      />
+      <TextInput 
+      placeholder='Username'
+      style={styles.input}
       />
       <TextInput
-    //   onChangeText={handlePasswordChange}
         placeholder='Password'
-        // onFocus={changeFocusPass}
-        // onBlur={changeFocusPass}
         secureTextEntry={true}
-        // value={password}
         style={styles.input}
       />
       <TextInput
@@ -38,7 +33,7 @@ export default function StudentSignUp({navigation}) {
         style={styles.input}
         />
       <Pressable style={styles.btn}><Text style={styles.btnText}>Sign Up</Text></Pressable>
-    </View>
+    </KeyboardAvoidingView>
     <Text style={{fontSize:18}}>Already a User? <Text style={styles.signup} onPress={()=>navigation.navigate('Login')}>Login</Text></Text>
     </LinearGradient>
   )
@@ -48,7 +43,7 @@ export default function StudentSignUp({navigation}) {
 
 const styles =  StyleSheet.create({
     container:{
-        justifyContent:'space-around',
+        justifyContent:'space-evenly',
         height:'100%',
         width:'100%',
         alignItems:'center',
@@ -66,7 +61,7 @@ const styles =  StyleSheet.create({
         height:'50%'
     },
     form:{
-        height:'40%',
+        height:'60%',
         justifyContent:'space-between',
     },
     input:{
@@ -98,3 +93,4 @@ const styles =  StyleSheet.create({
     color:'blue'
   }
 })
+export default VendorSignUp
