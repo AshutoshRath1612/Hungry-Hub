@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   container: {
     height: "100%",
     justifyContent: "space-between",
-    backgroundColor:'white'
+    // backgroundColor:'#001d07'
   },
   top:{
     height:'50%',
