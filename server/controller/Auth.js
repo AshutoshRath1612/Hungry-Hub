@@ -1,11 +1,11 @@
 const Users = require('../model/Users')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const Vendors = require('../model/Vendors')
 
 
 const StudentRegister = async(req,res) =>{
     try{
-        console.log(req.body)
         const salt  = bcrypt.genSaltSync(10)
         const hash = bcrypt.hashSync(req.body.password,salt)
         const newStudent = new Users({
@@ -21,9 +21,36 @@ const StudentRegister = async(req,res) =>{
     }
 }
 
-const StudentLogin = async(req,res) =>{
+const VendorRegister = async(req, res) => {
     try{
-        const user = await Users.findOne({regdNo:req.body.regdNo})
+        const salt  = bcrypt.genSaltSync(10)
+        const hash = bcrypt.hashSync(req.body.password,salt)
+        let uniqueId = generateUniqueId()
+        let isUnique = await Vendors.findOne({uniqueId: uniqueId})
+        while(isUnique !=null){
+            uniqueId = generateUniqueId()
+            isUnique = await Vendors.findOne({uniqueId: uniqueId})
+        }
+        const vendor = new Vendors({
+            username: req.body.username,
+            password: hash,
+            uniqueId: uniqueId,
+            mobileNumber: req.body.mobileNumber,
+            shopName: req.body.shopName
+        });
+        await vendor.save()
+        res.status(200).send(vendor)
+    }
+    catch(err){
+        console.log(err)
+    }
+};
+
+const Login = async(req,res) =>{
+    try{
+        const vendor = await Vendors.findOne({uniqueId:req.body.uniqueId})
+        const student = await Users.findOne({regdNo:req.body.uniqueId});
+        const user = student != null ? student : vendor;
         if(!user){
             return res.status(404).send("User Not Found!")
         }
@@ -33,7 +60,7 @@ const StudentLogin = async(req,res) =>{
                 return res.status(401).send("Invalid Password!")
         }
         try{
-        const token = jwt.sign({id:user._id, regdNo:user.regdNo},process.env.JWT)
+        const token = jwt.sign({id:user._id, uid:req.body.uniqueid},process.env.JWT)
         const {password , ...others} = user._doc;
         res.status(200).json({token, ...others})
         }
@@ -57,5 +84,13 @@ const verifyToken = (req,res)=>{
     }
 }
 
+const generateUniqueId = () =>{
+    let id = ''
+    for (let i=0;i<6;i++){
+        id += Math.floor(Math.random()*9)
+    }
+    return id;
+}
 
-module.exports = {StudentRegister,StudentLogin}
+
+module.exports = {StudentRegister,VendorRegister,Login}
