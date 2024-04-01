@@ -9,6 +9,8 @@ import Login from './pages/Login';
 import VendorSignUp from './pages/Vendor/VendorSignUp';
 import StudentSignUp from './pages/Student/StudentSignUp';
 import StudentHome from './pages/Student/StudentHome';
+import OrderHistory from './pages/Student/OrderHistory';
+import { NavigationContext } from './NavContext';
 
 export function FontLoader() {
   let [fontsLoaded, fontError] = useFonts({
@@ -37,8 +39,10 @@ export default function App() {
     <Stack.Screen name='Choose User' component={ChooseUser}></Stack.Screen>
 
     {/* For Student */}
+    
     <Stack.Screen name='Student Signup' component={StudentSignUp}></Stack.Screen>
     <Stack.Screen name='Student Home' component={StudentHome}></Stack.Screen>
+    <Stack.Screen options={{headerShown:true}} name='History' component={OrderHistory}></Stack.Screen>
 
     {/* For vendor */}
     <Stack.Screen name='Vendor Signup' component={VendorSignUp}></Stack.Screen>

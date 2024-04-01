@@ -50,7 +50,7 @@ export default function Search() {
                 </RadioButton.Group>
               ))}
             </View>
-            <Pressable style={styles.btn}><Text style={styles.btnText}>Submit</Text></Pressable> 
+            <Pressable style={styles.btn} onPress={()=>setShowFilter(false)}><Text style={styles.btnText}>Submit</Text></Pressable> 
           </View>
         </View>
       </Modal>

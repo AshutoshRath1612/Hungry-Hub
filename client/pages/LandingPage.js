@@ -1,6 +1,7 @@
 import {Button, Image, StyleSheet, Text, View , TouchableOpacity } from 'react-native'
 import React, { Component } from 'react'
 import {LinearGradient} from 'expo-linear-gradient';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 
 export default function LandingPage({navigation}){ 
@@ -52,12 +53,12 @@ const styles = StyleSheet.create({
     },
     about:{
         display:'flex',
-        justifyContent:'flex-end',
+        justifyContent:'center',
         alignItems:'center',
         marginTop:100,
     },
     titleContent:{
-      fontSize:40,
+      fontSize:RFValue(30),
       color:'white',
       fontFamily:'Ubuntu_500Medium',
       fontWeight:'bold',
@@ -70,14 +71,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         alignItems:'center',
         justifyContent:'center',
-        padding:5,
         position:'absolute',
         bottom:'-5%',
-        paddingHorizontal:10
     },
     btnText:{
         fontWeight:'bold',
-        fontSize:19,
+        fontSize:RFValue(15),
         color:'white'
     }
 })

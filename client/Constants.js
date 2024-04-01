@@ -1,4 +1,4 @@
-export const Host = 'http://localhost:5000/'
+export const Host = 'http://192.168.126.248:5000/'
 
 export const LoginRoute = 'auth/login'
 

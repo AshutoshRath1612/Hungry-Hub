@@ -1,17 +1,18 @@
 import { View, Text, StyleSheet, TextInput, Image,  Pressable} from 'react-native'
 import React, { useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient';
+import { Host, LoginRoute } from '../Constants';
 
 
 const Login = ({navigation}) => {
-    const [regdNo, setRegdNo] = useState('');
+    const [uniqueId, setUniqueId] = useState('');
     const [password, setPassword] = useState('')
     const [focus,setFocus] = useState(false)
     const [focusPass,setFocusPass] = useState(false)
 
-  const handleRegdChange = (inputText) => {
-    setRegdNo(inputText);
-    console.log(regdNo)
+  const handleIdChange = (inputText) => {
+    setUniqueId(inputText);
+    console.log(uniqueId)
   };
 
   const handlePasswordChange = (inputText) => {
@@ -26,6 +27,24 @@ const Login = ({navigation}) => {
   const changeFocusPass = () =>{
     setFocusPass(!focusPass)
   }
+
+  const handleSubmit = () =>{
+    // const isValid = verifyCred(uniqueId, password)
+    if(true){
+      const data = fetch(`${Host}/auth/login` , {
+        method:'POST', 
+        body:JSON.stringify({uniqueId:uniqueId,password:password}),
+        headers:{
+          'Content-Type' : 'application/json'
+        }
+      })
+      .then(res => res.json())
+      .then(data => console.log(data))
+      .catch((err)=> console.log(err))
+      console.log(data)
+    }
+    navigation.navigate('Student Home')
+  }
   return (
     <LinearGradient colors={['lightblue','pink','violet']} style={styles.container}>
     <View style={styles.topic}>
@@ -34,8 +53,8 @@ const Login = ({navigation}) => {
     </View>
     <View style={styles.form}>
       <TextInput
-        onChangeText={handleRegdChange}
-        value={regdNo}
+        onChangeText={handleIdChange}
+        value={uniqueId}
         keyboardType='numeric'
         placeholder={focus ? '' :"UID"}
         style={styles.input}
@@ -51,7 +70,7 @@ const Login = ({navigation}) => {
         value={password}
         style={styles.input}
       />
-      <Pressable style={styles.btn} onPress={()=>navigation.navigate('Student Home')}><Text style={styles.btnText}>Login</Text></Pressable>
+      <Pressable style={styles.btn} onPress={()=>handleSubmit()}><Text style={styles.btnText}>Login</Text></Pressable>
     </View>
     <Text style={{fontSize:18}}>Not a User? <Text style={styles.signup} onPress={()=>navigation.navigate('Choose User')}>Sign up</Text></Text>
     </LinearGradient>

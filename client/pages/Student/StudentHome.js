@@ -8,13 +8,18 @@ import Header from "../../components/Header";
 import Search from "../../components/Search";
 import Reccomandation from "../../components/Reccomandation";
 import ShopList from "../../components/ShopList";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { NavigationContext } from "../../NavContext";
 
 export default function StudentHome() {
+  const route = useRoute();
+  const navigation = useNavigation();
   return (
     
     <View
       style={styles.container}
     >
+    <NavigationContext.Provider value={{navigation , route}}>
     <View style={styles.top}>
 
       <Header />
@@ -22,7 +27,8 @@ export default function StudentHome() {
       <Reccomandation />
     </View>
       <ShopList />
-      <Nav />
+      <Nav navigation={navigation} currentRoute = {route.name}/>
+    </NavigationContext.Provider>
     </View>
   );
 }
