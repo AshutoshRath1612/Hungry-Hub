@@ -1,5 +1,6 @@
 import { View, Text, ScrollView, FlatList, StyleSheet } from 'react-native'
 import React from 'react'
+import Reccomandation from './Reccomandation';
 
 
 export default function ShopList() {
@@ -32,25 +33,25 @@ const DATA = [
     </View>
   )
 }
-
 const styles = StyleSheet.create({
-    container:{
-        flex:1,
-        alignItems:'flex-start',
-        padding:10,
-        marginBottom:0
+  container:{
+      alignItems:'flex-start',
+      paddingHorizontal:10,
+      marginBottom:0,
+      flex:1,
     },
     card: {
-        width: 350,
-        height: 150,
-        backgroundColor: 'lightblue',
-        margin: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-      },
-      title:{
-        fontSize:25,
-        marginLeft:10,
-        fontFamily:'Ubuntu_700Bold'
-    }
+      width: 350,
+      height: 150,
+      backgroundColor: 'lightblue',
+      margin: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius:20
+  },
+  title:{
+      fontSize:25,
+      marginLeft:10,
+      fontFamily:'Ubuntu_700Bold',
+  }
 })

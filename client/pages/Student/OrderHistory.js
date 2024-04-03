@@ -4,6 +4,7 @@ import Header from '../../components/Header';
 import Nav from '../../components/Nav';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { NavigationContext } from '../../NavContext';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 export default function OrderHistory() {
 
@@ -18,7 +19,7 @@ export default function OrderHistory() {
       {name:'Item Name 3',quantity:3,price:10},
       {name:'Item Name 4',quantity:4,price:100},
     ],
-    date: new Date().toLocaleDateString(),
+    date: new Date().toDateString(),
     status: 'Delivered',
     time: new Date().toLocaleTimeString(),
   },
@@ -60,7 +61,7 @@ export default function OrderHistory() {
       {name:'Item Name 3',quantity:3,price:10},
       {name:'Item Name 4',quantity:4,price:100},
     ],
-    date: new Date().toLocaleDateString(),
+    date: new Date().toLocaleDateString('en-GB' , {timeZone: 'UTC'}),
     status: 'Delivered',
     time: new Date().toLocaleTimeString(),
   },
@@ -74,37 +75,42 @@ export default function OrderHistory() {
       {name:'Item Name 3',quantity:3,price:10},
       {name:'Item Name 4',quantity:4,price:100},
     ],
-    date: new Date().toLocaleDateString(),
+    date: new Date().toDateString().replace(/(\d+)(st|nd|rd|th)/, '$1<sup>$2</sup>'),
     status: 'Delivered',
     time: new Date().toLocaleTimeString(),
   },
 ]
+
+function formatDate(date) {
+  const options = { day: 'numeric', month: 'long', year: 'numeric' };
+  const formattedDate = date.toLocaleDateString('en-GB', options);
+  return formattedDate.replace(/(\d+)(st|nd|rd|th)/, '$1<sup>$2</sup>');
+}
+
+
 const CardItem = ({ item }) => {
   return (
     <View style={styles.items}>
+    <View style={styles.itemHeader}>
+    <Image style={{height:RFValue(50) , width:RFValue(50)}} resizeMode='contain' source={require("../../assets/Logo.png")} />
     <View>
-    <Image source={require("../../assets/Logo.png")} />
-    <View>
-      <Text>Store Name: {item.storeName}</Text>
-      
+      <Text>{item.storeName}</Text>
     </View>
     <Text>{item.status}</Text>
     </View>
-      <Text>Order ID: {item.orderId}</Text>
-      <Text>Date: {item.date}</Text>
-      <Text>Status: {item.status}</Text>
-      <Text>Time: {item.time}</Text>
       <FlatList
         data={item.items}
+        style={styles.itemList}
         renderItem={({ item }) => (
           <View style={styles.item}>
-            <Text>{item.name}</Text>
-            <Text>Quantity: {item.quantity}</Text>
-            <Text>Price: {item.price}</Text>
+            <Text>{item.quantity} x {item.name}</Text>
           </View>
         )}
         keyExtractor={(item, index) => index.toString()}
       />
+      <View style={styles.item}>
+        <Text>{item.date} at {item.time}</Text>
+      </View>
     </View>
   );
 };
@@ -128,30 +134,41 @@ return (
   </View>
 );
 }
-
 const styles = StyleSheet.create({
-container: {
-  flex: 1,
-},
-items: {
-  backgroundColor: 'white',
-  marginVertical: 10,
-  marginHorizontal: 10,
-  borderRadius: 10,
-  padding: 10,
-},
-item: {
-  paddingVertical: 5,
-  borderBottomWidth: 1,
-  borderBottomColor: '#ddd',
-},
-historyContainer: {
-  flex: 1,
-  width: '100%',
-},
-nav: {
-  position: 'absolute',
-  bottom: 0,
-  width: '100%',
-},
+  container: {
+    flex: 1,
+  },
+  items: {
+    flex: 1,
+    backgroundColor: 'white',
+    marginVertical: 10,
+    marginHorizontal: 10,
+    borderRadius: 10,
+    padding: 10,
+  },
+  item: {
+    paddingVertical: 5,
+  },
+  itemList: {
+    paddingVertical: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  itemHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  historyContainer: {
+    flex: 1,
+    width: '100%',
+    marginBottom: RFValue(55), // Add padding to prevent overlap with navigation bar
+  },
+  nav: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+  },
 });
