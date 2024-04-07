@@ -34,6 +34,9 @@ export default function OrderHistory() {
       }),
       status: "Baking",
       time: new Date().toLocaleTimeString(),
+      orderType: "Dine in",
+      transactionId: "AZHDGYW52S",
+      paymentStatus: "Success",
     },
     {
       _id: 2,
@@ -57,6 +60,9 @@ export default function OrderHistory() {
       }),
       status: "Cancelled",
       time: new Date().toLocaleTimeString(),
+      orderType: "Dine in",
+      transactionId: "AZHDGYW52S",
+      paymentStatus: "Success",
     },
     {
       _id: 3,
@@ -80,6 +86,9 @@ export default function OrderHistory() {
       }),
       status: "Delivered",
       time: new Date().toLocaleTimeString(),
+      orderType: "Dine in",
+      transactionId: "AZHDGYW52S",
+      paymentStatus: "Success",
     },
     {
       _id: 4,
@@ -103,6 +112,9 @@ export default function OrderHistory() {
       }),
       status: "Delivered",
       time: new Date().toLocaleTimeString(),
+      orderType: "Dine in",
+      transactionId: "AZHDGYW52S",
+      paymentStatus: "Success",
     },
     {
       _id: 5,
@@ -126,6 +138,9 @@ export default function OrderHistory() {
       }),
       status: "Delivered",
       time: new Date().toLocaleTimeString(),
+      orderType: "Dine in",
+      transactionId: "AZHDGYW52S",
+      paymentStatus: "Success",
     },
   ];
 
@@ -144,7 +159,7 @@ export default function OrderHistory() {
 
   const showOrderDetails = (item) => {
     navigation.navigate("Order Summary", { item });
-  }
+  };
 
   const CardItem = ({ item }) => {
     const findPrice = (items) => {
@@ -155,7 +170,12 @@ export default function OrderHistory() {
       return price;
     };
     return (
-      <View style={styles.items} onTouchStart={()=>{showOrderDetails(item)}}>
+      <View
+        style={styles.items}
+        onTouchStart={() => {
+          showOrderDetails(item);
+        }}
+      >
         <View style={styles.itemHeader}>
           <Image
             style={{ height: RFValue(50), width: RFValue(50) }}
