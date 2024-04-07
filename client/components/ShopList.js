@@ -79,7 +79,6 @@ const CardItem = ({ item }) => {
       while(true){
         if(foodItem[foodItem.lastIndexOf('...')-1] === ','){
           foodItem = foodItem.substring(0,foodItem.lastIndexOf('...')-1) + "..."
-          console.log(foodItem)
       }
       else{
         break
