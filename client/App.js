@@ -12,6 +12,7 @@ import StudentHome from './pages/Student/StudentHome';
 import OrderHistory from './pages/Student/OrderHistory';
 import { NavigationContext } from './NavContext';
 import OrderSummary from './pages/Student/OrderSummary';
+import ShopMenu from './pages/Student/ShopMenu';
 
 
 export function FontLoader() {
@@ -46,6 +47,8 @@ export default function App() {
     <Stack.Screen name='Student Home' component={StudentHome}></Stack.Screen>
     <Stack.Screen options={{headerShown:true}} name='History' component={OrderHistory}></Stack.Screen>
     <Stack.Screen options={{headerShown:true}} name='Order Summary' component={OrderSummary}></Stack.Screen>
+    <Stack.Screen name='Shop Menu' component={ShopMenu} options={({ route }) => ({  headerShown: true, title: route.params.shopName })}
+/>
 
     {/* For vendor */}
     <Stack.Screen name='Vendor Signup' component={VendorSignUp}></Stack.Screen>

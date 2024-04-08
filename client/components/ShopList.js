@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, StyleSheet, Image, FlatList, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Image, FlatList, Dimensions, Pressable } from "react-native";
 import TextSize from "react-native-text-size";
 import { FontAwesome } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/core";
 
 const averageCharacterWidth = 8;
 
 export default function ShopList() {
+  const navigation = useNavigation();
   const DATA = [
     {
       shopName: "Roll Shop",
@@ -89,7 +91,7 @@ const CardItem = ({ item }) => {
   }, []);
   
     return (
-      <View style={styles.card}>
+      <Pressable style={styles.card} onPress={()=>navigation.navigate('Shop Menu' , {shopName: item.shopName})}>
         <Image
           style={styles.icon}
           source={require("../assets/Plate.png")}
@@ -112,7 +114,7 @@ const CardItem = ({ item }) => {
             </Text>
           </View>
         </View>
-      </View>
+      </Pressable>
     );
   };
   

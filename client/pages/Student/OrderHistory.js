@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { StyleSheet, View, Text, FlatList, Image } from "react-native";
+import { StyleSheet, View, Text, FlatList, Image, Pressable } from "react-native";
 import Header from "../../components/Header";
 import Nav from "../../components/Nav";
 import { useRoute, useNavigation } from "@react-navigation/native";
@@ -170,9 +170,9 @@ export default function OrderHistory() {
       return price;
     };
     return (
-      <View
+      <Pressable
         style={styles.items}
-        onTouchStart={() => {
+        onPress={() => {
           showOrderDetails(item);
         }}
       >
@@ -244,7 +244,7 @@ export default function OrderHistory() {
           </Text>
           <Text style={{ fontWeight: "bold" }}>₹ {findPrice(item.items)}</Text>
         </View>
-      </View>
+      </Pressable>
     );
   };
 

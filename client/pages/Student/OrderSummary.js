@@ -67,11 +67,10 @@ export default function OrderSummary() {
                   </View>
                   <Text style={styles.text}>₹ {item.price * item.quantity}</Text>
                 </View>
-                <View style={styles.line} />
               </View>
             ))}
           </View>
-
+          <View style={styles.line}></View>
           <View style={styles.details}>
             <Text style={[styles.text, { fontSize: 15 }]}>Item Total</Text>
             <Text style={[styles.text, { fontSize: 15 }]}>
@@ -146,7 +145,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   line: {
-    borderWidth: 1,
+    borderBottomWidth: 1,
     width: "100%",
     marginVertical: RFValue(5),
     borderColor: "grey",
