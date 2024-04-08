@@ -4,14 +4,14 @@ import {
   Text,
   StyleSheet,
   Image,
-  ScrollView,
   Animated,
-  FlatList,
-  TextInput,
   TouchableOpacity,
+  FlatList,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import Search from "../../components/Search";
+
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 export default function ShopMenu({ route }) {
   const DATA = [
@@ -46,47 +46,65 @@ export default function ShopMenu({ route }) {
           ],
         },
         {
-          category: "Beverages",
+          category: "Snacks",
           items: [
-            { name: "Tea", price: 100, type: "Vegetarian" },
-            { name: "Coffee", price: 600, type: "Vegetarian" },
-            { name: "Milk", price: 450, type: "Vegetarian" },
+            { name: "Burger", price: 100, type: "Vegetarian" },
+            { name: "Pizza", price: 600, type: "Non-Vegetarian" },
+            { name: "Sandwich", price: 450, type: "Vegetarian" },
           ],
         },
         {
-          category: "Beverages",
+          category: "Desert",
           items: [
-            { name: "Tea", price: 100, type: "Vegetarian" },
-            { name: "Coffee", price: 600, type: "Vegetarian" },
-            { name: "Milk", price: 450, type: "Vegetarian" },
+            { name: "Ice Cream", price: 100, type: "Vegetarian" },
+            { name: "Gulab Jamun", price: 600, type: "Vegetarian" },
+            { name: "Rasgulla", price: 450, type: "Vegetarian" },
           ],
-        },
-        {
-          category: "Beverages",
-          items: [
-            { name: "Tea", price: 100, type: "Vegetarian" },
-            { name: "Coffee", price: 600, type: "Vegetarian" },
-            { name: "Milk", price: 450, type: "Vegetarian" },
-          ],
-        },
+        }
       ],
     },
   ];
-  const [scrollY, setScrollY] = useState(new Animated.Value(0));
+
+  const [scrollY] = useState(new Animated.Value(0));
 
   const HEADER_MAX_HEIGHT = 150;
   const HEADER_MIN_HEIGHT = 0;
   const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
-  const headerHeight = scrollY.interpolate({
+  const headerTranslateY = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
-    extrapolate: "extend", // Changed from "clamp" to "extend"
+    outputRange: [0, -HEADER_SCROLL_DISTANCE],
+    extrapolate: "clamp",
   });
+
+  const searchTranslateY = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [HEADER_MAX_HEIGHT, 0],
+    extrapolate: "clamp",
+  });
+
+  const renderItem = ({ item }) => {
+    return (
+      <View key={item.category}>
+        <Text style={styles.category}>{item.category}</Text>
+        {item.items.map((item, index) => (
+          <View key={index} style={styles.menuItem}>
+            <Text>{item.name}</Text>
+            <Text>${item.price}</Text>
+            <TouchableOpacity>
+              <Text>Add</Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
-      <Animated.View style={[styles.header, { height: headerHeight }]}>
+      <Animated.View
+        style={[styles.header, { transform: [{ translateY: headerTranslateY }] }]}
+      >
         <Image source={DATA[0].shopImage} style={styles.shopImage} />
         <View style={styles.shopInfo}>
           <FontAwesome name="star" size={24} color="black" />
@@ -94,35 +112,23 @@ export default function ShopMenu({ route }) {
           <Text>(600+ ratings)</Text>
         </View>
       </Animated.View>
-      <View style={styles.searchContainer}>
+      <Animated.View style={[styles.searchContainer, { transform: [{ translateY: searchTranslateY }] }]}>
         <Search />
-      </View>
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ flexGrow: 1 }}
+      </Animated.View>
+      <AnimatedFlatList
+        data={DATA[0].food}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={renderItem}
+        contentContainerStyle={{ paddingTop: HEADER_MAX_HEIGHT + 20 }} // Add some initial padding
         scrollEventThrottle={16}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: false }
+          { useNativeDriver: true }
         )}
-      >
-        {DATA[0].food.map((category) => (
-          <View key={category.category}>
-            <Text style={styles.category}>{category.category}</Text>
-            {category.items.map((item, index) => (
-              <View key={index} style={styles.menuItem}>
-                <Text>{item.name}</Text>
-                <Text>${item.price}</Text>
-                <TouchableOpacity>
-                  <Text>Add</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
-          </View>
-        ))}
-      </ScrollView>
+      />
     </View>
   );
+
 }
 
 const styles = StyleSheet.create({
@@ -131,10 +137,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#f9f9f9",
   },
   header: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
     backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
-
     zIndex: 100,
     elevation: 3,
     borderBottomWidth: 1,
@@ -152,6 +161,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   searchContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
     paddingHorizontal: 20,
     zIndex: 1,
     elevation: 2,
