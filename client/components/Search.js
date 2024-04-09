@@ -10,8 +10,11 @@ import {
 import React, { useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import { RadioButton } from "react-native-paper";
+import { useNavigation } from '@react-navigation/native';
+
 
 export default function Search() {
+  const navigation = useNavigation();
   const [showFilter, setShowFilter] = useState(false);
   const [categoryy, setCategory] = useState("");
 
@@ -65,6 +68,8 @@ export default function Search() {
           style={styles.input}
           placeholder="Find Your Food..."
           placeholderTextColor="gray"
+          returnKeyType="search"
+          onSubmitEditing={(e)=>navigation.navigate('Search Result',{itemName:e.nativeEvent.text})}
         />
       </View>
       <FontAwesome
@@ -93,7 +98,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 9,
     backgroundColor: "white",
-    width: "70%",
+    width: "80%",
     height: 40,
   },
   icon: {

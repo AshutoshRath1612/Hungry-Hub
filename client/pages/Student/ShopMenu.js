@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,14 +9,20 @@ import {
   FlatList,
   ImageBackground,
   Pressable,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import Search from "../../components/Search";
 import { RFValue } from "react-native-responsive-fontsize";
+import { useCart } from "../../CartContext";
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 export default function ShopMenu({ route }) {
+  const listRef = useRef(null);
+
+  const {addToCart} = useCart()
+
   const DATA = [
     {
       shopName: "Mio Amore",
@@ -31,7 +37,54 @@ export default function ShopMenu({ route }) {
             { name: "Sandwich", price: 450, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
           ],
         },
-        // Add other categories
+        {
+          category: "Main Course",
+          items: [
+            { name: "Biryani", price: 200, type: "Non-Vegetarian", raitng: 4.5, ratingCount: 600 },
+            { name: "Fried Rice", price: 150, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
+            { name: "Noodles", price: 180, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
+          ],
+        },
+        {
+          category: "Desserts",
+          items: [
+            { name: "Ice Cream", price: 50, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
+            { name: "Cake", price: 300, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
+            { name: "Pastry", price: 100, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
+          ],
+        },
+        {
+          category: "Drinks",
+          items: [
+            { name: "Cold Drink", price: 30, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
+            { name: "Juice", price: 50, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
+            { name: "Milk Shake", price: 70, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
+          ],
+        },
+        {
+          category: "Fast Food",
+          items: [
+            { name: "Momos", price: 50, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
+            { name: "Pasta", price: 100, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
+            { name: "French Fries", price: 70, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
+          ],
+        },
+        {
+          category: "Beverages",
+          items: [
+            { name: "Tea", price: 10, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
+            { name: "Coffee", price: 20, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
+            { name: "Cold Coffee", price: 30, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
+          ],
+        },
+        {
+          category: "Ice Cream",
+          items: [
+            { name: "Vanilla", price: 20, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
+            { name: "Chocolate", price: 30, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
+            { name: "Strawberry", price: 40, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
+          ],
+        }
       ],
     },
   ];
@@ -65,11 +118,56 @@ export default function ShopMenu({ route }) {
     setExpanded(false);
   };
 
-  const renderCategoryButton = (category, index) => (
+  const renderCategoryButton = (item, index) => (
     <TouchableOpacity key={index} onPress={() => scrollToCategory(index)}>
-      <Text style={styles.categoryButton}>{category}</Text>
+      <View style={styles.categoryButton}>
+        <Text style={{ flex: 1 ,color:'white' , fontSize:RFValue(13)}}>{item.category}</Text>
+        <Text style={{fontSize:RFValue(13),color:'white'}}>{item.items.length}</Text>
+      </View>
     </TouchableOpacity>
   );
+
+  const renderItem = ({ item }) => {
+    
+    return (
+      <TouchableWithoutFeedback onPress={() => setExpanded(false)}>
+      <View key={item.category} style={styles.categoryContainer}>
+        <Text style={styles.category}>{item.category}</Text>
+        {item.items.map((foodItem, index) => (
+          <View key={index} style={styles.menuItem}>
+            <View style={styles.logoContainer}>
+              {foodItem.type === "Vegetarian" ? (
+                <Image
+                  source={require('../../assets/VegLogo.png')}
+                  style={styles.logo}
+                />
+              ) : (
+                <Image
+                  source={require('../../assets/NonVegLogo.png')}
+                  style={styles.logo}
+                />
+              )}
+            </View>
+            <View style={styles.itemDetails}>
+              <Text style={{fontSize:RFValue(15)}}>{foodItem.name}</Text>
+              <Text style={{marginVertical:RFValue(5) , color:'red' , fontWeight:'bold'}}>₹ {foodItem.price}</Text>
+              <View style={{flexDirection:'row', justifyContent:'space-between',width:'40%',alignItems:'center'}}>
+              <FontAwesome name="star" size={18} color="black" />
+              <Text>{foodItem.raitng} ({foodItem.ratingCount}+)</Text>
+              </View>
+            </View>
+            <TouchableOpacity
+            onPress={()=>addToCart({category:item.category, foodItem})}
+            style={[styles.addButton , {borderColor: foodItem.type === 'Vegeterian' ? 'green' : 'red' , shadowColor: foodItem.type === 'Vegeterian' ? 'green' : 'red'}]}>
+              <Text style={{fontSize:RFValue(12) , paddingHorizontal:5}}>Add</Text>
+              <FontAwesome style={{alignItems:'center'}} name="plus" size={15} color="black" />
+            </TouchableOpacity>
+          </View>
+        ))}
+      </View>
+        </TouchableWithoutFeedback>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -77,11 +175,11 @@ export default function ShopMenu({ route }) {
         style={[styles.header, { transform: [{ translateY: headerTranslateY }] }]}
       >
         <ImageBackground source={require('../../assets/foodsbg.jpg')} style={styles.shopImage} />
-        <View style={styles.shopInfo}>
-          <FontAwesome name="star" size={20} color="black" />
-          <Text style={{ fontSize: 18 }}>3.8</Text>
-          <Text style={{ fontSize: 18 }}>(600+ ratings)</Text>
-        </View>
+          <View style={styles.shopInfo}>
+            <FontAwesome name="star" size={20} color="black" />
+            <Text style={{fontSize:18}}>3.8</Text>
+            <Text style={{fontSize:18}}>(600+ ratings)</Text>
+          </View>
       </Animated.View>
       <Animated.View style={[styles.searchContainer, { transform: [{ translateY: searchTranslateY }] }]}>
         <Search />
@@ -99,16 +197,19 @@ export default function ShopMenu({ route }) {
         )}
       />
       {expanded && (
-        <View style={styles.categoryButtonsContainer}>
-          {DATA[0].food.map((category, index) => renderCategoryButton(category.category, index))}
+        <View  style={styles.categoryButtonsContainer}>
+          <FlatList
+            data={DATA[0].food}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item, index }) => renderCategoryButton(item, index)}
+          />
         </View>
       )}
       <TouchableOpacity style={styles.floatingButton} onPress={toggleExpand}>
-        <FontAwesome name={expanded ? "chevron-down" : "chevron-up"} size={24} color="white" />
+        <FontAwesome name={expanded ? "sticky-note" : "book"} size={24} color="white" />
       </TouchableOpacity>
     </View>
   );
-
 }
 
 const styles = StyleSheet.create({
@@ -140,8 +241,8 @@ const styles = StyleSheet.create({
   shopInfo: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: 'space-around',
-    width: '50%',
+    justifyContent:'space-around',
+    width:'50%',
     paddingVertical: 10,
   },
   searchContainer: {
@@ -150,23 +251,87 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 1,
-    elevation: 2,
-    backgroundColor: 'white',
-    paddingVertical: 5,
+    elevation:2,
+    backgroundColor:'white',
+    paddingVertical:5,
+  },
+  category: {
+    fontSize: RFValue(20),
+    fontWeight: "bold",
+    marginTop: RFValue(10),
+    marginBottom: 10,
+    paddingHorizontal: 20,
+  },
+  categoryContainer:{
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 1,
+    shadowRadius: 5,
+    elevation: 10,
+    backgroundColor: "#fff",
+    borderBottomWidth:1,
+    borderColor:'grey'
+
+  },
+  menuItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    marginBottom: 10,
+  },
+  itemDetails: {
+    flex: 1,
+    marginRight: 10,
+
+  },
+  logoContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#fff",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 10,
+  },
+  logo: {
+    width: 30,
+    height: 30,
+  },
+  addButton: {
+    backgroundColor: "white",
+    padding:10,
+    borderRadius: 5,
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'space-between',
+    borderWidth:2,
+    elevation:5
   },
   categoryButtonsContainer: {
     position: 'absolute',
-    bottom: 0,
-    right: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    bottom: 10,
+    right: 10,
     padding: 10,
-    borderTopLeftRadius: 20,
-    alignItems: 'flex-end',
+    borderRadius: 20,
+    zIndex: 100,
+    width:'60%',
+    height:'50%',
+    backgroundColor:'black',
+    alignItems:'center',
   },
   categoryButton: {
-    color: 'white',
-    fontSize: 16,
-    padding: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
+    width: "80%",
+    margin: 5,
+    padding: 10, 
+    borderRadius: 5,
   },
   floatingButton: {
     position: 'absolute',
@@ -181,4 +346,3 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 });
-

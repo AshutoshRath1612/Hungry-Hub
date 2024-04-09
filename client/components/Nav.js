@@ -3,9 +3,11 @@ import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NavigationContext } from '../NavContext';
+import { CartProvider } from '../CartContext';
 
 function Nav() {
   const { route } = useContext(NavigationContext);
+
   const navigation = useNavigation();
 
   const navigateToScreen = (screenName) => {
@@ -13,6 +15,7 @@ function Nav() {
   };
 
   return (
+    <CartProvider>
     <View style={styles.navContainer}>
       <View style={styles.container}>
         <TouchableOpacity
@@ -35,6 +38,7 @@ function Nav() {
         </TouchableOpacity>
       </View>
     </View>
+    </CartProvider>
   );
 }
 
