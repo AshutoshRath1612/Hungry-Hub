@@ -11,15 +11,22 @@ import React, { useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import { RadioButton } from "react-native-paper";
 import { useNavigation } from '@react-navigation/native';
-
+import { useRoute } from '@react-navigation/native';
 
 export default function Search() {
   const navigation = useNavigation();
+  const route  = useRoute();
+
   const [showFilter, setShowFilter] = useState(false);
   const [categoryy, setCategory] = useState("");
 
   const categories = ["Vegeterian", "Non-Vegeterian"];
 
+  const handleNavigate = (e) => {
+    if(route.name !== 'Shop Menu' && e.nativeEvent.text !== ''){
+      navigation.navigate('Search Result',{itemName:e.nativeEvent.text})
+    }
+  }
   return (
     <View style={styles.searchView}>
       <Modal
@@ -69,7 +76,7 @@ export default function Search() {
           placeholder="Find Your Food..."
           placeholderTextColor="gray"
           returnKeyType="search"
-          onSubmitEditing={(e)=>navigation.navigate('Search Result',{itemName:e.nativeEvent.text})}
+          onSubmitEditing={(e)=>handleNavigate(e)}
         />
       </View>
       <FontAwesome

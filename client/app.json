@@ -21,15 +21,25 @@
       }
     },
     "android": {
-      "permissions": ["WRITE_EXTERNAL_STORAGE","MEDIA_LIBRARY"],
+      "permissions": [
+        "WRITE_EXTERNAL_STORAGE",
+        "MEDIA_LIBRARY",
+        "ACCESS_NETWORK_STATE"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "softwareKeyboardLayoutMode": "pan"
+      "softwareKeyboardLayoutMode": "pan",
+      "package": "com.ashurath.hungerhub"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8e8f665a-2a73-462f-9fde-0056afb2fe46"
+      }
     }
   }
 }

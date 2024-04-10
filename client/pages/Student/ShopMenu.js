@@ -21,7 +21,11 @@ const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 export default function ShopMenu({ route }) {
   const listRef = useRef(null);
 
-  const {addToCart} = useCart()
+  const { dispatch } = useCart();
+
+  const addToCart = (item) => {
+    dispatch({ type: 'ADD_TO_CART', payload: item });
+  };
 
   const DATA = [
     {

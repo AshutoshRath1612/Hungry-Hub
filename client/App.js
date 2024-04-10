@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { ActivityIndicator,StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useFonts, Ubuntu_700Bold, Ubuntu_500Medium, Ubuntu_400Regular } from '@expo-google-fonts/ubuntu';
@@ -22,19 +22,30 @@ export function FontLoader() {
     Ubuntu_700Bold, Ubuntu_500Medium, Ubuntu_400Regular
   });
 
-  if (!fontsLoaded && !fontError) {
-    return null;
+  if (fontError) {
+    console.error("Font loading error: ", fontError);
+    return 'error';
   }
 
-  return true;
+  if (!fontsLoaded) {
+    return 'loading';
+  }
+
+  return 'loaded';
 }
 
 const Stack = createStackNavigator();
 
 export default function App() {
-  const loader = FontLoader()
-  if(!loader)
-   return null
+  const fontLoadStatus = FontLoader();
+
+  if (fontLoadStatus === 'loading') {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
+
+  if (fontLoadStatus === 'error') {
+    return <Text>Error loading fonts</Text>;
+  }
   return (
     <CartProvider>
       <NavigationContainer>

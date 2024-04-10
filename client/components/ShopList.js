@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, StyleSheet, Image, FlatList, Dimensions, Pressable } from "react-native";
-import TextSize from "react-native-text-size";
+import { View, Text, StyleSheet, Image, FlatList, Pressable } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/core";
 
