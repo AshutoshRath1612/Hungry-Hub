@@ -45,7 +45,7 @@ export default function SearchResults({ route }) {
       ],
     },
     {
-      shopName: "Shop 2",
+      shopName: "Urban Flavours",
       ratings: 4.5,
       results: [
         {
@@ -64,12 +64,6 @@ export default function SearchResults({ route }) {
           type: "Non-Vegeterian",
           price: 200,
         },
-      ],
-    },
-    {
-      shopName: "Shop 3",
-      ratings: 1,
-      results: [
         {
           id: 7,
           name: "Item 7",
@@ -81,6 +75,44 @@ export default function SearchResults({ route }) {
         {
           id: 8,
           name: "Item 8",
+          rating: 4.0,
+          ratingCount: 50,
+          type: "Non-Vegeterian",
+          price: 200,
+        },
+      ],
+    },
+    {
+      shopName: "Keventerszzzz Shop 3 and dominos",
+      ratings: 1,
+      results: [
+        {
+          id: 9,
+          name: "Item 9",
+          rating: 4.0,
+          ratingCount: 50,
+          type: "Non-Vegeterian",
+          price: 200,
+        },
+        {
+          id: 10,
+          name: "Item 10",
+          rating: 4.0,
+          ratingCount: 50,
+          type: "Non-Vegeterian",
+          price: 200,
+        },
+        {
+          id: 11,
+          name: "Item 11",
+          rating: 4.0,
+          ratingCount: 50,
+          type: "Non-Vegeterian",
+          price: 200,
+        },
+        {
+          id: 12,
+          name: "Item 12",
           rating: 4.0,
           ratingCount: 50,
           type: "Non-Vegeterian",
@@ -101,7 +133,7 @@ export default function SearchResults({ route }) {
   }, []);
   console.log(route);
   return (
-    <View style={{ width: "100%" }}>
+    <View style={{ width: "100%",height:'100%'}}>
       <View style={styles.searchBox}>
         <Search />
       </View>
@@ -113,22 +145,24 @@ export default function SearchResults({ route }) {
           <FlatList
             data={DATA}
             keyExtractor={(item) => item.shopName}
+            showsVerticalScrollIndicator={false}
             renderItem={({ item }) => (
-              <View>
+              <View style={styles.card}>
                 <View style={styles.shopListHeader}>
                   <Image
                     source={require("../../assets/icon.png")}
-                    style={{ width: RFValue(80), height: RFValue(80) }}
+                    style={{ width: RFValue(100), height: RFValue(100),resizeMode:'contain' }}
                   />
                   <View style={styles.shopListHeaderInfo}>
-                    <Text>{item.shopName}</Text>
-                    <View>
+                    <Text style={{fontSize:RFValue(25),fontWeight:'bold'}}>{item.shopName}</Text>
+                    <View style={{flexDirection:'row',justifyContent:'space-between'}}>
                       <FontAwesome name="star" size={20} color="orange" />
                       <Text>{item.ratings}</Text>
                     </View>
                   </View>
                 </View>
                 <FlatList
+                horizontal
                   data={item.results}
                   keyExtractor={(item) => item.id.toString()}
                   renderItem={({ item }) => (
@@ -149,7 +183,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     width: "100%",
-    height:'100%'
+    height:'100%',
   },
   searchBox: {
     backgroundColor: "white",
@@ -167,9 +201,15 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomColor: "grey",
     borderBottomWidth: 2,
-    backgroundColor: "white",
     borderBottomEndRadius: 10,
-    width: "90%",
+    width: "100%",
+  },
+  card:{
+    borderRadius:10,
+    elevation:3,
+    padding:10,
+    backgroundColor:'white',
+    marginVertical:5
   },
   shopListHeader: {
     flexDirection: "row",
@@ -177,8 +217,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderBottomColor: "grey",
     borderBottomWidth: 2,
+    padding: 10,
   },
   shopListHeaderInfo: {
-    fontSize: 20,
+    alignItems:'flex-start',
+    width:'60%',
   },
 });
