@@ -34,7 +34,7 @@ export default function StudentHome() {
           <ShopList />
         </View>
         <View style={styles.nav}>
-          <Nav navigation={navigation} currentRoute={route.name} />
+          <Nav />
         </View>
       </NavigationContext.Provider>
     </View>

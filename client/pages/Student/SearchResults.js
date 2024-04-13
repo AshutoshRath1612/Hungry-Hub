@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 5,
     width: "70%",
-    height: "20%",
+    height: "25%",
     alignItems: "center",
     justifyContent: "center",
     position: "absolute",
@@ -355,5 +355,6 @@ const styles = StyleSheet.create({
     left: "15%",
     elevation: 5,
     zIndex: 5,
+    paddingVertical:5
   },
 });

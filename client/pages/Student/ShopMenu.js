@@ -21,10 +21,14 @@ const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 export default function ShopMenu({ route }) {
   const listRef = useRef(null);
 
-  const { dispatch } = useCart();
+  const { cart, dispatch } = useCart();
 
   const addToCart = (item) => {
-    dispatch({ type: 'ADD_TO_CART', payload: item });
+    dispatch({ type: "ADD_TO_CART", payload: item });
+  };
+
+  const removeFromCart = (item) => {
+    dispatch({ type: "REMOVE_FROM_CART", payload: item });
   };
 
   const DATA = [
@@ -36,59 +40,185 @@ export default function ShopMenu({ route }) {
         {
           category: "Snacks",
           items: [
-            { name: "Burger", price: 100, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
-            { name: "Pizza", price: 600, type: "Non-Vegetarian", raitng: 4.5, ratingCount: 600 },
-            { name: "Sandwich", price: 450, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
+            {
+              name: "Burger",
+              price: 100,
+              type: "Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+            },
+            {
+              name: "Pizza",
+              price: 600,
+              type: "Non-Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+            },
+            {
+              name: "Sandwich",
+              price: 450,
+              type: "Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+            },
           ],
         },
         {
           category: "Main Course",
           items: [
-            { name: "Biryani", price: 200, type: "Non-Vegetarian", raitng: 4.5, ratingCount: 600 },
-            { name: "Fried Rice", price: 150, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
-            { name: "Noodles", price: 180, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
+            {
+              name: "Biryani",
+              price: 200,
+              type: "Non-Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+            },
+            {
+              name: "Fried Rice",
+              price: 150,
+              type: "Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+            },
+            {
+              name: "Noodles",
+              price: 180,
+              type: "Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+            },
           ],
         },
         {
           category: "Desserts",
           items: [
-            { name: "Ice Cream", price: 50, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
-            { name: "Cake", price: 300, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
-            { name: "Pastry", price: 100, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
+            {
+              name: "Ice Cream",
+              price: 50,
+              type: "Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+            },
+            {
+              name: "Cake",
+              price: 300,
+              type: "Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+            },
+            {
+              name: "Pastry",
+              price: 100,
+              type: "Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+            },
           ],
         },
         {
           category: "Drinks",
           items: [
-            { name: "Cold Drink", price: 30, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
-            { name: "Juice", price: 50, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
-            { name: "Milk Shake", price: 70, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
+            {
+              name: "Cold Drink",
+              price: 30,
+              type: "Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+            },
+            {
+              name: "Juice",
+              price: 50,
+              type: "Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+            },
+            {
+              name: "Milk Shake",
+              price: 70,
+              type: "Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+            },
           ],
         },
         {
           category: "Fast Food",
           items: [
-            { name: "Momos", price: 50, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
-            { name: "Pasta", price: 100, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
-            { name: "French Fries", price: 70, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
+            {
+              name: "Momos",
+              price: 50,
+              type: "Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+            },
+            {
+              name: "Pasta",
+              price: 100,
+              type: "Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+            },
+            {
+              name: "French Fries",
+              price: 70,
+              type: "Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+            },
           ],
         },
         {
           category: "Beverages",
           items: [
-            { name: "Tea", price: 10, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
-            { name: "Coffee", price: 20, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
-            { name: "Cold Coffee", price: 30, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
+            {
+              name: "Tea",
+              price: 10,
+              type: "Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+            },
+            {
+              name: "Coffee",
+              price: 20,
+              type: "Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+            },
+            {
+              name: "Cold Coffee",
+              price: 30,
+              type: "Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+            },
           ],
         },
         {
           category: "Ice Cream",
           items: [
-            { name: "Vanilla", price: 20, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
-            { name: "Chocolate", price: 30, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
-            { name: "Strawberry", price: 40, type: "Vegetarian", raitng: 4.5, ratingCount: 600 },
+            {
+              name: "Vanilla",
+              price: 20,
+              type: "Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+            },
+            {
+              name: "Chocolate",
+              price: 30,
+              type: "Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+            },
+            {
+              name: "Strawberry",
+              price: 40,
+              type: "Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+            },
           ],
-        }
+        },
       ],
     },
   ];
@@ -116,76 +246,161 @@ export default function ShopMenu({ route }) {
     setExpanded(!expanded);
   };
 
+  const handleAddItem = (item, foodItem) => {
+    addToCart({
+      category: item.category,
+      shopName: DATA[0].shopName,
+      foodItem,
+      quantity: 1,
+    });
+  };
+
+  const handleRemoveItem = (foodItem)=>{
+    removeFromCart(foodItem.name);
+  }
   const scrollToCategory = (categoryIndex) => {
     const yOffset = HEADER_MAX_HEIGHT + 20 + categoryIndex * 300; // Assuming each category occupies 300 units of space
     listRef.current.scrollToOffset({ animated: true, offset: yOffset });
     setExpanded(false);
   };
 
+  const findItem = (foodItem) => {
+    return cart.some((cartItem) => cartItem.foodItem.name === foodItem.name);
+  };
   const renderCategoryButton = (item, index) => (
     <TouchableOpacity key={index} onPress={() => scrollToCategory(index)}>
       <View style={styles.categoryButton}>
-        <Text style={{ flex: 1 ,color:'white' , fontSize:RFValue(13)}}>{item.category}</Text>
-        <Text style={{fontSize:RFValue(13),color:'white'}}>{item.items.length}</Text>
+        <Text style={{ flex: 1, color: "white", fontSize: RFValue(13) }}>
+          {item.category}
+        </Text>
+        <Text style={{ fontSize: RFValue(13), color: "white" }}>
+          {item.items.length}
+        </Text>
       </View>
     </TouchableOpacity>
   );
 
   const renderItem = ({ item }) => {
-    
     return (
       <TouchableWithoutFeedback onPress={() => setExpanded(false)}>
-      <View key={item.category} style={styles.categoryContainer}>
-        <Text style={styles.category}>{item.category}</Text>
-        {item.items.map((foodItem, index) => (
-          <View key={index} style={styles.menuItem}>
-            <View style={styles.logoContainer}>
-              {foodItem.type === "Vegetarian" ? (
-                <Image
-                  source={require('../../assets/VegLogo.png')}
-                  style={styles.logo}
-                />
+        <View key={item.category} style={styles.categoryContainer}>
+          <Text style={styles.category}>{item.category}</Text>
+          {item.items.map((foodItem, index) => (
+            <View key={index} style={styles.menuItem}>
+              <View style={styles.logoContainer}>
+                {foodItem.type === "Vegetarian" ? (
+                  <Image
+                    source={require("../../assets/VegLogo.png")}
+                    style={styles.logo}
+                  />
+                ) : (
+                  <Image
+                    source={require("../../assets/NonVegLogo.png")}
+                    style={styles.logo}
+                  />
+                )}
+              </View>
+              <View style={styles.itemDetails}>
+                <Text style={{ fontSize: RFValue(15) }}>{foodItem.name}</Text>
+                <Text
+                  style={{
+                    marginVertical: RFValue(5),
+                    color: "red",
+                    fontWeight: "bold",
+                  }}
+                >
+                  ₹ {foodItem.price}
+                </Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    width: "40%",
+                    alignItems: "center",
+                  }}
+                >
+                  <FontAwesome name="star" size={18} color="black" />
+                  <Text>
+                    {foodItem.rating} ({foodItem.ratingCount}+)
+                  </Text>
+                </View>
+              </View>
+              {findItem(foodItem) ? (
+                <View style={[styles.addButton,{
+                      borderColor:
+                        foodItem.type === "Vegetarian" ? "green" : "red",
+                      shadowColor:
+                        foodItem.type === "Vegetarian" ? "green" : "red",
+                      justifyContent:'space-between'
+                    },]}>
+                  <TouchableOpacity onPress={()=>handleRemoveItem(foodItem)}>
+                    <FontAwesome name="minus" size={18} color='#4ab557'/>
+                  </TouchableOpacity>
+                  {cart.map(
+                    (cartItem,index) =>
+                      cartItem.foodItem.name === foodItem.name && (
+                        <Text key={index} style={{color:'#4ab557' , fontWeight:'bold',fontSize: RFValue(14)}}>{cartItem.quantity}</Text>
+                      )
+                  )}
+                  <TouchableOpacity onPress={()=>handleAddItem(item,foodItem)}>
+                    <FontAwesome name="plus" size={18} color='#4ab557' />
+                  </TouchableOpacity>
+                </View>
               ) : (
-                <Image
-                  source={require('../../assets/NonVegLogo.png')}
-                  style={styles.logo}
-                />
+                <TouchableOpacity
+                  onPress={() => handleAddItem(item, foodItem)}
+                  style={[
+                    styles.addButton,
+                    {
+                      borderColor:
+                        foodItem.type === "Vegetarian" ? "green" : "red",
+                      shadowColor:
+                        foodItem.type === "Vegetarian" ? "green" : "red",
+                    },
+                  ]}
+                >
+                  <Text style={{ fontSize: RFValue(14), paddingHorizontal: 5,fontWeight:'bold',color:'#4ab557' }}>
+                    ADD
+                  </Text>
+                  <FontAwesome
+                    style={{ alignItems: "center" }}
+                    name="plus"
+                    size={18}
+                    color="#4ab557"
+                  />
+                </TouchableOpacity>
               )}
             </View>
-            <View style={styles.itemDetails}>
-              <Text style={{fontSize:RFValue(15)}}>{foodItem.name}</Text>
-              <Text style={{marginVertical:RFValue(5) , color:'red' , fontWeight:'bold'}}>₹ {foodItem.price}</Text>
-              <View style={{flexDirection:'row', justifyContent:'space-between',width:'40%',alignItems:'center'}}>
-              <FontAwesome name="star" size={18} color="black" />
-              <Text>{foodItem.raitng} ({foodItem.ratingCount}+)</Text>
-              </View>
-            </View>
-            <TouchableOpacity
-            onPress={()=>addToCart({category:item.category, foodItem})}
-            style={[styles.addButton , {borderColor: foodItem.type === 'Vegeterian' ? 'green' : 'red' , shadowColor: foodItem.type === 'Vegeterian' ? 'green' : 'red'}]}>
-              <Text style={{fontSize:RFValue(12) , paddingHorizontal:5}}>Add</Text>
-              <FontAwesome style={{alignItems:'center'}} name="plus" size={15} color="black" />
-            </TouchableOpacity>
-          </View>
-        ))}
-      </View>
-        </TouchableWithoutFeedback>
+          ))}
+        </View>
+      </TouchableWithoutFeedback>
     );
   };
 
   return (
     <View style={styles.container}>
       <Animated.View
-        style={[styles.header, { transform: [{ translateY: headerTranslateY }] }]}
+        style={[
+          styles.header,
+          { transform: [{ translateY: headerTranslateY }] },
+        ]}
       >
-        <ImageBackground source={require('../../assets/foodsbg.jpg')} style={styles.shopImage} />
-          <View style={styles.shopInfo}>
-            <FontAwesome name="star" size={20} color="black" />
-            <Text style={{fontSize:18}}>3.8</Text>
-            <Text style={{fontSize:18}}>(600+ ratings)</Text>
-          </View>
+        <ImageBackground
+          source={require("../../assets/foodsbg.jpg")}
+          style={styles.shopImage}
+        />
+        <View style={styles.shopInfo}>
+          <FontAwesome name="star" size={20} color="black" />
+          <Text style={{ fontSize: 18 }}>3.8</Text>
+          <Text style={{ fontSize: 18 }}>(600+ ratings)</Text>
+        </View>
       </Animated.View>
-      <Animated.View style={[styles.searchContainer, { transform: [{ translateY: searchTranslateY }] }]}>
+      <Animated.View
+        style={[
+          styles.searchContainer,
+          { transform: [{ translateY: searchTranslateY }] },
+        ]}
+      >
         <Search />
       </Animated.View>
       <AnimatedFlatList
@@ -201,7 +416,7 @@ export default function ShopMenu({ route }) {
         )}
       />
       {expanded && (
-        <View  style={styles.categoryButtonsContainer}>
+        <View style={styles.categoryButtonsContainer}>
           <FlatList
             data={DATA[0].food}
             keyExtractor={(item, index) => index.toString()}
@@ -210,7 +425,11 @@ export default function ShopMenu({ route }) {
         </View>
       )}
       <TouchableOpacity style={styles.floatingButton} onPress={toggleExpand}>
-        <FontAwesome name={expanded ? "sticky-note" : "book"} size={24} color="white" />
+        <FontAwesome
+          name={expanded ? "sticky-note" : "book"}
+          size={24}
+          color="white"
+        />
       </TouchableOpacity>
     </View>
   );
@@ -236,17 +455,17 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   shopImage: {
-    width: '100%',
+    width: "100%",
     height: RFValue(95),
-    resizeMode: 'contain',
+    resizeMode: "contain",
     borderRadius: 20,
-    backgroundColor: 'red'
+    backgroundColor: "red",
   },
   shopInfo: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent:'space-around',
-    width:'50%',
+    justifyContent: "space-around",
+    width: "50%",
     paddingVertical: 10,
   },
   searchContainer: {
@@ -255,9 +474,9 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 1,
-    elevation:2,
-    backgroundColor:'white',
-    paddingVertical:5,
+    elevation: 2,
+    backgroundColor: "white",
+    paddingVertical: 5,
   },
   category: {
     fontSize: RFValue(20),
@@ -266,7 +485,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 20,
   },
-  categoryContainer:{
+  categoryContainer: {
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -276,9 +495,8 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 10,
     backgroundColor: "#fff",
-    borderBottomWidth:1,
-    borderColor:'grey'
-
+    borderBottomWidth: 1,
+    borderColor: "grey",
   },
   menuItem: {
     flexDirection: "row",
@@ -291,7 +509,6 @@ const styles = StyleSheet.create({
   itemDetails: {
     flex: 1,
     marginRight: 10,
-
   },
   logoContainer: {
     width: 40,
@@ -308,25 +525,26 @@ const styles = StyleSheet.create({
   },
   addButton: {
     backgroundColor: "white",
-    padding:10,
+    padding: 10,
     borderRadius: 5,
-    flexDirection:'row',
-    alignItems:'center',
-    justifyContent:'space-between',
-    borderWidth:2,
-    elevation:5
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+    borderWidth: 2,
+    elevation: 5,
+    width:'30%'
   },
   categoryButtonsContainer: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 10,
     right: 10,
     padding: 10,
     borderRadius: 20,
     zIndex: 100,
-    width:'60%',
-    height:'50%',
-    backgroundColor:'black',
-    alignItems:'center',
+    width: "60%",
+    height: "50%",
+    backgroundColor: "black",
+    alignItems: "center",
   },
   categoryButton: {
     flexDirection: "row",
@@ -334,19 +552,20 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     width: "80%",
     margin: 5,
-    padding: 10, 
+    padding: 10,
     borderRadius: 5,
   },
   floatingButton: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 20,
     right: 20,
-    backgroundColor: 'red',
+    backgroundColor: "red",
     width: 50,
     height: 50,
     borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     elevation: 5,
   },
+
 });

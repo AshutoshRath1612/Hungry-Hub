@@ -1,12 +1,13 @@
 import React, { useContext } from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { NavigationContext } from '../NavContext';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { CartProvider } from '../CartContext';
+import { NavigationContext } from '../NavContext';
 
 function Nav() {
   const { route } = useContext(NavigationContext);
+  // const route = useRoute()
 
   const navigation = useNavigation();
 
