@@ -248,10 +248,11 @@ export default function ShopMenu({ route }) {
 
   const handleAddItem = (item, foodItem) => {
     addToCart({
-      category: item.category,
+      category: {
+        name: item.category,
+        foodItem: {...foodItem , quantity:1},
+      },
       shopName: DATA[0].shopName,
-      foodItem,
-      quantity: 1,
     });
   };
 
@@ -263,10 +264,26 @@ export default function ShopMenu({ route }) {
     listRef.current.scrollToOffset({ animated: true, offset: yOffset });
     setExpanded(false);
   };
-
+  
+//   cart.map((cartItem) => {
+//     console.log(cartItem)
+//     cartItem.category.map((categories)=>{
+//       console.log(categories)
+//      categories.foodItem.map((item,index)=>{
+//       console.log(item)
+//     })
+//   })
+// })
   const findItem = (foodItem) => {
-    return cart.some((cartItem) => cartItem.foodItem.name === foodItem.name);
+    return cart.some(shop => 
+      shop.category.some((cartItem) => {
+         return cartItem.foodItem.some((item)=>{
+           return item.name === foodItem.name
+        })
+      })
+    );
   };
+
   const renderCategoryButton = (item, index) => (
     <TouchableOpacity key={index} onPress={() => scrollToCategory(index)}>
       <View style={styles.categoryButton}>
@@ -279,7 +296,6 @@ export default function ShopMenu({ route }) {
       </View>
     </TouchableOpacity>
   );
-
   const renderItem = ({ item }) => {
     return (
       <TouchableWithoutFeedback onPress={() => setExpanded(false)}>
@@ -337,9 +353,14 @@ export default function ShopMenu({ route }) {
                     <FontAwesome name="minus" size={18} color='#4ab557'/>
                   </TouchableOpacity>
                   {cart.map(
-                    (cartItem,index) =>
-                      cartItem.foodItem.name === foodItem.name && (
-                        <Text key={index} style={{color:'#4ab557' , fontWeight:'bold',fontSize: RFValue(14)}}>{cartItem.quantity}</Text>
+                    (cartItem) =>
+                      cartItem.category.map((categories) => (
+                        categories.foodItem.map((items,index)=>
+                        items.name === foodItem.name && (
+                        <Text key={index} style={{color:'#4ab557' , fontWeight:'bold',fontSize: RFValue(14)}}>{items.quantity}</Text>
+                      )
+                        )
+                      )
                       )
                   )}
                   <TouchableOpacity onPress={()=>handleAddItem(item,foodItem)}>
@@ -559,7 +580,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     right: 20,
-    backgroundColor: "red",
+    backgroundColor: "black",
     width: 50,
     height: 50,
     borderRadius: 25,
