@@ -16,6 +16,7 @@ import OrderSummary from './pages/Student/OrderSummary';
 import ShopMenu from './pages/Student/ShopMenu';
 import Cart from './pages/Student/Cart';
 import SearchResults from './pages/Student/SearchResults';
+import OrderSuccessScreen from './pages/Student/OrderSuccessScreen';
 
 const Stack = createStackNavigator();
 
@@ -49,6 +50,7 @@ export default function App() {
             <Stack.Screen options={{headerShown:true}} name='Cart' component={Cart} />
             <Stack.Screen name='Shop Menu' component={ShopMenu} options={({ route }) => ({  headerShown: true, title: route.params.shopName })} />
             <Stack.Screen name='Search Result' component={SearchResults} options={({ route }) => ({  headerShown: true, title: route.params.itemName })} />
+            <Stack.Screen name='Payment Success' component={OrderSuccessScreen} />
             {/* For vendor */}
             <Stack.Screen name='Vendor Signup' component={VendorSignUp} />
           </Stack.Navigator>

@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   Text,
-  Button,
   StyleSheet,
   Image,
   TouchableOpacity,
   ScrollView,
   KeyboardAvoidingView,
   Pressable,
+  Animated,
+  PanResponder,
 } from "react-native";
 import { useCart } from "../../CartContext";
 import { FontAwesome } from "@expo/vector-icons";
@@ -17,6 +18,7 @@ import Nav from "../../components/Nav";
 import { NavigationContext } from "../../NavContext";
 import Reccomandation from "../../components/Reccomandation";
 import { RadioButton } from "react-native-paper";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function Cart({ navigation, route }) {
   const vegLogo = require("../../assets/VegLogo.png");
@@ -26,6 +28,69 @@ export default function Cart({ navigation, route }) {
 
   const [showRecommandation, setShowRecommandation] = useState(false);
   const [deliveryType, setDeliveryType] = useState("Dine-in");
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+
+  const [pan] = useState(new Animated.ValueXY());
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [circlePositionX, setCirclePositionX] = useState(0);
+
+  const circlePosition = useRef(new Animated.Value(0)).current;
+  const textOpacity = new Animated.Value(1);
+
+
+  const panResponder = PanResponder.create({
+    onMoveShouldSetPanResponder: () => true,
+    onPanResponderMove: (_, gesture) => {
+      const maxX = 300; // Adjust 300 to the width of your view, and RFValue(50) to the size of your circle button
+      let newTranslateX = gesture.moveX - RFValue(30); // Adjust 30 to half the size of your circle button
+
+      // Limit the newTranslateX to stay within the boundaries
+      if (newTranslateX < 0) {
+        newTranslateX = 0;
+      } else if (newTranslateX > maxX) {
+        newTranslateX = maxX;
+      }
+
+      setCirclePositionX(newTranslateX);
+
+      Animated.timing(circlePosition, {
+        toValue: newTranslateX,
+        duration: 0,
+        useNativeDriver: false,
+      }).start();
+
+      Animated.timing(textOpacity, {
+        toValue: newTranslateX / 300, // Adjust 300 to the width of your view
+        duration: 0,
+        useNativeDriver: false,
+      }).start();
+      
+    },
+
+    onPanResponderRelease: (_, gesture) => {
+      const thresholdX = 320; // Adjust the threshold for successful payment
+      const maxX = 300 - RFValue(50); // Adjust 300 to the width of your view, and RFValue(50) to the size of your circle button
+
+      if (gesture.moveX > thresholdX) {
+        navigation.navigate('Payment Success')
+        // Payment successful
+        console.log("Payment Successful");
+        setShowSuccess(true); // Set a state to show the payment success message
+      } else {
+        // Payment not successful, animate the circle back to its initial position
+        Animated.timing(circlePosition, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: false,
+        }).start();
+        Animated.timing(textOpacity, {
+          toValue: 1, // Adjust 300 to the width of your view
+          duration: 0,
+          useNativeDriver: false,
+        }).start();
+      }
+    },
+  });
 
   const removeFromCart = (item) => {
     dispatch({ type: "REMOVE_FROM_CART", payload: item.foodItem.name });
@@ -64,11 +129,14 @@ export default function Cart({ navigation, route }) {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.container}>
-          <NavigationContext.Provider value={{ navigation, route }}>
-            {cart.length !== 0 ? (
-              <View style={styles.viewContainer}>
+      <View style={styles.container}>
+        <NavigationContext.Provider value={{ navigation, route }}>
+          {cart.length !== 0 ? (
+            <View style={styles.viewContainer}>
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.scrollContainer}
+              >
                 <View style={styles.shopName}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <FontAwesome name="shopping-bag" color="blue" size={20} />
@@ -147,7 +215,7 @@ export default function Cart({ navigation, route }) {
                     )
                   )}
                 </View>
-                <Pressable style={styles.btn} onPress={()=>clearCart()}>
+                <Pressable style={styles.btn} onPress={() => clearCart()}>
                   <FontAwesome name="trash" size={22} color="white" />
                   <Text
                     style={{
@@ -239,7 +307,9 @@ export default function Cart({ navigation, route }) {
                   <View style={styles.line}></View>
                   <View style={styles.list}>
                     <Text style={styles.info}>Delivery Fee</Text>
-                    <Text style={styles.infoText}>{deliveryType === "Dine-in" ? "₹ 0" : "₹ 5"}</Text>
+                    <Text style={styles.infoText}>
+                      ₹ {deliveryType === "Dine-in" ? "0" : "5"}
+                    </Text>
                   </View>
                   <View style={styles.list}>
                     <Text style={styles.info}>Platform Fee</Text>
@@ -247,26 +317,63 @@ export default function Cart({ navigation, route }) {
                   </View>
                   <View style={styles.line}></View>
                   <View style={styles.list}>
-                    <Text style={[styles.info , {fontWeight:'bold',fontSize:RFValue(15)}]}>To Pay</Text>
-                    <Text style={[styles.infoText,{fontWeight:'bold',fontSize:RFValue(15)}]}>
+                    <Text
+                      style={[
+                        styles.info,
+                        { fontWeight: "bold", fontSize: RFValue(15) },
+                      ]}
+                    >
+                      To Pay
+                    </Text>
+                    <Text
+                      style={[
+                        styles.infoText,
+                        { fontWeight: "bold", fontSize: RFValue(15) },
+                      ]}
+                    >
                       ₹ {findPrice() + 5 + (deliveryType === "Dine-in" ? 0 : 5)}
                     </Text>
                   </View>
                 </View>
+              </ScrollView>
+            </View>
+          ) : (
+            <View style={styles.emptyCartView}>
+              <Text style={{ fontSize: RFValue(25), fontWeight: "bold" }}>
+                No Items in Cart
+              </Text>
+              <View style={styles.nav}>
+                <Nav />
               </View>
-            ) : (
-              <View style={styles.emptyCartView}>
-                <Text style={{ fontSize: RFValue(25), fontWeight: "bold" }}>
-                  No Items in Cart
-                </Text>
-                <View style={styles.nav}>
-                  <Nav />
-                </View>
-              </View>
-            )}
-          </NavigationContext.Provider>
-        </View>
-      </ScrollView>
+            </View>
+          )}
+        </NavigationContext.Provider>
+      </View>
+      { cart.length !==0 ? (<View style={styles.fixedContainer}>
+        <LinearGradient
+          colors={["#4a47a3", "#706fd3", "#8d86c9"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          locations={[0, circlePositionX / 300, 1]}
+          style={[styles.slideToPay, { position: "absolute" }]}
+        >
+          <Animated.Text style={[styles.slideToPayText, { opacity: textOpacity }]}>
+            Slide to Pay | ₹{" "}
+            {findPrice() + 5 + (deliveryType === "Dine-in" ? 0 : 5)}
+          </Animated.Text>
+        </LinearGradient>
+        <Animated.View
+          style={[
+            styles.circleButton,
+            {
+              transform: [{ translateX: circlePosition }],
+            },
+          ]}
+          {...panResponder.panHandlers}
+        >
+          <FontAwesome name="arrow-right" size={24} color="white" />
+        </Animated.View>
+      </View>) : (<></>)}
     </KeyboardAvoidingView>
   );
 }
@@ -279,6 +386,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginVertical: 10,
+  },
+  fixedContainer: {
+    height: "10%",
+    width: "100%",
+    backgroundColor: "white",
+    justifyContent: "center",
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
   },
   viewContainer: {
     marginHorizontal: 10,
@@ -383,16 +498,42 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 20,
     width: "100%",
-    alignContent:'center'
+    alignContent: "center",
   },
   info: {
     color: "grey",
     marginTop: 10,
     fontSize: RFValue(12),
-    fontWeight:'600'
+    fontWeight: "600",
   },
-  infoText:{
-    fontSize:RFValue(14),
-    fontWeight:'600'
-  }
+  infoText: {
+    fontSize: RFValue(14),
+    fontWeight: "600",
+  },
+  slideToPay: {
+    width: "90%",
+    height: "80%",
+    borderRadius: 30,
+    padding: 10,
+    marginHorizontal: "5%",
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
+  },
+  slideToPayText: {
+    color: "white",
+    fontSize: RFValue(18),
+  },
+  circleButton: {
+    position: "absolute",
+    top: 8,
+    left: 19,
+    width: RFValue(52),
+    height: RFValue(52),
+    borderRadius: 30,
+    backgroundColor: "#8d86c9",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1,
+  },
 });
