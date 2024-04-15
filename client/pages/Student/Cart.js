@@ -19,6 +19,7 @@ import { NavigationContext } from "../../NavContext";
 import Reccomandation from "../../components/Reccomandation";
 import { RadioButton } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
+import QRcode from "../../components/QRCode";
 
 export default function Cart({ navigation, route }) {
   const vegLogo = require("../../assets/VegLogo.png");
@@ -41,7 +42,7 @@ export default function Cart({ navigation, route }) {
   const panResponder = PanResponder.create({
     onMoveShouldSetPanResponder: () => true,
     onPanResponderMove: (_, gesture) => {
-      const maxX = 300; // Adjust 300 to the width of your view, and RFValue(50) to the size of your circle button
+      const maxX = RFValue(300) - RFValue(50); // Adjust 300 to the width of your view, and RFValue(50) to the size of your circle button
       let newTranslateX = gesture.moveX - RFValue(30); // Adjust 30 to half the size of your circle button
 
       // Limit the newTranslateX to stay within the boundaries
@@ -76,7 +77,7 @@ export default function Cart({ navigation, route }) {
         // Payment successful
         console.log("Payment Successful");
         setShowSuccess(true); // Set a state to show the payment success message
-      } else {
+      }
         // Payment not successful, animate the circle back to its initial position
         Animated.timing(circlePosition, {
           toValue: 0,
@@ -88,7 +89,7 @@ export default function Cart({ navigation, route }) {
           duration: 0,
           useNativeDriver: false,
         }).start();
-      }
+
     },
   });
 
@@ -129,6 +130,7 @@ export default function Cart({ navigation, route }) {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
+      {/* <QRcode /> */}
       <View style={styles.container}>
         <NavigationContext.Provider value={{ navigation, route }}>
           {cart.length !== 0 ? (
@@ -511,7 +513,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   slideToPay: {
-    width: "90%",
+    width: RFValue(300),
     height: "80%",
     borderRadius: 30,
     padding: 10,

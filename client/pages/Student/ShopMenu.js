@@ -265,15 +265,15 @@ export default function ShopMenu({ route }) {
     setExpanded(false);
   };
   
-//   cart.map((cartItem) => {
-//     console.log(cartItem)
-//     cartItem.category.map((categories)=>{
-//       console.log(categories)
-//      categories.foodItem.map((item,index)=>{
-//       console.log(item)
-//     })
-//   })
-// })
+  cart.map((cartItem) => {
+    console.log(cartItem)
+    cartItem.category.map((categories)=>{
+      console.log(categories)
+     categories.foodItem.map((item,index)=>{
+      console.log(item)
+    })
+  })
+})
   const findItem = (foodItem) => {
     return cart.some(shop => 
       shop.category.some((cartItem) => {

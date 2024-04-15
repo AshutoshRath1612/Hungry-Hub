@@ -10,7 +10,7 @@ import {
 import React from "react";
 import { FontAwesome } from "@expo/vector-icons";
 
-export default function Reccomandation({sameHotel}) {
+export default function Reccomandation() {
   const data = [
     {
       image: require("../assets/LandingBG.png"),
