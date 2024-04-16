@@ -93,23 +93,17 @@ export default function Cart({ navigation, route }) {
     },
   });
 
-  const removeFromCart = (item) => {
-    dispatch({ type: "REMOVE_FROM_CART", payload: item.foodItem.name });
-  };
 
   const clearCart = () => {
     dispatch({ type: "CLEAR_CART" });
   };
 
-  const handleAddItem = (cartItem, categories, item) => {
-    const newValue = {
-      category: {
-        name: categories.name,
-        foodItem: { ...item, quantity: 1 },
-      },
-      shopName: cartItem.shopName,
-    };
-    dispatch({ type: "ADD_TO_CART", payload: newValue });
+  const handleAddItem = (item,shopName) => {
+    const newItem = {
+      items: [{...item , quantity:1}],
+      shopName:shopName,
+    }
+    dispatch({ type: "ADD_TO_CART", payload: newItem });
   };
 
   const handleRemoveItem = (foodItem) => {
@@ -118,19 +112,14 @@ export default function Cart({ navigation, route }) {
 
   const findPrice = () => {
     let totalPrice = 0;
-    cart.map((cartItem) => {
-      cartItem.category.map((categories) => {
-        categories.foodItem.map((item) => {
+    cart[0].items.map((item) => {
           totalPrice += item.quantity * item.price;
-        });
-      });
     });
     return totalPrice;
   };
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
-      {/* <QRcode /> */}
       <View style={styles.container}>
         <NavigationContext.Provider value={{ navigation, route }}>
           {cart.length !== 0 ? (
@@ -156,9 +145,7 @@ export default function Cart({ navigation, route }) {
                   />
                 </View>
                 <View style={styles.bigContainer}>
-                  {cart.map((cartItem) =>
-                    cartItem.category.map((categories) =>
-                      categories.foodItem.map((item, index) => (
+                  {cart[0].items.map((item,index) =>(
                         <View key={index} style={styles.item}>
                           <Image
                             source={
@@ -202,7 +189,7 @@ export default function Cart({ navigation, route }) {
 
                             <TouchableOpacity
                               onPress={() =>
-                                handleAddItem(cartItem, categories, item)
+                                handleAddItem(item, cart[0].shopName)
                               }
                             >
                               <FontAwesome
@@ -214,8 +201,7 @@ export default function Cart({ navigation, route }) {
                           </View>
                         </View>
                       ))
-                    )
-                  )}
+                  }
                 </View>
                 <Pressable style={styles.btn} onPress={() => clearCart()}>
                   <FontAwesome name="trash" size={22} color="white" />
@@ -308,7 +294,7 @@ export default function Cart({ navigation, route }) {
                   </View>
                   <View style={styles.line}></View>
                   <View style={styles.list}>
-                    <Text style={styles.info}>Delivery Fee</Text>
+                    <Text style={styles.info}>Packaging Fee</Text>
                     <Text style={styles.infoText}>
                       ₹ {deliveryType === "Dine-in" ? "0" : "5"}
                     </Text>

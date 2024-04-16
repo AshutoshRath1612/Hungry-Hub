@@ -23,9 +23,6 @@ const OrderSuccessScreen = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <TouchableOpacity onPress={()=>setIsSuccess(!isSuccess)} style={{position:'absolute',top:20,right:20}}>
-        <Text style={{fontSize:RFValue(20),fontWeight:'bold'}}>Toggle</Text>
-      </TouchableOpacity>
       <Animated.View
         style={{
           transform: [{ scale: scaleAnim }],

@@ -1,84 +1,88 @@
-import React, { createContext, useContext, useReducer, useEffect } from "react";
+import React, { createContext, useContext, useReducer, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const CartContext = createContext();
 
-
-const cartReducer = (state, action) => {
+const cartReducer = (state = [], action) => {
   switch (action.type) {
     case "ADD_TO_CART":
-      console.log(action.payload)
-      if(state.length !==0){
-
+      const newItem = action.payload;
+      if (state.length === 0) {
+        return [newItem];
+      } else {
+        const existingShopIndex = state.findIndex(
+          (shop) => shop.shopName === newItem.shopName
+        );
+        if (existingShopIndex !== -1) {
+          const existingItemIndex = state[existingShopIndex].items.findIndex(
+            (item) => item.name === newItem.items[0].name
+          );
+          if (existingItemIndex !== -1) {
+            state[existingShopIndex].items[existingItemIndex].quantity += 1;
+          } else {
+            state[existingShopIndex].items.push(newItem.items[0]);
+          }
+        } else {
+          return state; // Return state as is without adding the item
+        }
+        return [...state];
       }
-      else{
-        return [...state, action.payload];
-      }
-      // let itemExists = false;
-
-      // const newState = state.map((item) => {
-      //   if (item.foodItem.name === action.payload.foodItem.name) {
-      //     itemExists = true;
-      //     return { ...item, quantity: item.quantity + 1 };
-      //   } else {
-      //     return item;
-      //   }
-      // });
-
-      // if (!itemExists) {
-      //   newState.push(action.payload);
-      // }
-
-      // return newState;
-
 
     case "REMOVE_FROM_CART":
-      return state
+      const itemName = action.payload;
+      const newState = state
         .map((shop) => {
-          return {
-            ...shop,
-            category: shop.category
-              .map((category) => {
-                return {
-                  ...category,
-                  foodItem: category.foodItem
-                    .map((foodItem) => {
-                      if (
-                        foodItem.name === action.payload &&
-                        foodItem.quantity > 1
-                      ) {
-                        return {
-                          ...foodItem,
-                          quantity: foodItem.quantity - 1,
-                        };
-                      } else if (
-                        foodItem.name === action.payload &&
-                        foodItem.quantity === 1
-                      ) {
-                        return null; // return null if the quantity is 1, so it will be removed
-                      } else {
-                        return foodItem;
-                      }
-                    })
-                    .filter((foodItem) => foodItem !== null), // remove the food items that are null
-                };
-              })
-              .filter((category) => category.foodItem.length > 0), // remove the categories that have no food items
-          };
+          const updatedItems = shop.items
+            .map((item) => {
+              if (item.name === itemName) {
+                if (item.quantity > 1) {
+                  return { ...item, quantity: item.quantity - 1 };
+                } else {
+                  // If quantity is 1, remove the item
+                  return null;
+                }
+              }
+              return item;
+            })
+            .filter((item) => item !== null); // Filter out null items
+
+          // Check if there are any items left in the shop
+          if (updatedItems.length > 0) {
+            return { ...shop, items: updatedItems };
+          } else {
+            return null; // If no items left, remove the shop
+          }
         })
-        .filter((shop) => shop.category.length > 0); // remove the shops that have no categories
+        .filter((shop) => shop !== null); // Filter out null shops
+
+      if (newState.length === 0) {
+        removeFromCart();
+      }
+      return newState.length > 0 ? newState : []; // Return newState or empty array if no shops left
 
     case "LOAD_CART_FROM_STORAGE":
       return [...action.payload];
+
     case "CLEAR_CART":
+      removeFromCart();
       return [];
+
     default:
       return state;
   }
 };
 
+const removeFromCart = async () => {
+  try {
+    await AsyncStorage.removeItem("cart");
+  } catch (error) {
+    console.error("Failed to remove cart from storage:", error);
+  }
+};
+
 export const CartProvider = ({ children }) => {
   const [cart, dispatch] = useReducer(cartReducer, []);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     const loadCartFromStorage = async () => {
@@ -110,8 +114,13 @@ export const CartProvider = ({ children }) => {
     saveCartToStorage();
   }, [cart]);
 
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
   return (
     <CartContext.Provider value={{ cart, dispatch }}>
+      {modalVisible && <ModalComponent onClose={closeModal} />}
       {children}
     </CartContext.Provider>
   );

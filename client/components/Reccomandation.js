@@ -6,11 +6,23 @@ import {
   StyleSheet,
   Pressable,
   Image,
+  Modal,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
+import { useCart } from "../CartContext";
+import { useNavigation } from "@react-navigation/native";
+import ShopModal from "./ShopModal";
+
 
 export default function Reccomandation() {
+
+  const { dispatch, cart } = useCart();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [currentData, setCurrentData] = useState(null);
+
+  const navigation = useNavigation();
+
   const image = require("../assets/LandingBG.png")
   const data = [
     {
@@ -78,30 +90,41 @@ export default function Reccomandation() {
     },
   ];
 
-  const CardItem = ({ item , shopName }) => {
-    console.log(item)
+  const addToCart = (item, shopName) => {
+    if (cart.length === 0) {
+      dispatch({ type: "ADD_TO_CART", payload: { shopName: shopName, items: [{...item , quantity:1}] } });
+    } else {
+      if (cart[0].shopName === shopName) {
+        dispatch({ type: "ADD_TO_CART", payload: { shopName: shopName, items: [{...item,quantity:1}] } });
+      } else {
+        setCurrentData({ shopName:shopName, items: [{...item,quantity:1}] });
+        setModalVisible(true);
+      }
+    }
+  }
+
+  const CardItem = ({ item, shopName }) => {
     return (
       <>
-      {item.map((item,index) => (
-
-      <View key={index} style={[styles.card, item.type === "Vegeterian" ? { backgroundColor: "#127311" } : { backgroundColor: "#D31911" }]}>
-        <Image source={image} resizeMode="contain" style={styles.itemImg} />
-        <View style={styles.cardInfo}>
-          <View style={styles.leftInfo}>
-            <Text style={styles.text}>{item.name && item.name.length > 14 ? item.name.substring(0, 14) + "..." : item.name}</Text>
-            <Text style={[styles.text, { fontWeight: "bold" }]}>{shopName && shopName.length > 14 ? shopName.substring(0, 14) + "..." : shopName}</Text>
+        {item.map((item, index) => (
+          <View key={index} style={[styles.card, item.type === "Vegeterian" ? { backgroundColor: "#127311" } : { backgroundColor: "#D31911" }]}>
+            <Image source={image} resizeMode="contain" style={styles.itemImg} />
+            <View style={styles.cardInfo}>
+              <View style={styles.leftInfo}>
+                <Text style={styles.text}>{item.name && item.name.length > 14 ? item.name.substring(0, 14) + "..." : item.name}</Text>
+                <Text style={[styles.text, { fontWeight: "bold" }]}>{shopName && shopName.length > 14 ? shopName.substring(0, 14) + "..." : shopName}</Text>
+              </View>
+              <View style={styles.rightInfo}>
+                <Text style={styles.text}>₹ {item.price}</Text>
+                <Pressable style={styles.btn} onPress={() => addToCart(item, shopName)}>
+                  <Text style={{ color: "white", fontSize: 13 }}>Add <FontAwesome color="white" name="plus" /></Text>
+                </Pressable>
+              </View>
+            </View>
           </View>
-          <View style={styles.rightInfo}>
-            <Text style={styles.text}>₹ {item.price}</Text>
-            <Pressable style={styles.btn}>
-              <Text style={{ color: "white", fontSize: 13 }}>Add <FontAwesome color="white" name="plus" /></Text>
-            </Pressable>
-          </View>
-        </View>
-      </View>
-      ))}
+        ))}
       </>
-    );  
+    );
   };
 
   return (
@@ -114,9 +137,11 @@ export default function Reccomandation() {
         keyExtractor={(item, index) => item.shopName}
         showsHorizontalScrollIndicator={false}
       />
+      <ShopModal data={currentData} shopName={cart[0]?.shopName} visible={modalVisible} onClose={() => setModalVisible(false)} />
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   recommendation: {

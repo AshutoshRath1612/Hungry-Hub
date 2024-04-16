@@ -15,6 +15,8 @@ import { FontAwesome } from "@expo/vector-icons";
 import Search from "../../components/Search";
 import { RFValue } from "react-native-responsive-fontsize";
 import { useCart } from "../../CartContext";
+import ShopModal from "../../components/ShopModal";
+
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -23,8 +25,21 @@ export default function ShopMenu({ route }) {
 
   const { cart, dispatch } = useCart();
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [currentData, setCurrentData] = useState(null);
+
+
   const addToCart = (item) => {
-    dispatch({ type: "ADD_TO_CART", payload: item });
+     if (cart.length === 0) {
+      dispatch({ type: "ADD_TO_CART", payload: item });
+    } else {
+      if (cart[0].shopName === item.shopName) {
+        dispatch({ type: "ADD_TO_CART", payload: item });
+      } else {
+        setCurrentData(item);
+        setModalVisible(true);
+      }
+    }
   };
 
   const removeFromCart = (item) => {
@@ -248,7 +263,7 @@ export default function ShopMenu({ route }) {
 
   const handleAddItem = (item, foodItem) => {
     addToCart({
-      items: {...foodItem , quantity:1 , category:item.category},
+      items: [{...foodItem , quantity:1 , category:item.category}],
       shopName: DATA[0].shopName,
     });
   };
@@ -262,24 +277,24 @@ export default function ShopMenu({ route }) {
     setExpanded(false);
   };
   
-  cart.map((cartItem) => {
-    console.log(cartItem)
-    cartItem.category.map((categories)=>{
-      console.log(categories)
-     categories.foodItem.map((item,index)=>{
-      console.log(item)
-    })
-  })
-})
-  const findItem = (foodItem) => {
-    return cart.some(shop => 
-      shop.category.some((cartItem) => {
-         return cartItem.foodItem.some((item)=>{
-           return item.name === foodItem.name
-        })
-      })
-    );
-  };
+//   cart.map((cartItem) => {
+//     console.log(cartItem)
+//     cartItem.category.map((categories)=>{
+//       console.log(categories)
+//      categories.foodItem.map((item,index)=>{
+//       console.log(item)
+//     })
+//   })
+// })
+
+
+const findItem = (foodItem) => {
+  if (cart.length > 0 && cart[0].items) {
+  return cart[0].items.some((item) => {
+      return item.name === foodItem.name;
+    });
+}
+};
 
   const renderCategoryButton = (item, index) => (
     <TouchableOpacity key={index} onPress={() => scrollToCategory(index)}>
@@ -349,15 +364,10 @@ export default function ShopMenu({ route }) {
                   <TouchableOpacity onPress={()=>handleRemoveItem(foodItem)}>
                     <FontAwesome name="minus" size={18} color='#4ab557'/>
                   </TouchableOpacity>
-                  {cart.map(
-                    (cartItem) =>
-                      cartItem.category.map((categories) => (
-                        categories.foodItem.map((items,index)=>
+                  {cart[0].items.map(
+                    (items) =>
                         items.name === foodItem.name && (
                         <Text key={index} style={{color:'#4ab557' , fontWeight:'bold',fontSize: RFValue(14)}}>{items.quantity}</Text>
-                      )
-                        )
-                      )
                       )
                   )}
                   <TouchableOpacity onPress={()=>handleAddItem(item,foodItem)}>
@@ -421,6 +431,8 @@ export default function ShopMenu({ route }) {
       >
         <Search />
       </Animated.View>
+      <ShopModal data={currentData} shopName={cart[0]?.shopName} visible={modalVisible} onClose={() => setModalVisible(false)} />
+   
       <AnimatedFlatList
         ref={listRef}
         data={DATA[0].foods}
