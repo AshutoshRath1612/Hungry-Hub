@@ -34,9 +34,9 @@ export default function ShopMenu({ route }) {
   const DATA = [
     {
       shopName: "Mio Amore",
-      rating: 3.8,
+      ratings: 3.8,
       ratingCount: 600,
-      food: [
+      foods: [
         {
           category: "Snacks",
           items: [
@@ -44,21 +44,21 @@ export default function ShopMenu({ route }) {
               name: "Burger",
               price: 100,
               type: "Vegetarian",
-              rating: 4.5,
+              ratings: 4.5,
               ratingCount: 600,
             },
             {
               name: "Pizza",
               price: 600,
               type: "Non-Vegetarian",
-              rating: 4.5,
+              ratings: 4.5,
               ratingCount: 600,
             },
             {
               name: "Sandwich",
               price: 450,
               type: "Vegetarian",
-              rating: 4.5,
+              ratings: 4.5,
               ratingCount: 600,
             },
           ],
@@ -70,21 +70,21 @@ export default function ShopMenu({ route }) {
               name: "Biryani",
               price: 200,
               type: "Non-Vegetarian",
-              rating: 4.5,
+              ratings: 4.5,
               ratingCount: 600,
             },
             {
               name: "Fried Rice",
               price: 150,
               type: "Vegetarian",
-              rating: 4.5,
+              ratings: 4.5,
               ratingCount: 600,
             },
             {
               name: "Noodles",
               price: 180,
               type: "Vegetarian",
-              rating: 4.5,
+              ratings: 4.5,
               ratingCount: 600,
             },
           ],
@@ -96,21 +96,21 @@ export default function ShopMenu({ route }) {
               name: "Ice Cream",
               price: 50,
               type: "Vegetarian",
-              rating: 4.5,
+              ratings: 4.5,
               ratingCount: 600,
             },
             {
               name: "Cake",
               price: 300,
               type: "Vegetarian",
-              rating: 4.5,
+              ratings: 4.5,
               ratingCount: 600,
             },
             {
               name: "Pastry",
               price: 100,
               type: "Vegetarian",
-              rating: 4.5,
+              ratings: 4.5,
               ratingCount: 600,
             },
           ],
@@ -122,21 +122,21 @@ export default function ShopMenu({ route }) {
               name: "Cold Drink",
               price: 30,
               type: "Vegetarian",
-              rating: 4.5,
+              ratings: 4.5,
               ratingCount: 600,
             },
             {
               name: "Juice",
               price: 50,
               type: "Vegetarian",
-              rating: 4.5,
+              ratings: 4.5,
               ratingCount: 600,
             },
             {
               name: "Milk Shake",
               price: 70,
               type: "Vegetarian",
-              rating: 4.5,
+              ratings: 4.5,
               ratingCount: 600,
             },
           ],
@@ -148,21 +148,21 @@ export default function ShopMenu({ route }) {
               name: "Momos",
               price: 50,
               type: "Vegetarian",
-              rating: 4.5,
+              ratings: 4.5,
               ratingCount: 600,
             },
             {
               name: "Pasta",
               price: 100,
               type: "Vegetarian",
-              rating: 4.5,
+              ratings: 4.5,
               ratingCount: 600,
             },
             {
               name: "French Fries",
               price: 70,
               type: "Vegetarian",
-              rating: 4.5,
+              ratings: 4.5,
               ratingCount: 600,
             },
           ],
@@ -174,21 +174,21 @@ export default function ShopMenu({ route }) {
               name: "Tea",
               price: 10,
               type: "Vegetarian",
-              rating: 4.5,
+              ratings: 4.5,
               ratingCount: 600,
             },
             {
               name: "Coffee",
               price: 20,
               type: "Vegetarian",
-              rating: 4.5,
+              ratings: 4.5,
               ratingCount: 600,
             },
             {
               name: "Cold Coffee",
               price: 30,
               type: "Vegetarian",
-              rating: 4.5,
+              ratings: 4.5,
               ratingCount: 600,
             },
           ],
@@ -200,21 +200,21 @@ export default function ShopMenu({ route }) {
               name: "Vanilla",
               price: 20,
               type: "Vegetarian",
-              rating: 4.5,
+              ratings: 4.5,
               ratingCount: 600,
             },
             {
               name: "Chocolate",
               price: 30,
               type: "Vegetarian",
-              rating: 4.5,
+              ratings: 4.5,
               ratingCount: 600,
             },
             {
               name: "Strawberry",
               price: 40,
               type: "Vegetarian",
-              rating: 4.5,
+              ratings: 4.5,
               ratingCount: 600,
             },
           ],
@@ -248,10 +248,7 @@ export default function ShopMenu({ route }) {
 
   const handleAddItem = (item, foodItem) => {
     addToCart({
-      category: {
-        name: item.category,
-        foodItem: {...foodItem , quantity:1},
-      },
+      items: {...foodItem , quantity:1 , category:item.category},
       shopName: DATA[0].shopName,
     });
   };
@@ -331,13 +328,13 @@ export default function ShopMenu({ route }) {
                   style={{
                     flexDirection: "row",
                     justifyContent: "space-between",
-                    width: "40%",
+                    width: "50%",
                     alignItems: "center",
                   }}
                 >
                   <FontAwesome name="star" size={18} color="black" />
-                  <Text>
-                    {foodItem.rating} ({foodItem.ratingCount}+)
+                  <Text style={{marginHorizontal:2}}>
+                    {foodItem.ratings} ({foodItem.ratingCount}+)
                   </Text>
                 </View>
               </View>
@@ -426,7 +423,7 @@ export default function ShopMenu({ route }) {
       </Animated.View>
       <AnimatedFlatList
         ref={listRef}
-        data={DATA[0].food}
+        data={DATA[0].foods}
         keyExtractor={(item, index) => index.toString()}
         renderItem={renderItem}
         contentContainerStyle={{ paddingTop: HEADER_MAX_HEIGHT + 20 }} // Add some initial padding
@@ -439,7 +436,7 @@ export default function ShopMenu({ route }) {
       {expanded && (
         <View style={styles.categoryButtonsContainer}>
           <FlatList
-            data={DATA[0].food}
+            data={DATA[0].foods}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item, index }) => renderCategoryButton(item, index)}
           />

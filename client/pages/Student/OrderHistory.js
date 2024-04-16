@@ -17,15 +17,20 @@ export default function OrderHistory() {
       storeName: "Store Name 1",
       orderId: "Order Name 1",
       items: [
-        { name: "Item Name 1", quantity: 1, price: 10, type: "Vegeterian" },
+        { name: "Item Name 1", quantity: 1, ratings: 5.0 , ratingCount: 600,price: 10, type: "Vegeterian",
+        category:'Snacks' },
         {
           name: "Item Name 2",
           quantity: 2,
-          price: 100,
+          ratings: 5.0 , ratingCount: 600,price: 100,
           type: "Non-Vegeterian",
+          
+category:'Beverages'
         },
-        { name: "Item Name 3", quantity: 3, price: 10, type: "Non-Vegeterian" },
-        { name: "Item Name 4", quantity: 4, price: 100, type: "Vegeterian" },
+        { name: "Item Name 3", quantity: 3, ratings: 5.0 , ratingCount: 600,price: 10, type: "Non-Vegeterian",
+        category:'Main Course' },
+        { name: "Item Name 4", quantity: 4, ratings: 5.0 , ratingCount: 600,price: 100, type: "Vegeterian",
+        category:'Pizza' },
       ],
       date: new Date().toLocaleDateString("en-IN", {
         year: "numeric",
@@ -43,15 +48,20 @@ export default function OrderHistory() {
       storeName: "Store Name 2",
       orderId: "Order Name 2",
       items: [
-        { name: "Item Name 1", quantity: 1, price: 10, type: "Vegeterian" },
+        { name: "Item Name 1", quantity: 1, ratings: 5.0 , ratingCount: 600,price: 10, type: "Vegeterian",
+        category:'Snacks' },
         {
           name: "Item Name 2",
           quantity: 2,
-          price: 100,
+          ratings: 5.0 , ratingCount: 600,price: 100,
           type: "Non-Vegeterian",
+          
+category:'Beverages'
         },
-        { name: "Item Name 3", quantity: 3, price: 10, type: "Non-Vegeterian" },
-        { name: "Item Name 4", quantity: 4, price: 100, type: "Vegeterian" },
+        { name: "Item Name 3", quantity: 3, ratings: 5.0 , ratingCount: 600,price: 10, type: "Non-Vegeterian",
+        category:'Main Course' },
+        { name: "Item Name 4", quantity: 4, ratings: 5.0 , ratingCount: 600,price: 100, type: "Vegeterian",
+        category:'Pizza' },
       ],
       date: new Date().toLocaleDateString("en-IN", {
         year: "numeric",
@@ -69,15 +79,20 @@ export default function OrderHistory() {
       storeName: "Store Name 3",
       orderId: "Order id 3",
       items: [
-        { name: "Item Name 1", quantity: 1, price: 10, type: "Vegeterian" },
+        { name: "Item Name 1", quantity: 1, ratings: 5.0 , ratingCount: 600,price: 10, type: "Vegeterian",
+        category:'Snacks' },
         {
           name: "Item Name 2",
           quantity: 2,
-          price: 100,
+          ratings: 5.0 , ratingCount: 600,price: 100,
           type: "Non-Vegeterian",
+          
+category:'Beverages'
         },
-        { name: "Item Name 3", quantity: 3, price: 10, type: "Non-Vegeterian" },
-        { name: "Item Name 4", quantity: 4, price: 100, type: "Vegeterian" },
+        { name: "Item Name 3", quantity: 3, ratings: 5.0 , ratingCount: 600,price: 10, type: "Non-Vegeterian",
+        category:'Main Course' },
+        { name: "Item Name 4", quantity: 4, ratings: 5.0 , ratingCount: 600,price: 100, type: "Vegeterian",
+        category:'Pizza' },
       ],
       date: new Date().toLocaleDateString("en-IN", {
         year: "numeric",
@@ -95,15 +110,20 @@ export default function OrderHistory() {
       storeName: "Store Name 4",
       orderId: "Order id 4",
       items: [
-        { name: "Item Name 1", quantity: 1, price: 10, type: "Vegeterian" },
+        { name: "Item Name 1", quantity: 1, ratings: 5.0 , ratingCount: 600,price: 10, type: "Vegeterian",
+        category:'Snacks' },
         {
           name: "Item Name 2",
           quantity: 2,
-          price: 100,
+          ratings: 5.0 , ratingCount: 600,price: 100,
           type: "Non-Vegeterian",
+          
+category:'Beverages'
         },
-        { name: "Item Name 3", quantity: 3, price: 10, type: "Non-Vegeterian" },
-        { name: "Item Name 4", quantity: 4, price: 100, type: "Vegeterian" },
+        { name: "Item Name 3", quantity: 3, ratings: 5.0 , ratingCount: 600,price: 10, type: "Non-Vegeterian",
+        category:'Main Course' },
+        { name: "Item Name 4", quantity: 4, ratings: 5.0 , ratingCount: 600,price: 100, type: "Vegeterian",
+        category:'Pizza' },
       ],
       date: new Date().toLocaleDateString("en-IN", {
         year: "numeric",
@@ -121,15 +141,20 @@ export default function OrderHistory() {
       storeName: "Store Name 5",
       orderId: "Order id 5",
       items: [
-        { name: "Item Name 1", quantity: 1, price: 10, type: "Vegeterian" },
+        { name: "Item Name 1", quantity: 1, ratings: 5.0 , ratingCount: 600,price: 10, type: "Vegeterian",
+        category:'Snacks' },
         {
           name: "Item Name 2",
           quantity: 2,
-          price: 100,
+          ratings: 5.0 , ratingCount: 600,price: 100,
           type: "Non-Vegeterian",
+          
+category:'Beverages'
         },
-        { name: "Item Name 3", quantity: 3, price: 10, type: "Non-Vegeterian" },
-        { name: "Item Name 4", quantity: 4, price: 100, type: "Vegeterian" },
+        { name: "Item Name 3", quantity: 3, ratings: 5.0 , ratingCount: 600,price: 10, type: "Non-Vegeterian",
+        category:'Main Course' },
+        { name: "Item Name 4", quantity: 4, ratings: 5.0 , ratingCount: 600,price: 100, type: "Vegeterian",
+        category:'Pizza' },
       ],
       date: new Date().toLocaleDateString("en-IN", {
         year: "numeric",

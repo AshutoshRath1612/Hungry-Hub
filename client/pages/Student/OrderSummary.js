@@ -9,7 +9,7 @@ export default function OrderSummary() {
   const NonVegLogo = require("../../assets/NonVegLogo.png");
   const route = useRoute();
   const summary = route.params.item;
-
+  
   const findPrice = (items) => {
     let total = 0;
     items.forEach((item) => {
