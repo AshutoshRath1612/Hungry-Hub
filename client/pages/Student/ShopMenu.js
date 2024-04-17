@@ -16,6 +16,7 @@ import Search from "../../components/Search";
 import { RFValue } from "react-native-responsive-fontsize";
 import { useCart } from "../../CartContext";
 import ShopModal from "../../components/ShopModal";
+import CartCard from "../../components/CartCard";
 
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
@@ -454,13 +455,14 @@ const findItem = (foodItem) => {
           />
         </View>
       )}
-      <TouchableOpacity style={styles.floatingButton} onPress={toggleExpand}>
+      <TouchableOpacity style={[styles.floatingButton , {bottom: cart.length != 0 ? 90 : 20}]} onPress={toggleExpand}>
         <FontAwesome
           name={expanded ? "sticky-note" : "book"}
           size={24}
           color="white"
         />
       </TouchableOpacity>
+      {cart.length !== 0 && <CartCard />}
     </View>
   );
 }
@@ -597,5 +599,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
     elevation: 5,
   },
-
 });

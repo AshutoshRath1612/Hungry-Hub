@@ -11,6 +11,12 @@ export default function OrderHistory() {
   const VegLogo = require("../../assets/VegLogo.png");
   const NonVegLogo = require("../../assets/NonVegLogo.png");
 
+  const { setOrderStatus } = useOrderStatus();
+
+  const handleOrderPreparing = () => {
+    setOrderStatus('preparing');
+  };
+
   const DATA = [
     {
       _id: 1,
@@ -37,7 +43,7 @@ category:'Beverages'
         month: "long",
         day: "numeric",
       }),
-      status: "Baking",
+      status: "Preparing",
       time: new Date().toLocaleTimeString(),
       orderType: "Dine in",
       transactionId: "AZHDGYW52S",
@@ -171,7 +177,7 @@ category:'Beverages'
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "Baking":
+      case "Preparing":
         return "orange";
       case "Cancelled":
         return "red";

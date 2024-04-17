@@ -1,13 +1,16 @@
 import React, { useContext } from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet,Text } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { CartProvider } from '../CartContext';
+import { CartProvider, useCart } from '../CartContext';
 import { NavigationContext } from '../NavContext';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 function Nav() {
   const { route } = useContext(NavigationContext);
   // const route = useRoute()
+
+  const {cart} = useCart()
 
   const navigation = useNavigation();
 
@@ -35,6 +38,9 @@ function Nav() {
           style={[styles.tab, route.name === 'Cart' && styles.selectedTab]}
           onPress={() => navigateToScreen('Cart')}
         >
+        { cart.length!==0 ?(<View style={{position:'absolute' , left:'15%',zIndex:10,top:0 ,padding:5,paddingHorizontal:13, backgroundColor:'red',borderRadius:50}}>
+          <Text style={{fontSize:RFValue(12) ,fontWeight:'bold' ,color:'white'}}>{cart[0].items.length}</Text>
+        </View>) : <></>}
           <FontAwesome name='shopping-basket' style={styles.tabText}></FontAwesome>
         </TouchableOpacity>
       </View>

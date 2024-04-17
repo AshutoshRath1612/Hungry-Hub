@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, Image, FlatList, Pressable } from "react-native
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/core";
 
-const averageCharacterWidth = 8;
 
 export default function ShopList() {
   const navigation = useNavigation();
@@ -54,10 +53,9 @@ export default function ShopList() {
     },
   ];
 
-  const averageCharacterWidth = 8; // Assumed average character width in pixels
-
 const CardItem = ({ item }) => {
   const [visibleFoodItems, setVisibleFoodItems] = useState([]);
+
 
   useEffect(() => {
     if(visibleFoodItems.length<15){

@@ -1,15 +1,27 @@
-import React from "react";
-import { View, Text, StyleSheet, Image, ScrollView, Pressable, KeyboardAvoidingView } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ScrollView,
+  Pressable,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 import { RFValue } from "react-native-responsive-fontsize";
+import QRcode from "../../components/QRCode";
 
 export default function OrderSummary() {
   const VegLogo = require("../../assets/VegLogo.png");
   const NonVegLogo = require("../../assets/NonVegLogo.png");
   const route = useRoute();
   const summary = route.params.item;
-  
+
+  const [showQR, setShowQR] = useState(false);
+
   const findPrice = (items) => {
     let total = 0;
     items.forEach((item) => {
@@ -22,13 +34,73 @@ export default function OrderSummary() {
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.OrderSummaryContainer}>
-          <Text style={styles.shopName}>{summary.storeName}</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+            <Text style={styles.shopName}>{summary.storeName}</Text>
+            {summary.status !== "Cancelled" &&
+              summary.status !== "Delivered" && (
+                <Pressable
+                  onPress={() => setShowQR(!showQR)}
+                  style={{
+                    flexDirection: "row",
+                    backgroundColor: "#4694D2",
+                    borderRadius: 10,
+                    padding: 10,
+                    alignItems: "flex-end",
+                    justifyContent: "space-between",
+                    width: "30%",
+                  }}
+                >
+                  <FontAwesome name="qrcode" size={18} />
+                  <Text style={{ fontSize: RFValue(13), fontWeight: "bold" }}>
+                    {showQR ? "Hide QR" : "QR Code"}
+                  </Text>
+                </Pressable>
+              )}
+          </View>
           <View style={styles.line}></View>
           <Text style={styles.info}>
-            {summary.status === "Baking"
-              ? "This Order is Being Baked"
+            {summary.status !== "Cancelled" && summary.status !== "Delivered"
+              ? `This Order is ${summary.status}`
               : `This Order was ${summary.status}`}
           </Text>
+         {summary.status !== 'Cancelled' && summary.status!=='Delivered' && <View style={styles.status}>
+            <View style={styles.statusinfo}>
+              <View style={[styles.imgOuter,{backgroundColor: summary.status === 'Accepted' ? 'green' : ''}]}>
+                <Image
+                  style={[styles.statusimg, { width: "40%" }]}
+                  source={require("../../assets/orderaccept.png")}
+                />
+              </View>
+              <Text style={styles.text}>Accepted</Text>
+            </View>
+            <View style={[styles.line, { width: "10%" }]}></View>
+            <View style={styles.statusinfo}>
+              <View style={[styles.imgOuter,{backgroundColor: summary.status === 'Preparing' ? 'green' : ''}]}>
+                <Image
+                  style={[styles.statusimg, { width: 90 }]}
+                  source={require("../../assets/orderpreparing.png")}
+                />
+              </View>
+              <Text style={styles.text}>Preparing</Text>
+            </View>
+            <View style={[styles.line, { width: "10%" }]}></View>
+            <View style={styles.statusinfo}>
+              <View style={[styles.imgOuter,{backgroundColor: summary.status === 'Ready' ? 'green' : ''}]}>
+                <Image
+                  style={styles.statusimg}
+                  source={require("../../assets/orderprepared.png")}
+                />
+              </View>
+              <Text style={styles.text}>Ready</Text>
+            </View>
+          </View>}
           <Text style={styles.heading}>Your Order</Text>
           <View style={styles.line}></View>
           <View style={styles.itemList}>
@@ -62,10 +134,20 @@ export default function OrderSummary() {
                     >
                       {item.quantity}
                     </Text>
-                    <Text style={{ fontWeight: "500", marginHorizontal: RFValue(5) }}> X </Text>
+                    <Text
+                      style={{
+                        fontWeight: "500",
+                        marginHorizontal: RFValue(5),
+                      }}
+                    >
+                      {" "}
+                      X{" "}
+                    </Text>
                     <Text style={styles.text}>₹{item.price}</Text>
                   </View>
-                  <Text style={styles.text}>₹ {item.price * item.quantity}</Text>
+                  <Text style={styles.text}>
+                    ₹ {item.price * item.quantity}
+                  </Text>
                 </View>
               </View>
             ))}
@@ -125,9 +207,28 @@ export default function OrderSummary() {
         </View>
         <Pressable style={styles.btn}>
           <FontAwesome name="undo" size={20} color="white" />
-          <Text style={{fontSize:RFValue(20) ,color:'white', fontWeight:'bold',marginHorizontal:RFValue(5)}}>Reorder</Text>
+          <Text
+            style={{
+              fontSize: RFValue(20),
+              color: "white",
+              fontWeight: "bold",
+              marginHorizontal: RFValue(5),
+            }}
+          >
+            Reorder
+          </Text>
         </Pressable>
       </ScrollView>
+      {summary.status !== "Delivered" &&
+        summary.status !== "Cancelled" &&
+        showQR && (
+          <View style={styles.qrcontainer}>
+            <QRcode data={summary} />
+            <Text style={{ fontSize: RFValue(15), fontWeight: "bold" }}>
+              Scan it to get your item delivered
+            </Text>
+          </View>
+        )}
     </KeyboardAvoidingView>
   );
 }
@@ -198,7 +299,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
-    alignItems:'center'
+    alignItems: "center",
   },
   btn: {
     flexDirection: "row",
@@ -209,7 +310,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 20,
     width: "100%",
-    alignContent:'center'
+    alignContent: "center",
   },
   heading: {
     fontSize: 20,
@@ -219,5 +320,42 @@ const styles = StyleSheet.create({
   text: {
     fontSize: RFValue(12),
     fontWeight: "500",
+  },
+  qrcontainer: {
+    position: "relative",
+    backgroundColor: "white",
+    bottom: 0,
+    height: "35%",
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1,
+    paddingVertical: 10,
+    borderTopRightRadius: 30,
+    borderTopLeftRadius: 30,
+  },
+  status: {
+    width: "100%",
+    marginTop:RFValue(20),
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  statusinfo: {
+    width: "30%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  statusimg: {
+    height: RFValue(90),
+    width: RFValue(50),
+    resizeMode: "contain",
+  },
+  imgOuter: {
+    borderWidth: 1,
+    borderRadius: 100,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

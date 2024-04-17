@@ -413,7 +413,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "white",
     borderRadius: 10,
-    elevation: 5,
+    elevation: 3,
   },
   text: {
     fontSize: RFValue(15),

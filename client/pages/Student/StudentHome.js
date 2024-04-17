@@ -10,18 +10,22 @@ import Reccomandation from "../../components/Reccomandation";
 import ShopList from "../../components/ShopList";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { NavigationContext } from "../../NavContext";
+import { OrderStatusProvider } from "../../OrderStatusContext";
 
 export default function StudentHome() {
-
   const route = useRoute();
   const navigation = useNavigation();
   return (
+    <OrderStatusProvider>
     <View style={styles.container}>
       <NavigationContext.Provider value={{ navigation, route }}>
         <View style={styles.top}>
           <Header />
           <Search />
         </View>
+        <View>
+      
+    </View>
         <View style={styles.bottom}>
           <Reccomandation />
           <ShopList />
@@ -31,6 +35,7 @@ export default function StudentHome() {
         </View>
       </NavigationContext.Provider>
     </View>
+    </OrderStatusProvider>
   );
 }
 

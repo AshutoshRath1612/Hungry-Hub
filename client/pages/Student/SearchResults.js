@@ -11,6 +11,8 @@ import React, { useEffect, useState } from "react";
 import Search from "../../components/Search";
 import { RFValue } from "react-native-responsive-fontsize";
 import { FontAwesome } from "@expo/vector-icons";
+import { useCart } from "../../CartContext";
+import CartCard from "../../components/CartCard";
 
 export default function SearchResults({ route, navigation }) {
   const vegLogo = require("../../assets/VegLogo.png");
@@ -183,6 +185,7 @@ export default function SearchResults({ route, navigation }) {
   ];
 
   const [totalResult, setTotalResult] = useState(0);
+  const {cart} = useCart()
 
   useEffect(() => {
     let total = 0;
@@ -195,7 +198,7 @@ export default function SearchResults({ route, navigation }) {
   }, []);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor:'white' }}>
       <View style={styles.searchBox}>
         <Search />
       </View>
@@ -203,8 +206,9 @@ export default function SearchResults({ route, navigation }) {
         Showing results for {route.params.itemName} ({totalResult})
       </Text>
       <FlatList
+      style={{marginBottom: cart.length !== 0 ? 80 : 0}}
         data={DATA}
-        keyExtractor={(item) => item.shopName}
+        keyExtractor={(item, index) => item.shopName + index}
         renderItem={({ item }) => (
           <View style={styles.card}>
             <View style={styles.shopListHeader}>
@@ -232,84 +236,87 @@ export default function SearchResults({ route, navigation }) {
               </View>
               <FontAwesome name="arrow-right" size={25} color="grey" onPress={() => navigation.navigate('Shop Menu', { item })} />
             </View>
-            {item.results.map((category) => (
-              <FlatList
-                keyExtractor={(item,index) => index}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                data={category.items}
-                renderItem={({ item }) => (
-                  <View style={styles.foodItems}>
-                    <View style={styles.foodItemsInfo}>
-                      <Image
-                        source={
-                          item.type === "Vegeterian" ? vegLogo : nonVegLogo
-                        }
-                        style={{ width: 20, height: 20 }}
-                      />
-                      <Text style={{ fontSize: RFValue(15), fontWeight: "bold" }}>
-                        {item.name}
-                      </Text>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          width: "50%",
-                          alignItems: "center",
-                          marginVertical: 5,
-                        }}
-                      >
-                        <FontAwesome name="star" size={18} color="orange" />
-                        <Text
+            <FlatList
+              data={item.results}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              keyExtractor={(category, index) => category.category + index}
+              renderItem={({ item: category }) => (
+                <>
+                  {category.items.map((item, index) => (
+                    <TouchableOpacity key={index} style={styles.foodItems} onPress={() => console.log("Item pressed")}>
+                      <View style={styles.foodItemsInfo}>
+                        <Image
+                          source={
+                            item.type === "Vegeterian" ? vegLogo : nonVegLogo
+                          }
+                          style={{ width: 20, height: 20 }}
+                        />
+                        <Text style={{ fontSize: RFValue(15), fontWeight: "bold" }}>
+                          {item.name}
+                        </Text>
+                        <View
                           style={{
-                            fontSize: RFValue(13),
-                            marginHorizontal: RFValue(5),
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            width: "50%",
+                            alignItems: "center",
+                            marginVertical: 5,
                           }}
                         >
-                          {item.ratings}
-                        </Text>
-                        <Text style={{ fontSize: RFValue(13) }}>
-                          ({item.ratingCount})
+                          <FontAwesome name="star" size={18} color="orange" />
+                          <Text
+                            style={{
+                              fontSize: RFValue(13),
+                              marginHorizontal: RFValue(5),
+                            }}
+                          >
+                            {item.ratings}
+                          </Text>
+                          <Text style={{ fontSize: RFValue(13) }}>
+                            ({item.ratingCount})
+                          </Text>
+                        </View>
+                        <Text style={{ fontSize: RFValue(15), fontWeight: "bold" }}>
+                          ₹{item.price}
                         </Text>
                       </View>
-                      <Text style={{ fontSize: RFValue(15), fontWeight: "bold" }}>
-                        ₹{item.price}
-                      </Text>
-                    </View>
-                    <View style={styles.foodItemsImage}>
-                      <Image
-                        source={require("../../assets/pizza.jpg")}
-                        style={{
-                          width: "100%",
-                          height: "90%",
-                          borderRadius: 10,
-                        }}
-                      />
-                      <Pressable
-                        style={{
-                          ...styles.addbtn,
-                          borderColor: item.type === "Vegeterian" ? "green" : "red",
-                        }}
-                        onPress={() => console.log("Add")}
-                      >
-                        <Text
+                      <View style={styles.foodItemsImage}>
+                        <Image
+                          source={require("../../assets/pizza.jpg")}
                           style={{
-                            color: "orange",
-                            fontSize: RFValue(15),
-                            fontWeight: "bold",
+                            width: "100%",
+                            height: "90%",
+                            borderRadius: 10,
                           }}
+                        />
+                        <Pressable
+                          style={{
+                            ...styles.addbtn,
+                            borderColor: item.type === "Vegeterian" ? "green" : "red",
+                          }}
+                          onPress={() => console.log("Add")}
                         >
-                          ADD
-                        </Text>
-                      </Pressable>
-                    </View>
-                  </View>
-                )}
-              />
-            ))}
+                          <Text
+                            style={{
+                              color: "orange",
+                              fontSize: RFValue(15),
+                              fontWeight: "bold",
+                            }}
+                          >
+                            ADD
+                          </Text>
+                        </Pressable>
+                      </View>
+                    </TouchableOpacity>
+                  ))}
+                </>
+              )}
+            />
           </View>
         )}
       />
+      {cart.length !== 0 && <CartCard />}
     </View>
   );
 }
