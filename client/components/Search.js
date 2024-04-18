@@ -12,7 +12,6 @@ import { FontAwesome } from "@expo/vector-icons";
 import { RadioButton } from "react-native-paper";
 import { useNavigation } from '@react-navigation/native';
 import { useRoute } from '@react-navigation/native';
-import { useOrderStatus } from "../OrderStatusContext";
 
 export default function Search() {
   const navigation = useNavigation();
@@ -23,10 +22,9 @@ export default function Search() {
 
   const categories = ["Vegeterian", "Non-Vegeterian"];
 
-  const { setOrderStatus } = useOrderStatus();
   
 const handleOrderPreparing = () => {
-setOrderStatus('preparing');
+setOrderStatus('delivered');
 };
   const handleNavigate = (e) => {
     if(route.name !== 'Shop Menu' && e.nativeEvent.text !== ''){
@@ -70,7 +68,6 @@ setOrderStatus('preparing');
           </View>
         </View>
       </Modal>
-      <Text>Current Order Status: {orderStatus}</Text>
       <View style={styles.searchBox}>
         <FontAwesome
           name="search"
@@ -109,7 +106,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1,
     borderColor: "gray",
-    borderRadius: 5,
+    borderRadius: 10,
     padding: 9,
     backgroundColor: "white",
     width: "80%",

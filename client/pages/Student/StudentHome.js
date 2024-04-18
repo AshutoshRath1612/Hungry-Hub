@@ -2,7 +2,7 @@ import {
   View,
   StyleSheet,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Nav from "../../components/Nav";
 import Header from "../../components/Header";
 import Search from "../../components/Search";
@@ -10,32 +10,30 @@ import Reccomandation from "../../components/Reccomandation";
 import ShopList from "../../components/ShopList";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { NavigationContext } from "../../NavContext";
-import { OrderStatusProvider } from "../../OrderStatusContext";
+import CurrentOrder from "../../components/CurrentOrder";
 
 export default function StudentHome() {
   const route = useRoute();
   const navigation = useNavigation();
+
   return (
-    <OrderStatusProvider>
     <View style={styles.container}>
       <NavigationContext.Provider value={{ navigation, route }}>
         <View style={styles.top}>
           <Header />
           <Search />
         </View>
-        <View>
-      
-    </View>
         <View style={styles.bottom}>
           <Reccomandation />
+          <CurrentOrder />
           <ShopList />
         </View>
+
         <View style={styles.nav}>
           <Nav />
         </View>
       </NavigationContext.Provider>
     </View>
-    </OrderStatusProvider>
   );
 }
 

@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
   cardInfo: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: 2,
+    paddingHorizontal: 5,
     width: "100%",
     height: "40%",
   },

@@ -1,21 +1,25 @@
 import React, { useEffect } from "react";
-import { StyleSheet, View, Text, FlatList, Image, Pressable } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  FlatList,
+  Image,
+  Pressable,
+} from "react-native";
 import Header from "../../components/Header";
 import Nav from "../../components/Nav";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { NavigationContext } from "../../NavContext";
 import { RFValue } from "react-native-responsive-fontsize";
+import { OrderStatusProvider, useOrderStatus } from "../../OrderStatusContext";
 
 export default function OrderHistory() {
   // Import the images
   const VegLogo = require("../../assets/VegLogo.png");
   const NonVegLogo = require("../../assets/NonVegLogo.png");
 
-  const { setOrderStatus } = useOrderStatus();
-
-  const handleOrderPreparing = () => {
-    setOrderStatus('preparing');
-  };
+  const {currentOrder , dispatch} = useOrderStatus();
 
   const DATA = [
     {
@@ -23,20 +27,43 @@ export default function OrderHistory() {
       storeName: "Store Name 1",
       orderId: "Order Name 1",
       items: [
-        { name: "Item Name 1", quantity: 1, ratings: 5.0 , ratingCount: 600,price: 10, type: "Vegeterian",
-        category:'Snacks' },
+        {
+          name: "Item Name 1",
+          quantity: 1,
+          ratings: 5.0,
+          ratingCount: 600,
+          price: 10,
+          type: "Vegeterian",
+          category: "Snacks",
+        },
         {
           name: "Item Name 2",
           quantity: 2,
-          ratings: 5.0 , ratingCount: 600,price: 100,
+          ratings: 5.0,
+          ratingCount: 600,
+          price: 100,
           type: "Non-Vegeterian",
-          
-category:'Beverages'
+
+          category: "Beverages",
         },
-        { name: "Item Name 3", quantity: 3, ratings: 5.0 , ratingCount: 600,price: 10, type: "Non-Vegeterian",
-        category:'Main Course' },
-        { name: "Item Name 4", quantity: 4, ratings: 5.0 , ratingCount: 600,price: 100, type: "Vegeterian",
-        category:'Pizza' },
+        {
+          name: "Item Name 3",
+          quantity: 3,
+          ratings: 5.0,
+          ratingCount: 600,
+          price: 10,
+          type: "Non-Vegeterian",
+          category: "Main Course",
+        },
+        {
+          name: "Item Name 4",
+          quantity: 4,
+          ratings: 5.0,
+          ratingCount: 600,
+          price: 100,
+          type: "Vegeterian",
+          category: "Pizza",
+        },
       ],
       date: new Date().toLocaleDateString("en-IN", {
         year: "numeric",
@@ -54,20 +81,43 @@ category:'Beverages'
       storeName: "Store Name 2",
       orderId: "Order Name 2",
       items: [
-        { name: "Item Name 1", quantity: 1, ratings: 5.0 , ratingCount: 600,price: 10, type: "Vegeterian",
-        category:'Snacks' },
+        {
+          name: "Item Name 1",
+          quantity: 1,
+          ratings: 5.0,
+          ratingCount: 600,
+          price: 10,
+          type: "Vegeterian",
+          category: "Snacks",
+        },
         {
           name: "Item Name 2",
           quantity: 2,
-          ratings: 5.0 , ratingCount: 600,price: 100,
+          ratings: 5.0,
+          ratingCount: 600,
+          price: 100,
           type: "Non-Vegeterian",
-          
-category:'Beverages'
+
+          category: "Beverages",
         },
-        { name: "Item Name 3", quantity: 3, ratings: 5.0 , ratingCount: 600,price: 10, type: "Non-Vegeterian",
-        category:'Main Course' },
-        { name: "Item Name 4", quantity: 4, ratings: 5.0 , ratingCount: 600,price: 100, type: "Vegeterian",
-        category:'Pizza' },
+        {
+          name: "Item Name 3",
+          quantity: 3,
+          ratings: 5.0,
+          ratingCount: 600,
+          price: 10,
+          type: "Non-Vegeterian",
+          category: "Main Course",
+        },
+        {
+          name: "Item Name 4",
+          quantity: 4,
+          ratings: 5.0,
+          ratingCount: 600,
+          price: 100,
+          type: "Vegeterian",
+          category: "Pizza",
+        },
       ],
       date: new Date().toLocaleDateString("en-IN", {
         year: "numeric",
@@ -85,20 +135,43 @@ category:'Beverages'
       storeName: "Store Name 3",
       orderId: "Order id 3",
       items: [
-        { name: "Item Name 1", quantity: 1, ratings: 5.0 , ratingCount: 600,price: 10, type: "Vegeterian",
-        category:'Snacks' },
+        {
+          name: "Item Name 1",
+          quantity: 1,
+          ratings: 5.0,
+          ratingCount: 600,
+          price: 10,
+          type: "Vegeterian",
+          category: "Snacks",
+        },
         {
           name: "Item Name 2",
           quantity: 2,
-          ratings: 5.0 , ratingCount: 600,price: 100,
+          ratings: 5.0,
+          ratingCount: 600,
+          price: 100,
           type: "Non-Vegeterian",
-          
-category:'Beverages'
+
+          category: "Beverages",
         },
-        { name: "Item Name 3", quantity: 3, ratings: 5.0 , ratingCount: 600,price: 10, type: "Non-Vegeterian",
-        category:'Main Course' },
-        { name: "Item Name 4", quantity: 4, ratings: 5.0 , ratingCount: 600,price: 100, type: "Vegeterian",
-        category:'Pizza' },
+        {
+          name: "Item Name 3",
+          quantity: 3,
+          ratings: 5.0,
+          ratingCount: 600,
+          price: 10,
+          type: "Non-Vegeterian",
+          category: "Main Course",
+        },
+        {
+          name: "Item Name 4",
+          quantity: 4,
+          ratings: 5.0,
+          ratingCount: 600,
+          price: 100,
+          type: "Vegeterian",
+          category: "Pizza",
+        },
       ],
       date: new Date().toLocaleDateString("en-IN", {
         year: "numeric",
@@ -116,20 +189,43 @@ category:'Beverages'
       storeName: "Store Name 4",
       orderId: "Order id 4",
       items: [
-        { name: "Item Name 1", quantity: 1, ratings: 5.0 , ratingCount: 600,price: 10, type: "Vegeterian",
-        category:'Snacks' },
+        {
+          name: "Item Name 1",
+          quantity: 1,
+          ratings: 5.0,
+          ratingCount: 600,
+          price: 10,
+          type: "Vegeterian",
+          category: "Snacks",
+        },
         {
           name: "Item Name 2",
           quantity: 2,
-          ratings: 5.0 , ratingCount: 600,price: 100,
+          ratings: 5.0,
+          ratingCount: 600,
+          price: 100,
           type: "Non-Vegeterian",
-          
-category:'Beverages'
+
+          category: "Beverages",
         },
-        { name: "Item Name 3", quantity: 3, ratings: 5.0 , ratingCount: 600,price: 10, type: "Non-Vegeterian",
-        category:'Main Course' },
-        { name: "Item Name 4", quantity: 4, ratings: 5.0 , ratingCount: 600,price: 100, type: "Vegeterian",
-        category:'Pizza' },
+        {
+          name: "Item Name 3",
+          quantity: 3,
+          ratings: 5.0,
+          ratingCount: 600,
+          price: 10,
+          type: "Non-Vegeterian",
+          category: "Main Course",
+        },
+        {
+          name: "Item Name 4",
+          quantity: 4,
+          ratings: 5.0,
+          ratingCount: 600,
+          price: 100,
+          type: "Vegeterian",
+          category: "Pizza",
+        },
       ],
       date: new Date().toLocaleDateString("en-IN", {
         year: "numeric",
@@ -147,33 +243,57 @@ category:'Beverages'
       storeName: "Store Name 5",
       orderId: "Order id 5",
       items: [
-        { name: "Item Name 1", quantity: 1, ratings: 5.0 , ratingCount: 600,price: 10, type: "Vegeterian",
-        category:'Snacks' },
+        {
+          name: "Item Name 1",
+          quantity: 1,
+          ratings: 5.0,
+          ratingCount: 600,
+          price: 10,
+          type: "Vegeterian",
+          category: "Snacks",
+        },
         {
           name: "Item Name 2",
           quantity: 2,
-          ratings: 5.0 , ratingCount: 600,price: 100,
+          ratings: 5.0,
+          ratingCount: 600,
+          price: 100,
           type: "Non-Vegeterian",
-          
-category:'Beverages'
+
+          category: "Beverages",
         },
-        { name: "Item Name 3", quantity: 3, ratings: 5.0 , ratingCount: 600,price: 10, type: "Non-Vegeterian",
-        category:'Main Course' },
-        { name: "Item Name 4", quantity: 4, ratings: 5.0 , ratingCount: 600,price: 100, type: "Vegeterian",
-        category:'Pizza' },
+        {
+          name: "Item Name 3",
+          quantity: 3,
+          ratings: 5.0,
+          ratingCount: 600,
+          price: 10,
+          type: "Non-Vegeterian",
+          category: "Main Course",
+        },
+        {
+          name: "Item Name 4",
+          quantity: 4,
+          ratings: 5.0,
+          ratingCount: 600,
+          price: 100,
+          type: "Vegeterian",
+          category: "Pizza",
+        },
       ],
       date: new Date().toLocaleDateString("en-IN", {
         year: "numeric",
         month: "long",
         day: "numeric",
       }),
-      status: "Delivered",
+      status: "Accepted",
       time: new Date().toLocaleTimeString(),
       orderType: "Dine in",
       transactionId: "AZHDGYW52S",
       paymentStatus: "Success",
     },
   ];
+
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -282,20 +402,22 @@ category:'Beverages'
   const navigation = useNavigation();
   const route = useRoute();
   return (
-    <View style={styles.container}>
-      <NavigationContext.Provider value={{ navigation, route }}>
-        <FlatList
-          style={styles.historyContainer}
-          data={DATA}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => <CardItem item={item} />}
-          keyExtractor={(item) => item._id.toString()}
-        />
-        <View style={styles.nav}>
-          <Nav navigation={navigation} currentRoute={route.name} />
-        </View>
-      </NavigationContext.Provider>
-    </View>
+    <OrderStatusProvider>
+      <View style={styles.container}>
+        <NavigationContext.Provider value={{ navigation, route }}>
+          <FlatList
+            style={styles.historyContainer}
+            data={DATA}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item }) => <CardItem item={item} />}
+            keyExtractor={(item) => item._id.toString()}
+          />
+          <View style={styles.nav}>
+            <Nav navigation={navigation} currentRoute={route.name} />
+          </View>
+        </NavigationContext.Provider>
+      </View>
+    </OrderStatusProvider>
   );
 }
 const styles = StyleSheet.create({

@@ -17,6 +17,7 @@ import ShopMenu from './pages/Student/ShopMenu';
 import Cart from './pages/Student/Cart';
 import SearchResults from './pages/Student/SearchResults';
 import OrderSuccessScreen from './pages/Student/OrderSuccessScreen';
+import { OrderStatusProvider } from './OrderStatusContext';
 
 const Stack = createStackNavigator();
 
@@ -37,6 +38,7 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <CartProvider>
+      <OrderStatusProvider>
         <NavigationContainer>
           <Stack.Navigator screenOptions={{headerShown: false,}} initialRouteName='Landing'>
             <Stack.Screen name='Landing' component={LandingPage} />
@@ -55,6 +57,7 @@ export default function App() {
             <Stack.Screen name='Vendor Signup' component={VendorSignUp} />
           </Stack.Navigator>
         </NavigationContainer>
+        </OrderStatusProvider>
       </CartProvider>
     </SafeAreaView>
   ); 
