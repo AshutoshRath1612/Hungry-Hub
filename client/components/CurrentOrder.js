@@ -1,9 +1,20 @@
 import { View, Text, FlatList, StyleSheet, Image } from "react-native";
 import React, { useEffect, useState } from "react";
+import LottieView from "lottie-react-native";
+import { RFValue } from "react-native-responsive-fontsize";
+
+import { useNavigation } from "@react-navigation/native";
 
 export default function CurrentOrder() {
+
+  const navigation = useNavigation();
+
   const [currentOrders, setCurrentOrders] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const accepticon = require("../assets/acceptedicon.json");
+  const preparingicon = require("../assets/preparingicon.json");
+  const readyicon = require("../assets/readyicon.json");
 
   useEffect(() => {
     const data = [
@@ -199,14 +210,17 @@ export default function CurrentOrder() {
 
   const CardItem = ({ item, index }) => {
     return (
-      <View style={styles.ordercard}>
-        <Image
-          style={{ height: "40%", width: "40%", resizeMode: "contain" }}
-          source={require("../assets/Plate.png")}
-        />
+      <View onTouchEnd={()=>navigation.navigate('Order Summary' , {item:item})} style={styles.ordercard}>
+        <LottieView
+              source={item.status === 'Ready' ? readyicon : item.status === 'Accepted' ? accepticon : preparingicon} // Replace 'animation.json' with your Lottie animation file
+              autoPlay
+              loop
+              speed={1.5}
+              style={{ width: RFValue(80), height: RFValue(80) }}
+            />
         <View style={styles.ordercarditem}>
-          <Text>Your Food is {item.status}</Text>
-          <Text>{item.storeName}</Text>
+          <Text style={{fontSize:RFValue(14) , fontWeight:'bold'}}>Your Food is {item.status}</Text>
+          <Text style={{fontSize:RFValue(13)  , fontWeight:'500'}}>{item.storeName}</Text>
         </View>
         <CustomScrollIndicator
           itemCount={currentOrders.length}
@@ -245,9 +259,13 @@ const styles = StyleSheet.create({
     margin: 10,
     height: 100,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-around",
   },
-  ordercarditem: {},
+  ordercarditem: {
+    flexDirection: "column",
+    justifyContent: "space-around",
+    alignItems: "flex-start",
+  },
   scrollIndicator: {
     marginHorizontal: 10,
     position: "absolute",

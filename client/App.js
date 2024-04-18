@@ -18,6 +18,7 @@ import Cart from './pages/Student/Cart';
 import SearchResults from './pages/Student/SearchResults';
 import OrderSuccessScreen from './pages/Student/OrderSuccessScreen';
 import { OrderStatusProvider } from './OrderStatusContext';
+import VendorHome from './pages/Vendor/VendorHome';
 
 const Stack = createStackNavigator();
 
@@ -53,8 +54,11 @@ export default function App() {
             <Stack.Screen name='Shop Menu' component={ShopMenu} options={({ route }) => ({  headerShown: true, title: route.params.shopName })} />
             <Stack.Screen name='Search Result' component={SearchResults} options={({ route }) => ({  headerShown: true, title: route.params.itemName })} />
             <Stack.Screen name='Payment Success' component={OrderSuccessScreen} />
+            
             {/* For vendor */}
             <Stack.Screen name='Vendor Signup' component={VendorSignUp} />
+            <Stack.Screen name='Vendor Home' component={VendorHome} />
+
           </Stack.Navigator>
         </NavigationContainer>
         </OrderStatusProvider>
