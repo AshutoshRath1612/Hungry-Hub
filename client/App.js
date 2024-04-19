@@ -19,6 +19,8 @@ import SearchResults from './pages/Student/SearchResults';
 import OrderSuccessScreen from './pages/Student/OrderSuccessScreen';
 import { OrderStatusProvider } from './OrderStatusContext';
 import VendorHome from './pages/Vendor/VendorHome';
+import Menu from './pages/Vendor/Menu';
+import History from './pages/Vendor/History';
 
 const Stack = createStackNavigator();
 
@@ -58,6 +60,8 @@ export default function App() {
             {/* For vendor */}
             <Stack.Screen name='Vendor Signup' component={VendorSignUp} />
             <Stack.Screen name='Vendor Home' component={VendorHome} />
+            <Stack.Screen name='Vendor Menu' component={Menu} />
+            <Stack.Screen name='Vendor History' component={History} />
 
           </Stack.Navigator>
         </NavigationContainer>
