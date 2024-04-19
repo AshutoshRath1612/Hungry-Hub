@@ -11,7 +11,6 @@ function Nav() {
   const [user, setUser] = useState("Vendor");
 
   const { route } = useContext(NavigationContext);
-  console.log(route)
   const navigation = useNavigation();
 
   const navigateToScreen = (screenName) => {

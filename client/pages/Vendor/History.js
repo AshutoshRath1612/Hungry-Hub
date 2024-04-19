@@ -136,24 +136,32 @@ export default function OrderHistory() {
   };
 
   const showOrderDetails = (item) => {
-    navigation.navigate("Order Summary", { item });
+    console.log(item);
   };
 
   const CardItem = ({ item }) => {
     return (
-        <View>
-       <Text>
-       {item.date}
-       </Text> 
-      <Pressable
-        style={styles.items}
-        onPress={() => {
-          showOrderDetails(item);
-        }}
-      >
-
-      </Pressable>
-        </View>
+      <View style={styles.CardItem}>
+        <Text  style={{fontSize:RFValue(15),fontWeight:'bold', marginVertical:10}}>{item.date}</Text>
+        <FlatList
+          data={item.orders}
+          renderItem={({ item }) => (
+            <View style={styles.itemList}>
+              <Text style={styles.item}>
+                Order No.: {item.orderId}
+              </Text>
+              <Text style={styles.item}>
+                Name: {item.customerName}
+              </Text>
+              <Text
+                style={[styles.item, { color: getStatusColor(item.status) }]}
+              >
+                {item.status}
+              </Text>
+            </View>
+          )}
+        />
+      </View>
     );
   };
 
@@ -163,22 +171,32 @@ export default function OrderHistory() {
   return (
     <View style={styles.container}>
       <NavigationContext.Provider value={{ navigation, route }}>
-      <View style={styles.searchBox}>
-          <FontAwesome
-            name="search"
-            size={20}
-            color="orange"
-            style={styles.icon}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Search Orders..."
-            keyboardType="numeric"
-            placeholderTextColor="gray"
-            returnKeyType="search"
-            onSubmitEditing={(e) => handleNavigate(e)}
-          />
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+          }}
+        >
+          <Text style={{fontSize:RFValue(20) , fontWeight:'bold'}}>Order History</Text>
+          <View style={styles.searchBox}>
+            <FontAwesome
+              name="search"
+              size={20}
+              color="orange"
+              style={styles.icon}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Search Orders..."
+              keyboardType="numeric"
+              placeholderTextColor="gray"
+              returnKeyType="search"
+              onSubmitEditing={(e) => handleNavigate(e)}
+            />
+          </View>
         </View>
+        <View style={{height:'85%' , width:'95%'  , padding:15}}>
         <FlatList
           style={styles.historyContainer}
           data={DATA}
@@ -186,6 +204,7 @@ export default function OrderHistory() {
           renderItem={({ item }) => <CardItem item={item} />}
           keyExtractor={(item, index) => index.toString()}
         />
+        </View>
         <View style={{ position: "absolute", width: "100%", bottom: 0 }}>
           <Nav />
         </View>
@@ -195,47 +214,13 @@ export default function OrderHistory() {
 }
 const styles = StyleSheet.create({
   container: {
-    justifyContent:'center',
-    alignItems:'center',
-    height:'100%'
-  },
-  items: {
+    justifyContent: "center",
     flex: 1,
-    backgroundColor: "white",
-    marginVertical: 10,
-    marginHorizontal: 10,
-    borderRadius: 10,
-    padding: 10,
-  },
-  item: {
-    paddingVertical: 5,
-    flexDirection: "row",
-    fontWeight: "bold",
-    fontSize: RFValue(15),
-    alignItems: "center",
-    justifyContent: "space-around",
-    width: "40%",
-  },
-  itemList: {
-    paddingVertical: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
-  },
-  itemHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
   },
   historyContainer: {
     flex: 1,
     width: "100%",
-    marginBottom: RFValue(55), // Add padding to prevent overlap with navigation bar
-  },
-  storename: {
-    fontSize: RFValue(15),
-    fontWeight: "bold",
+    marginBottom:'2%'
   },
   status: {
     fontSize: RFValue(10),
@@ -269,5 +254,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
     color: "black",
+  },
+  CardItem: {
+    borderBottomWidth:1,
+    borderColor:'grey',
+    paddingVertical:10
+  },
+  itemList:{
+    flexDirection:'row',
+    justifyContent:'space-around',
+    padding:10,
+    backgroundColor:'white',
+    marginVertical:5,
+    borderRadius:10
   },
 });

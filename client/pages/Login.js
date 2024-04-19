@@ -43,7 +43,7 @@ const Login = ({navigation}) => {
       .catch((err)=> console.log(err))
       console.log(data)
     }
-    navigation.navigate('Vendor Home')
+    navigation.navigate('Student Home')
   }
   return (
     <LinearGradient colors={['lightblue','pink','violet']} style={styles.container}>
