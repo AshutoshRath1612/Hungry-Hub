@@ -21,6 +21,7 @@ import { OrderStatusProvider } from './OrderStatusContext';
 import VendorHome from './pages/Vendor/VendorHome';
 import Menu from './pages/Vendor/Menu';
 import History from './pages/Vendor/History';
+import VendorOrderSummary from './pages/Vendor/VendorOrderSummary';
 
 const Stack = createStackNavigator();
 
@@ -62,6 +63,7 @@ export default function App() {
             <Stack.Screen name='Vendor Home' component={VendorHome} />
             <Stack.Screen name='Vendor Menu' component={Menu} />
             <Stack.Screen name='Vendor History' component={History} />
+            <Stack.Screen name='Vendor Order Summary' component={VendorOrderSummary} />
 
           </Stack.Navigator>
         </NavigationContainer>

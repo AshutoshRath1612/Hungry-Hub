@@ -145,18 +145,18 @@ export default function OrderHistory() {
         <Text  style={{fontSize:RFValue(15),fontWeight:'bold', marginVertical:10}}>{item.date}</Text>
         <FlatList
           data={item.orders}
-          renderItem={({ item }) => (
-            <View style={styles.itemList}>
+          renderItem={( fooditem ) => (
+            <View onTouchEnd={()=>navigation.navigate("Vendor Order Summary" , {item: fooditem.item  ,date:item.date})} style={styles.itemList}>
               <Text style={styles.item}>
-                Order No.: {item.orderId}
+                Order No.: {fooditem.orderId}
               </Text>
               <Text style={styles.item}>
-                Name: {item.customerName}
+                Name: {fooditem.item.customerName}
               </Text>
               <Text
-                style={[styles.item, { color: getStatusColor(item.status) }]}
+                style={[styles.item, { color: getStatusColor(fooditem.item.status) }]}
               >
-                {item.status}
+                {fooditem.item.status}
               </Text>
             </View>
           )}
