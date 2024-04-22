@@ -148,7 +148,7 @@ export default function OrderHistory() {
           renderItem={( fooditem ) => (
             <View onTouchEnd={()=>navigation.navigate("Vendor Order Summary" , {item: fooditem.item  ,date:item.date})} style={styles.itemList}>
               <Text style={styles.item}>
-                Order No.: {fooditem.orderId}
+                Order No.: {fooditem.item.orderId}
               </Text>
               <Text style={styles.item}>
                 Name: {fooditem.item.customerName}

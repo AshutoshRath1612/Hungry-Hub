@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome,MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { CartProvider, useCart } from "../CartContext";
 import { NavigationContext } from "../NavContext";
@@ -90,6 +90,15 @@ function Nav() {
             onPress={() => navigateToScreen("Vendor Home")}
           >
             <FontAwesome name="home" style={styles.tabText}></FontAwesome>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.tab,
+              route.name === "Scanner" && styles.selectedTab,
+            ]}
+            onPress={() => navigateToScreen("Scanner")}
+          >
+            <MaterialCommunityIcons name="qrcode-scan" style={styles.tabText} size={24} color="black" />
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.tab, route.name === "Vendor Menu" && styles.selectedTab]}
