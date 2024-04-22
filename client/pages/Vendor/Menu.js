@@ -11,7 +11,7 @@ import {
   Pressable,
   TouchableWithoutFeedback,
 } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome,MaterialCommunityIcons,Ionicons } from "@expo/vector-icons";
 import Search from "../../components/Search";
 import { RFValue } from "react-native-responsive-fontsize";
 import ShopModal from "../../components/ShopModal";
@@ -304,35 +304,14 @@ export default function Menu({ navigation, route }) {
                   </Text>
                 </View>
               </View>
-              <TouchableOpacity
-                onPress={() => handleAddItem(item, foodItem)}
-                style={[
-                  styles.addButton,
-                  {
-                    borderColor:
-                      foodItem.type === "Vegetarian" ? "green" : "red",
-                    shadowColor:
-                      foodItem.type === "Vegetarian" ? "green" : "red",
-                  },
-                ]}
-              >
-                <Text
-                  style={{
-                    fontSize: RFValue(14),
-                    paddingHorizontal: 5,
-                    fontWeight: "bold",
-                    color: "#4ab557",
-                  }}
-                >
-                  ADD
-                </Text>
-                <FontAwesome
-                  style={{ alignItems: "center" }}
-                  name="plus"
-                  size={18}
-                  color="#4ab557"
-                />
+              <View style={{flexDirection:'row' , justifyContent:'space-around' ,width:'30%'}}>
+              <TouchableOpacity>
+              <MaterialCommunityIcons name="pencil-circle-outline" size={30} color="black" />
               </TouchableOpacity>
+              <TouchableOpacity >
+              <Ionicons name="trash-bin" size={30} color="black" />
+              </TouchableOpacity>
+              </View>
             </View>
           ))}
         </View>
@@ -349,9 +328,12 @@ export default function Menu({ navigation, route }) {
       >
         <Image style={{resizeMode:'contain' , width:'40%'}} source={require('../../assets/Logo.png')} />
         <View style={styles.shopInfo}>
-          <FontAwesome name="star" size={20} color="black" />
+          <Text style={{fontSize:RFValue(25) ,fontWeight:'bold'}}>{DATA[0].shopName}</Text>
+        <View style={{flexDirection:'row' , alignItems:'center', width:'60%', justifyContent:'space-between'}}>
+          <FontAwesome name="star" size={15} color="black" />
           <Text style={{ fontSize: 18 }}>3.8</Text>
-          <Text style={{ fontSize: 18 }}>(600+ ratings)</Text>
+          <Text style={{ fontSize: 18 }}>(600+)</Text>
+        </View>
         </View>
       </Animated.View>
       <Animated.View
@@ -423,7 +405,6 @@ const styles = StyleSheet.create({
     backgroundColor: "red",
   },
   shopInfo: {
-    flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
     width: "50%",
