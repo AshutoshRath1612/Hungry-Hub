@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, TextInput } from "react-native";
 import { RadioButton } from "react-native-paper";
 import { RFValue } from "react-native-responsive-fontsize";
 
-export default function AddFood() {
+export default function AddFood({navigation}) {
   const [newItem, setNewItem] = useState({
     name: "",
     price: "",
@@ -89,7 +89,7 @@ export default function AddFood() {
           </View>
       </View>
       <View>
-      <Entypo name="circle-with-cross" size={24} color="black" />
+      <Entypo onPress={()=>navigation.goBack()} name="circle-with-cross" size={RFValue(60)} color="black" />
       </View>
     </View>
   );
@@ -98,7 +98,7 @@ export default function AddFood() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "space-evenly",
     alignItems: "center",
   },
   containerView: {

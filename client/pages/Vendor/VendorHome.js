@@ -97,6 +97,7 @@ export default function VendorHome({ navigation, route}) {
         {currentOrders.length !== 0 ? (
           <FlatList
             data={currentOrders}
+            style={{marginBottom:'6%'}}
             showsVerticalScrollIndicator={false}
             keyExtractor={(item, index) => index.toString()}
             numColumns={2} // Display two columns
@@ -113,7 +114,9 @@ export default function VendorHome({ navigation, route}) {
           <Text style={{ fontSize: RFValue(20) }}>No current orders</Text>
         )}
       </View>
+      <View style={{ position:'absolute',bottom:0,width:'100%' }}>
       <Nav />
+      </View>
     </View>
     </NavigationContext.Provider>
   );
