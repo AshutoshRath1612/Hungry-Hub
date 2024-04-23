@@ -22,6 +22,8 @@ import VendorHome from './pages/Vendor/VendorHome';
 import Menu from './pages/Vendor/Menu';
 import History from './pages/Vendor/History';
 import VendorOrderSummary from './pages/Vendor/VendorOrderSummary';
+import AddFood from './pages/Vendor/AddFood';
+import Scanner from './pages/Vendor/Scanner';
 
 const Stack = createStackNavigator();
 
@@ -64,6 +66,8 @@ export default function App() {
             <Stack.Screen name='Vendor Menu' component={Menu} />
             <Stack.Screen name='Vendor History' component={History} />
             <Stack.Screen name='Vendor Order Summary' component={VendorOrderSummary} />
+            <Stack.Screen name='Add Food' component={AddFood} />
+            <Stack.Screen name='Scanner' component={Scanner} />
 
           </Stack.Navigator>
         </NavigationContainer>

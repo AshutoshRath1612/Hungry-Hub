@@ -100,11 +100,18 @@ function Nav() {
           >
             <MaterialCommunityIcons name="qrcode-scan" style={styles.tabText} size={24} color="black" />
           </TouchableOpacity>
+          <View style={{marginHorizontal:'5%'}}></View>
+          <TouchableOpacity
+            style={[styles.tab,{position:'absolute',bottom:'30%',left:'35%',width:'20%'}, route.name === "Add Food" && styles.selectedTab]}
+            onPress={() => navigateToScreen("Add Food")}
+          >
+           <FontAwesome name="plus" size={25} style={[styles.tabText , {backgroundColor:'red',padding:RFValue(12),paddingHorizontal:RFValue(15),borderRadius:30,zIndex:10 }]} color="black" />
+          </TouchableOpacity>
           <TouchableOpacity
             style={[styles.tab, route.name === "Vendor Menu" && styles.selectedTab]}
             onPress={() => navigateToScreen("Vendor Menu")}
           >
-            <FontAwesome name="book" style={styles.tabText}></FontAwesome>
+            <FontAwesome  name="book" style={styles.tabText}></FontAwesome>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.tab, route.name === "Vendor History" && styles.selectedTab]}

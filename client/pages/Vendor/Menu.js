@@ -10,13 +10,21 @@ import {
   ImageBackground,
   Pressable,
   TouchableWithoutFeedback,
+  Modal,
+  TextInput,
 } from "react-native";
-import { FontAwesome,MaterialCommunityIcons,Ionicons } from "@expo/vector-icons";
+import {
+  FontAwesome,
+  MaterialCommunityIcons,
+  Ionicons,
+} from "@expo/vector-icons";
 import Search from "../../components/Search";
 import { RFValue } from "react-native-responsive-fontsize";
 import ShopModal from "../../components/ShopModal";
 import CartCard from "../../components/CartCard";
 import Nav from "../../components/Nav";
+import { NavigationContext } from "../../NavContext";
+import { Switch } from "react-native-paper";
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -37,6 +45,7 @@ export default function Menu({ navigation, route }) {
           items: [
             {
               name: "Burger",
+              isAvailable: true,
               price: 100,
               type: "Vegetarian",
               ratings: 4.5,
@@ -44,6 +53,7 @@ export default function Menu({ navigation, route }) {
             },
             {
               name: "Pizza",
+              isAvailable: true,
               price: 600,
               type: "Non-Vegetarian",
               ratings: 4.5,
@@ -51,6 +61,7 @@ export default function Menu({ navigation, route }) {
             },
             {
               name: "Sandwich",
+              isAvailable: true,
               price: 450,
               type: "Vegetarian",
               ratings: 4.5,
@@ -63,6 +74,7 @@ export default function Menu({ navigation, route }) {
           items: [
             {
               name: "Biryani",
+              isAvailable: true,
               price: 200,
               type: "Non-Vegetarian",
               ratings: 4.5,
@@ -70,6 +82,7 @@ export default function Menu({ navigation, route }) {
             },
             {
               name: "Fried Rice",
+              isAvailable: true,
               price: 150,
               type: "Vegetarian",
               ratings: 4.5,
@@ -77,6 +90,7 @@ export default function Menu({ navigation, route }) {
             },
             {
               name: "Noodles",
+              isAvailable: true,
               price: 180,
               type: "Vegetarian",
               ratings: 4.5,
@@ -89,6 +103,7 @@ export default function Menu({ navigation, route }) {
           items: [
             {
               name: "Ice Cream",
+              isAvailable: true,
               price: 50,
               type: "Vegetarian",
               ratings: 4.5,
@@ -96,6 +111,7 @@ export default function Menu({ navigation, route }) {
             },
             {
               name: "Cake",
+              isAvailable: true,
               price: 300,
               type: "Vegetarian",
               ratings: 4.5,
@@ -103,6 +119,7 @@ export default function Menu({ navigation, route }) {
             },
             {
               name: "Pastry",
+              isAvailable: true,
               price: 100,
               type: "Vegetarian",
               ratings: 4.5,
@@ -115,6 +132,7 @@ export default function Menu({ navigation, route }) {
           items: [
             {
               name: "Cold Drink",
+              isAvailable: true,
               price: 30,
               type: "Vegetarian",
               ratings: 4.5,
@@ -122,6 +140,7 @@ export default function Menu({ navigation, route }) {
             },
             {
               name: "Juice",
+              isAvailable: true,
               price: 50,
               type: "Vegetarian",
               ratings: 4.5,
@@ -129,6 +148,7 @@ export default function Menu({ navigation, route }) {
             },
             {
               name: "Milk Shake",
+              isAvailable: true,
               price: 70,
               type: "Vegetarian",
               ratings: 4.5,
@@ -141,6 +161,7 @@ export default function Menu({ navigation, route }) {
           items: [
             {
               name: "Momos",
+              isAvailable: true,
               price: 50,
               type: "Vegetarian",
               ratings: 4.5,
@@ -148,6 +169,7 @@ export default function Menu({ navigation, route }) {
             },
             {
               name: "Pasta",
+              isAvailable: true,
               price: 100,
               type: "Vegetarian",
               ratings: 4.5,
@@ -155,6 +177,7 @@ export default function Menu({ navigation, route }) {
             },
             {
               name: "French Fries",
+              isAvailable: true,
               price: 70,
               type: "Vegetarian",
               ratings: 4.5,
@@ -167,6 +190,7 @@ export default function Menu({ navigation, route }) {
           items: [
             {
               name: "Tea",
+              isAvailable: true,
               price: 10,
               type: "Vegetarian",
               ratings: 4.5,
@@ -174,6 +198,7 @@ export default function Menu({ navigation, route }) {
             },
             {
               name: "Coffee",
+              isAvailable: true,
               price: 20,
               type: "Vegetarian",
               ratings: 4.5,
@@ -181,6 +206,7 @@ export default function Menu({ navigation, route }) {
             },
             {
               name: "Cold Coffee",
+              isAvailable: true,
               price: 30,
               type: "Vegetarian",
               ratings: 4.5,
@@ -193,6 +219,7 @@ export default function Menu({ navigation, route }) {
           items: [
             {
               name: "Vanilla",
+              isAvailable: true,
               price: 20,
               type: "Vegetarian",
               ratings: 4.5,
@@ -200,6 +227,7 @@ export default function Menu({ navigation, route }) {
             },
             {
               name: "Chocolate",
+              isAvailable: true,
               price: 30,
               type: "Vegetarian",
               ratings: 4.5,
@@ -207,6 +235,7 @@ export default function Menu({ navigation, route }) {
             },
             {
               name: "Strawberry",
+              isAvailable: true,
               price: 40,
               type: "Vegetarian",
               ratings: 4.5,
@@ -220,6 +249,11 @@ export default function Menu({ navigation, route }) {
 
   const [scrollY] = useState(new Animated.Value(0));
   const [expanded, setExpanded] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [warningModal, setWarningModal] = useState(false);
+  const [currentItem, setCurrentItem] = useState(null);
+  const toggleSwitch = () =>
+    setCurrentItem({ ...currentItem, isAvailable: !currentItem.isAvailable });
 
   const HEADER_MAX_HEIGHT = 150;
   const HEADER_MIN_HEIGHT = 0;
@@ -240,6 +274,99 @@ export default function Menu({ navigation, route }) {
   const toggleExpand = () => {
     setExpanded(!expanded);
   };
+
+  const EditModal = () => (
+    <Modal visible={editModal} animationType="fade" transparent>
+      <View style={styles.modalcontainer}>
+        <View style={styles.containerView}>
+          <Text style={{ color: "grey", fontWeight: "500" }}>Name</Text>
+          <TextInput
+            style={{
+              borderWidth: 1,
+              borderColor: "grey",
+              padding: 5,
+              marginVertical: 5,
+            }}
+            value={currentItem.name}
+          />
+          <Text style={{ color: "grey", fontWeight: "500" }}>Category</Text>
+          <TextInput
+            style={{
+              borderWidth: 1,
+              borderColor: "grey",
+              padding: 5,
+              marginVertical: 5,
+            }}
+            value={currentItem.category}
+          />
+          <Text style={{ color: "grey", fontWeight: "500" }}>Price</Text>
+          <TextInput
+            style={{
+              borderWidth: 1,
+              borderColor: "grey",
+              padding: 5,
+              marginVertical: 5,
+            }}
+            value={currentItem.price.toString()}
+          />
+          <Text style={{ color: "grey", fontWeight: "500" }}>Type</Text>
+          <TextInput
+            style={{
+              borderWidth: 1,
+              borderColor: "grey",
+              padding: 5,
+              marginVertical: 5,
+            }}
+            value={currentItem.type}
+          />
+          <Text style={{ color: "grey", fontWeight: "500" }}>Available</Text>
+          <View style={{flexDirection:'row' , backgroundColor:'#939293',marginTop:10 , width:'36%',borderRadius:10}}>
+            <TouchableOpacity onPress={toggleSwitch} style={{borderWidth: currentItem.isAvailable ? 1 : 0,padding:10 ,borderRadius:10}}>
+              <Text style={{fontSize:RFValue(15) , fontWeight:'bold'}}>Yes</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={toggleSwitch} style={{borderWidth: !currentItem.isAvailable ? 1 : 0,padding:10 , borderRadius:10}}>
+              <Text style={{fontSize:RFValue(15),fontWeight:'bold'}}>No</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.btnView}>
+            <Pressable style={styles.btn} onPress={() => setEditModal(false)}>
+              <Text style={styles.txt}>Close</Text>
+            </Pressable>
+            <Pressable style={styles.btn} onPress={() => setEditModal(false)}>
+              <Text style={styles.txt}>Confirm</Text>
+            </Pressable>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+
+  const DeleteModal = () => (
+    <Modal visible={warningModal} animationType="fade" transparent>
+      <View style={styles.modalcontainer}>
+        <View style={[styles.containerView, { borderWidth: 1 }]}>
+          <Text style={{ fontSize: RFValue(14), fontWeight: "500" }}>
+            Are you sure you want to delete {currentItem.name} from menu?
+          </Text>
+          <View style={styles.btnView}>
+            <Pressable
+              style={styles.btn}
+              onPress={() => setWarningModal(false)}
+            >
+              <Text style={styles.txt}>Close</Text>
+            </Pressable>
+            <Pressable
+              style={styles.btn}
+              onPress={() => setWarningModal(false)}
+            >
+              <Text style={styles.txt}>Confirm</Text>
+            </Pressable>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
 
   const scrollToCategory = (categoryIndex) => {
     const yOffset = HEADER_MAX_HEIGHT + 20 + categoryIndex * 300; // Assuming each category occupies 300 units of space
@@ -304,13 +431,35 @@ export default function Menu({ navigation, route }) {
                   </Text>
                 </View>
               </View>
-              <View style={{flexDirection:'row' , justifyContent:'space-around' ,width:'30%'}}>
-              <TouchableOpacity>
-              <MaterialCommunityIcons name="pencil-circle-outline" size={30} color="black" />
-              </TouchableOpacity>
-              <TouchableOpacity >
-              <Ionicons name="trash-bin" size={30} color="black" />
-              </TouchableOpacity>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  width: "30%",
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() => {
+                    setEditModal(true);
+                    setCurrentItem({ ...foodItem, category: item.category });
+                  }}
+                >
+                  {currentItem != null && <EditModal />}
+                  <MaterialCommunityIcons
+                    name="pencil-circle-outline"
+                    size={30}
+                    color="black"
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    setCurrentItem({ ...foodItem, category: item.category });
+                    setWarningModal(true);
+                  }}
+                >
+                  {currentItem != null && <DeleteModal />}
+                  <Ionicons name="trash-bin" size={30} color="black" />
+                </TouchableOpacity>
               </View>
             </View>
           ))}
@@ -320,65 +469,73 @@ export default function Menu({ navigation, route }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Animated.View
-        style={[
-          styles.header,
-        ]}
-      >
-        <Image style={{resizeMode:'contain' , width:'40%'}} source={require('../../assets/Logo.png')} />
-        <View style={styles.shopInfo}>
-          <Text style={{fontSize:RFValue(25) ,fontWeight:'bold'}}>{DATA[0].shopName}</Text>
-        <View style={{flexDirection:'row' , alignItems:'center', width:'60%', justifyContent:'space-between'}}>
-          <FontAwesome name="star" size={15} color="black" />
-          <Text style={{ fontSize: 18 }}>3.8</Text>
-          <Text style={{ fontSize: 18 }}>(600+)</Text>
-        </View>
-        </View>
-      </Animated.View>
-      <Animated.View
-        style={[
-          styles.searchContainer,
-        ]}
-      >
-        <Search />
-      </Animated.View>
-
-      <AnimatedFlatList
-        ref={listRef}
-        style={{marginBottom:RFValue(50)}}
-        data={DATA[0].foods}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderItem} // Add some initial padding
-        scrollEventThrottle={16}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: true }
-        )}
-      />
-      {expanded && (
-        <View style={styles.categoryButtonsContainer}>
-          <FlatList
-            data={DATA[0].foods}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item, index }) => renderCategoryButton(item, index)}
+    <NavigationContext.Provider value={{ navigation, route }}>
+      <View style={styles.container}>
+        <Animated.View style={[styles.header]}>
+          <Image
+            style={{ resizeMode: "contain", width: "40%" }}
+            source={require("../../assets/Logo.png")}
           />
-        </View>
-      )}
-      <TouchableOpacity
-        style={[styles.floatingButton]}
-        onPress={toggleExpand}
-      >
-        <FontAwesome
-          name={expanded ? "sticky-note" : "book"}
-          size={24}
-          color="white"
+          <View style={styles.shopInfo}>
+            <Text style={{ fontSize: RFValue(25), fontWeight: "bold" }}>
+              {DATA[0].shopName}
+            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                width: "60%",
+                justifyContent: "space-between",
+              }}
+            >
+              <FontAwesome name="star" size={15} color="black" />
+              <Text style={{ fontSize: 18 }}>3.8</Text>
+              <Text style={{ fontSize: 18 }}>(600+)</Text>
+            </View>
+          </View>
+        </Animated.View>
+        <Animated.View style={[styles.searchContainer]}>
+          <Search />
+        </Animated.View>
+
+        <AnimatedFlatList
+          ref={listRef}
+          style={{ marginBottom: RFValue(50) }}
+          data={DATA[0].foods}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={renderItem} // Add some initial padding
+          scrollEventThrottle={16}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+            { useNativeDriver: true }
+          )}
         />
-      </TouchableOpacity>
-        <View style={{position:'absolute',bottom:0,width:'100%'}}>
+        {expanded && (
+          <View style={styles.categoryButtonsContainer}>
+            <FlatList
+              data={DATA[0].foods}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item, index }) =>
+                renderCategoryButton(item, index)
+              }
+            />
+          </View>
+        )}
+        <TouchableOpacity
+          style={[styles.floatingButton]}
+          onPress={toggleExpand}
+        >
+          <FontAwesome
+            name={expanded ? "sticky-note" : "book"}
+            size={24}
+            color="white"
+          />
+        </TouchableOpacity>
+        <View style={{ position: "absolute", bottom: 0, width: "100%" }}>
           <Nav />
         </View>
-    </View>
+      </View>
+    </NavigationContext.Provider>
   );
 }
 
@@ -395,7 +552,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
     overflow: "hidden",
-    flexDirection:'row',
+    flexDirection: "row",
   },
   shopImage: {
     width: "100%",
@@ -411,7 +568,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   searchContainer: {
-
     elevation: 2,
     backgroundColor: "white",
     paddingVertical: 5,
@@ -504,5 +660,37 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     elevation: 5,
+  },
+  modalcontainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  containerView: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    width: "80%",
+  },
+  btnView: {
+    width: "100%",
+    justifyContent: "space-between",
+    flexDirection: "row",
+    marginVertical: 13,
+    marginTop: RFValue(25),
+  },
+  btn: {
+    width: "40%",
+    marginHorizontal: "2.5%",
+    padding: 10,
+    alignItems: "center",
+    borderRadius: 5,
+    backgroundColor: "#3262A2",
+  },
+  txt: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: RFValue(12),
   },
 });
