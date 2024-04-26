@@ -9,7 +9,7 @@ export default function QRcode({data}) {
   return (
     <View style={{justifyContent:'center',alignContent:'center',marginBottom:RFValue(15)}}>
        <QRCode
-      value={JSON.stringify(data)}
+      value={"9348183170@ybl"}
       logo={logo}
       logoSize={30}
       size={200}

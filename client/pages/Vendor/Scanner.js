@@ -22,9 +22,9 @@ export default function Scanner() {
 
   useEffect(() => {
     if (scanned) {
-      startAnimation();
-    } else {
       stopAnimation();
+    } else {
+      startAnimation();
     }
   }, [scanned]);
 
@@ -106,6 +106,13 @@ export default function Scanner() {
         {selectedImage ? (
           <Image source={{ uri: selectedImage }} style={styles.selectedImage} />
         ) : (
+          <View>
+           <View style={{ width: 100, height: 100, borderColor: 'black', borderWidth: 1 }}>
+        <View style={{ position: 'absolute', top: -1, left: -1, width: 10, height: 10, borderTopWidth: 2, borderLeftWidth: 1, borderColor: 'black' }} />
+        <View style={{ position: 'absolute', top: -1, right: -1, width: 10, height: 10, borderTopWidth: 1, borderRightWidth: 1, borderColor: 'black' }} />
+        <View style={{ position: 'absolute', bottom: -1, left: -1, width: 10, height: 10, borderBottomWidth: 1, borderLeftWidth: 1, borderColor: 'black' }} />
+        <View style={{ position: 'absolute', bottom: -1, right: -1, width: 10, height: 10, borderBottomWidth: 1, borderRightWidth: 1, borderColor: 'black' }} />
+      </View>
           <Camera
             style={styles.camera}
             type={Camera.Constants.Type.back}
@@ -113,6 +120,7 @@ export default function Scanner() {
             ref={(ref) => setCameraRef(ref)}
             flashMode={flashMode}
           />
+      </View>
         )}
         <Animated.View
           style={[
@@ -122,7 +130,7 @@ export default function Scanner() {
                 {
                   translateY: animation.interpolate({
                     inputRange: [0, 1],
-                    outputRange: [-200, 200],
+                    outputRange: [-150, 150],
                   }),
                 },
               ],
@@ -157,14 +165,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cameraContainer: {
-    width: '100%',
-    aspectRatio: 4 / 3,
+    width: '60%',
+    // aspectRatio: 4 / 3,
+    height:'30%',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth:10,
+    resizeMode:'contain',
+    borderColor:'#000',
   },
   camera: {
     width: '100%',
-    aspectRatio: 4 / 3,
+    height:'100%',
+    // aspectRatio: 4 / 3,
   },
   selectedImage: {
     width: '100%',
