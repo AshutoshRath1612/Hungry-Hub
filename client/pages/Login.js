@@ -46,7 +46,7 @@ const Login = ({navigation}) => {
     navigation.navigate('Vendor Home')
   }
   return (
-    <LinearGradient colors={['lightblue','pink','violet']} style={styles.container}>
+    <LinearGradient colors={['#DFF5FF','#5356FF']} style={styles.container}>
     <View style={styles.topic}>
     <Image style={styles.logo} resizeMode='contain' source={require('../assets/Logo.png')} />
       <Text style={styles.title}>Login</Text>
@@ -91,6 +91,7 @@ const styles =  StyleSheet.create({
     },
     title:{
         fontSize:40,
+        color:'#003366',
         fontFamily:'Ubuntu_700Bold'
     },
     logo:{
@@ -103,7 +104,7 @@ const styles =  StyleSheet.create({
     input:{
         height: 50, 
         width:300,
-        borderColor: 'gray', 
+        borderColor: '#666666', 
         borderWidth: 1, 
         marginBottom: 10, 
         padding: 5,
@@ -111,7 +112,7 @@ const styles =  StyleSheet.create({
         borderRadius:20
     },
     btn:{
-      backgroundColor:'#a465f4',
+      backgroundColor:'#003366',
       borderRadius: 20,
       height:50,
       fontWeight: 'bold',
@@ -123,7 +124,7 @@ const styles =  StyleSheet.create({
   btnText:{
       fontWeight:'bold',
       fontSize:20,
-      color:'white'
+      color:'#66CCCC'
   },
   signup:{
     color:'blue'
