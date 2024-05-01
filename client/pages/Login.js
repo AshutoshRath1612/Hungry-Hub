@@ -124,7 +124,7 @@ const styles =  StyleSheet.create({
   btnText:{
       fontWeight:'bold',
       fontSize:20,
-      color:'#66CCCC'
+      color:'white'
   },
   signup:{
     color:'blue'

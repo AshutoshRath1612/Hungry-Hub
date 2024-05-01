@@ -24,6 +24,7 @@ import History from './pages/Vendor/History';
 import VendorOrderSummary from './pages/Vendor/VendorOrderSummary';
 import AddFood from './pages/Vendor/AddFood';
 import Scanner from './pages/Vendor/Scanner';
+import OTP from './pages/OTP';
 
 const Stack = createStackNavigator();
 
@@ -46,10 +47,11 @@ export default function App() {
       <CartProvider>
       <OrderStatusProvider>
         <NavigationContainer>
-          <Stack.Navigator screenOptions={{headerShown: false,}} initialRouteName='Landing'>
+          <Stack.Navigator screenOptions={{headerShown: false,}} initialRouteName='Login'>
             <Stack.Screen name='Landing' component={LandingPage} />
             <Stack.Screen name='Login' component={Login} />
             <Stack.Screen name='Choose User' component={ChooseUser} />
+            <Stack.Screen name='OTP' component={OTP} />
             {/* For Student */}
             <Stack.Screen name='Student Signup' component={StudentSignUp} />
             <Stack.Screen name='Student Home' component={StudentHome} />

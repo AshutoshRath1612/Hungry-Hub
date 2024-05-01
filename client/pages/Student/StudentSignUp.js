@@ -37,7 +37,7 @@ export default function StudentSignUp({navigation}) {
         placeholder='Mobile Number'
         style={styles.input}
         />
-      <Pressable style={styles.btn}><Text style={styles.btnText}>Sign Up</Text></Pressable>
+      <Pressable style={styles.btn}><Text style={styles.btnText} onPress={()=>navigation.navigate('OTP')}>Sign Up</Text></Pressable>
     </View>
     <Text style={{fontSize:18}}>Already a User? <Text style={styles.signup} onPress={()=>navigation.navigate('Login')}>Login</Text></Text>
     </LinearGradient>
