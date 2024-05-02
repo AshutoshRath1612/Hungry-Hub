@@ -52,7 +52,6 @@ const Login = ({ navigation }) => {
     navigation.navigate("Vendor Home");
   };
   return (
-<<<<<<< Updated upstream
     <LinearGradient colors={["#FFCC66", "#FF9933"]} style={styles.container}>
       <View style={styles.topic}>
         <Image
@@ -94,35 +93,6 @@ const Login = ({ navigation }) => {
           Sign up
         </Text>
       </Text>
-=======
-    <LinearGradient colors={['lightblue','pink','violet']} style={styles.container}>
-    <View style={styles.topic}>
-    <Image style={styles.logo} resizeMode='contain' source={require('../assets/images/Logo.png')} />
-      <Text style={styles.title}>Login</Text>
-    </View>
-    <View style={styles.form}>
-      <TextInput
-        onChangeText={handleIdChange}
-        value={uniqueId}
-        keyboardType='numeric'
-        placeholder={focus ? '' :"UID"}
-        style={styles.input}
-        onFocus={changeFocus}
-        onBlur={changeFocus}
-      />
-      <TextInput
-      onChangeText={handlePasswordChange}
-        placeholder={focusPass ? '' :"Password"}
-        onFocus={changeFocusPass}
-        onBlur={changeFocusPass}
-        secureTextEntry={true}
-        value={password}
-        style={styles.input}
-      />
-      <Pressable style={styles.btn} onPress={()=>handleSubmit()}><Text style={styles.btnText}>Login</Text></Pressable>
-    </View>
-    <Text style={{fontSize:18}}>Not a User? <Text style={styles.signup} onPress={()=>navigation.navigate('Choose User')}>Sign up</Text></Text>
->>>>>>> Stashed changes
     </LinearGradient>
   );
 };

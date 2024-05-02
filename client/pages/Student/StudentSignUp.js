@@ -63,7 +63,6 @@ export default function StudentSignUp({ navigation }) {
     }
   }
   return (
-<<<<<<< Updated upstream
     <LinearGradient colors={["#FFCC66", "#FF9933"]} style={styles.container}>
     <Container position='top' width='90%' textStyle={{fontSize:RFValue(15)}} />
       <View style={styles.topic}>
@@ -76,35 +75,6 @@ export default function StudentSignUp({ navigation }) {
           keyboardType='numeric'
           placeholder='Registration Number'
           style={styles.input}
-=======
-    <LinearGradient colors={['lightblue','pink','violet']} style={styles.container}>
-    <View style={styles.topic}>
-    <Image style={styles.logo} resizeMode='contain' source={require('../../assets/images/Logo.png')} />
-      <Text style={styles.title}>SignUp</Text>
-    </View>
-    <View style={styles.form}>
-      <TextInput
-        // onChangeText={handleRegdChange}
-        // value={regdNo}
-        keyboardType='numeric'
-        placeholder='Registration Number'
-        style={styles.input}
-        // onFocus={changeFocus}
-        // onBlur={changeFocus}
-      />
-      <TextInput
-    //   onChangeText={handlePasswordChange}
-        placeholder='Password'
-        // onFocus={changeFocusPass}
-        // onBlur={changeFocusPass}
-        secureTextEntry={true}
-        // value={password}
-        style={styles.input}
-      />
-      <TextInput
-        placeholder='Confirm Password'
-        style={styles.input}
->>>>>>> Stashed changes
         />
         <TextInput
           onChangeText={(text) => setStudentDetails({ ...studentDetails, password: text })}
