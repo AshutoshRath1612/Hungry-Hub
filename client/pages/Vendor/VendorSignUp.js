@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 const VendorSignUp = ({navigation}) => {
   return (
-    <LinearGradient colors={['#DFF5FF','#5356FF']} style={styles.container}>
+    <LinearGradient colors={["#FFCC66", "#FF9933"]} style={styles.container}>
     <View style={styles.topic}>
     <Image style={styles.logo} resizeMode='contain' source={require('../../assets/Logo.png')} />
       <Text style={styles.title}>SignUp</Text>
@@ -55,7 +55,7 @@ const styles =  StyleSheet.create({
     },
     title:{
         fontSize:40,
-        color:'#003366',
+        color:'white',
         fontFamily:'Ubuntu_700Bold'
     },
     logo:{
@@ -69,6 +69,7 @@ const styles =  StyleSheet.create({
         height: 50, 
         width:300,
         borderColor: '#666666', 
+        fontWeight:'bold',
         borderWidth: 1, 
         marginBottom: 10, 
         padding: 5,
@@ -76,14 +77,22 @@ const styles =  StyleSheet.create({
         borderRadius:20
     },
     btn:{
-      backgroundColor:'#003366',
+      backgroundColor:'#663300',
       borderRadius: 20,
       height:50,
       fontWeight: 'bold',
       alignItems:'center',
       justifyContent:'center',
       padding:5,
-      paddingHorizontal:10
+      paddingHorizontal:10,
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
   },
   btnText:{
       fontWeight:'bold',

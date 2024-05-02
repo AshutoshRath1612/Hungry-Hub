@@ -4,7 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 
 export default function ChooseUser({ navigation }) {
   return (
-    <LinearGradient style={styles.container} colors={['#DFF5FF','#5356FF']}>
+    <LinearGradient style={styles.container} colors={["#FFCC66", "#FF9933"]}>
       <View style={styles.content}>
         <Text style={styles.title}>Who are you?</Text>
         <View style={styles.choice}>
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
   },
   btn: {
-    backgroundColor: "#003366",
+    backgroundColor: "#663300",
     borderRadius: 20,
     height: 50,
     fontWeight: "bold",
@@ -60,10 +60,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 5,
     paddingHorizontal: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   btnText: {
     fontWeight: "bold",
     fontSize: 20,
-    color: "#66CCCC",
+    color: "white",
   },
 });

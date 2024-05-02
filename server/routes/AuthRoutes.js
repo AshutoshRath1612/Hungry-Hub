@@ -1,5 +1,5 @@
 const express = require('express')
-const {StudentRegister, Login, VendorRegister} = require('../controller/Auth')
+const {StudentRegister,VendorRegister, Login ,OTPGenerate,OTPVerify, StudentUnique , VendorUnique} = require('../controller/Auth')
 
 
 const router = express.Router()
@@ -8,5 +8,10 @@ const router = express.Router()
 router.post('/student/register' , StudentRegister)
 router.post('/vendor/register',VendorRegister)
 router.post('/login' , Login)
+router.post('/otp/generate' , OTPGenerate)
+router.post('/otp/verify' , OTPVerify)
+
+router.get('/unique/student/:regdNo/:mobileNo' , StudentUnique)
+router.get('/vendor/unique' , VendorUnique)
 
 module.exports = router

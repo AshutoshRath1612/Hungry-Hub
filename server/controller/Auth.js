@@ -2,6 +2,7 @@ const Users = require('../model/Users')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const Vendors = require('../model/Vendors')
+const Otp = require('../model/Otp')
 
 
 const StudentRegister = async(req,res) =>{
@@ -47,6 +48,7 @@ const VendorRegister = async(req, res) => {
 };
 
 const Login = async(req,res) =>{
+    console.log(req.body)
     try{
         const vendor = await Vendors.findOne({uniqueId:req.body.uniqueId})
         const student = await Users.findOne({regdNo:req.body.uniqueId});
@@ -92,5 +94,45 @@ const generateUniqueId = () =>{
     return id;
 }
 
+const OTPGenerate  = async(req,res) => {
+    const phone = req.body.mobileNo
+    const otp = Math.floor(100000 + Math.random()*900000)
+    await Otp.deleteOne({phone: phone})
+    const newOtp = new Otp({ phone, otp });
+    await newOtp.save();
+    res.status(200).send({ success: true, message: 'OTP sent successfully' });
+}
 
-module.exports = {StudentRegister,VendorRegister,Login}
+const OTPVerify = async(req,res) => {
+    const { mobileNo, otp } = req.body;
+    console.log(req.body);
+    const existingOtp = await Otp.findOne({ phone:mobileNo, otp });
+    if (existingOtp) {
+       await Otp.deleteOne({ phone:mobileNo, otp })
+      res.send({ success: true, message: 'OTP verified successfully' });
+    } else {
+      res.status(400).send({ success: false, message: 'Invalid OTP' });
+    }
+}
+
+const StudentUnique = async(req,res)=>{
+    const {regdNo , mobileNo} = req.params;
+    const student = await Users.findOne({regdNo:regdNo, mobileNo:mobileNo})
+    const studentRegd  =await Users.findOne({regdNo:regdNo})
+    const studentMobile = await Users.findOne({mobileNo:mobileNo})
+    if(student || studentRegd || studentMobile){
+        res.status(400).send("User Already Exists")
+    }
+    else{
+    res.status(200).send("Success")
+    }
+}
+
+const VendorUnique = (req,res)=>{
+
+}
+
+module.exports = {StudentRegister,VendorRegister,
+    Login,verifyToken,
+    OTPGenerate,OTPVerify,
+    StudentUnique,VendorUnique}

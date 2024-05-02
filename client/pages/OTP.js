@@ -1,9 +1,16 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { Host, OTPGenerateRoute, OTPVerifyRoute } from '../Constants';
+import Container , { Toast } from 'toastify-react-native';
 
-export default function OTP() {
+export default function OTP({navigation,route}) {
+  console.log(route)
+
+  useEffect(()=>{
+    sendOTP()
+  },[])
   const [otp, setOtp] = useState(Array(6).fill(''));
   const inputs = Array(6).fill(0).map((_, i) => useRef(null));
 
@@ -51,14 +58,51 @@ export default function OTP() {
   };
 
   const handleSubmit = () => {
-    // Your submit logic here
+    fetch(`${Host}${OTPVerifyRoute}` , {
+      method:'POST',
+      body:JSON.stringify({otp:otp.join('') , mobileNo: route.params.studentDetails.mobileNo}),
+      headers:{
+        'Content-Type' : 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data)
+      if(data.success ===true){
+        navigation.navigate('Login')
+      }
+      else{
+        Toast.error(data.message)
+      }
+    })
+    .catch(err => console.log(err))
   };
+  const sendOTP = () => {
+    fetch(`${Host}${OTPGenerateRoute}` , {method:'POST' ,
+     body: JSON.stringify({mobileNo:route.params.studentDetails.mobileNo}),
+     headers: {
+      "Content-Type": "application/json",
+    },
+    } )
+    .then(response => response.status)
+    .then(data => {
+      console.log(data)
+      if(data === 200)
+        Toast.success('OTP Sent Successfully')
+      else
+        Toast.error('OTP not sent')
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
 
   return (
-    <LinearGradient colors={['#DFF5FF', '#5356FF']} style={styles.OTPcontainer}>
+    <LinearGradient colors={["#FFCC66", "#FF9933"]} style={styles.OTPcontainer}>
+    <Container position = 'top' />
       <View style={styles.title}>
         <Text style={styles.titleText}>Enter the code sent to</Text>
-        <Text style={[styles.titleText , {fontWeight:'bold'}]}>9348183170</Text>
+        <Text style={[styles.titleText , {fontWeight:'bold'}]}>{route.params.studentDetails.mobileNo}</Text>
       </View>
       <View style={styles.inputContainer}>
         {inputs.map((input, index) => (
@@ -78,7 +122,7 @@ export default function OTP() {
           />
         ))}
       </View>
-      <Pressable ><Text  style={styles.resendText}>Resend code</Text></Pressable>
+      <Pressable onPress={()=>sendOTP()}><Text  style={styles.resendText}>Resend code</Text></Pressable>
       <View style={{alignItems:'center' ,width:'100%'}}>
       <Pressable onPress={handleSubmit} style={styles.submitButton}>
         <Text style={styles.submitButtonText}>Submit</Text>
@@ -98,7 +142,7 @@ const styles = StyleSheet.create({
     alignItems:'center'
   },
   titleText: {
-    color: '#003366', // Dark Blue
+    color: '#003366',
     fontSize: RFValue(23),
   },
   inputContainer: {
@@ -109,28 +153,28 @@ const styles = StyleSheet.create({
   },
   input: {
     borderBottomWidth: 1,
-    borderColor: '#378CE7', // Light Blue
+    borderColor: '#378CE7',
     width: 40,
     height: 40,
     textAlign: 'center',
     fontSize: 16,
     marginHorizontal: 5,
-    color: '#003366', // Dark Blue
+    color: '#003366',
   },
   resendText: {
-    color: '#003366', // Light Blue
+    color: '#003366',
     marginBottom: 20,
-    marginHorizontal:'10%',
-    textAlign:'right',
-    fontWeight:'bold',
+    marginHorizontal: '10%',
+    textAlign: 'right',
+    fontWeight: 'bold',
   },
   submitButton: {
-    backgroundColor: '#003366',
+    backgroundColor: '#663300',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 5,
-    width:'40%',
-    alignItems:'center',
+    width: '40%',
+    alignItems: 'center',
     justifyContent: 'center',
   },
   submitButtonText: {
