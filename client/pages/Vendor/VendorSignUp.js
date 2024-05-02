@@ -7,7 +7,7 @@ const VendorSignUp = ({navigation}) => {
   return (
     <LinearGradient colors={["#FFCC66", "#FF9933"]} style={styles.container}>
     <View style={styles.topic}>
-    <Image style={styles.logo} resizeMode='contain' source={require('../../assets/Logo.png')} />
+    <Image style={styles.logo} resizeMode='contain' source={require('../../assets/images/Logo.png')} />
       <Text style={styles.title}>SignUp</Text>
     </View>
     <KeyboardAvoidingView style={styles.form}>

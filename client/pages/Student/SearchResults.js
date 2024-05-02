@@ -15,8 +15,8 @@ import { useCart } from "../../CartContext";
 import CartCard from "../../components/CartCard";
 
 export default function SearchResults({ route, navigation }) {
-  const vegLogo = require("../../assets/VegLogo.png");
-  const nonVegLogo = require("../../assets/NonVegLogo.png");
+  const vegLogo = require("../../assets/icons/VegLogo.png");
+  const nonVegLogo = require("../../assets/icons/NonVegLogo.png");
 
   const DATA = [
     {
@@ -283,7 +283,7 @@ export default function SearchResults({ route, navigation }) {
                       </View>
                       <View style={styles.foodItemsImage}>
                         <Image
-                          source={require("../../assets/pizza.jpg")}
+                          source={require("../../assets/images/pizza.jpg")}
                           style={{
                             width: "100%",
                             height: "90%",

@@ -15,8 +15,8 @@ import { FontAwesome } from "@expo/vector-icons";
 import { RFValue } from "react-native-responsive-fontsize";
 
 export default function VendorOrderSummary() {
-  const VegLogo = require("../../assets/VegLogo.png");
-  const NonVegLogo = require("../../assets/NonVegLogo.png");
+  const VegLogo = require("../../assets/icons/VegLogo.png");
+  const NonVegLogo = require("../../assets/icons/NonVegLogo.png");
   const route = useRoute();
   const[showModal,setShowModal] = useState(false)
   const summary = {
@@ -100,7 +100,7 @@ export default function VendorOrderSummary() {
              <View style={[styles.imgOuter,{backgroundColor: summary.status === 'Accepted' ? 'green' : ''}]}>
                <Image
                 style={[styles.statusimg, { width: "40%" }]}
-                source={require("../../assets/orderaccept.png")}
+                source={require("../../assets/icons/orderaccept.png")}
               />
             </View>
             <Text style={styles.text}>Accepted</Text>
@@ -110,7 +110,7 @@ export default function VendorOrderSummary() {
             <View style={[styles.imgOuter,{backgroundColor: summary.status === 'Preparing' ? 'green' : ''}]}>
               <Image
                 style={[styles.statusimg, { width: 90 }]}
-                source={require("../../assets/orderpreparing.png")}
+                source={require("../../assets/icons/orderpreparing.png")}
               />
             </View>
             <Text style={styles.text}>Preparing</Text>
@@ -120,7 +120,7 @@ export default function VendorOrderSummary() {
             <View style={[styles.imgOuter,{backgroundColor: summary.status === 'Ready' ? 'green' : ''}]}>
               <Image
                 style={styles.statusimg}
-                source={require("../../assets/orderprepared.png")}
+                source={require("../../assets/icons/orderprepared.png")}
               />
             </View>
             <Text style={styles.text}>Ready</Text>

@@ -4,7 +4,7 @@ import QRCode from 'react-native-qrcode-svg';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 export default function QRcode({data}) {
-    const logo = require('../assets/Logo.png')
+    const logo = require('../assets/images/Logo.png')
     console.log(JSON.stringify(data))
   return (
     <View style={{justifyContent:'center',alignContent:'center',marginBottom:RFValue(15)}}>

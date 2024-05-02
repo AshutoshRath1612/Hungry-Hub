@@ -23,7 +23,7 @@ export default function Reccomandation() {
 
   const navigation = useNavigation();
 
-  const image = require("../assets/LandingBG.png")
+  const image = require("../assets/images/LandingBG.png")
   const data = [
     {
       shopName: "Mio Amore",

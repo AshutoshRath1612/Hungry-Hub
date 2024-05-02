@@ -16,8 +16,8 @@ import { OrderStatusProvider, useOrderStatus } from "../../OrderStatusContext";
 
 export default function OrderHistory() {
   // Import the images
-  const VegLogo = require("../../assets/VegLogo.png");
-  const NonVegLogo = require("../../assets/NonVegLogo.png");
+  const VegLogo = require("../../assets/icons/VegLogo.png");
+  const NonVegLogo = require("../../assets/icons/NonVegLogo.png");
 
   const {currentOrder , dispatch} = useOrderStatus();
 
@@ -331,7 +331,7 @@ export default function OrderHistory() {
           <Image
             style={{ height: RFValue(50), width: RFValue(50) }}
             resizeMode="contain"
-            source={require("../../assets/Logo.png")}
+            source={require("../../assets/images/Logo.png")}
           />
           <View>
             <Text style={styles.storename}>{item.storeName}</Text>

@@ -18,8 +18,8 @@ import { FontAwesome } from "@expo/vector-icons";
 
 export default function OrderHistory() {
   // Import the images
-  const VegLogo = require("../../assets/VegLogo.png");
-  const NonVegLogo = require("../../assets/NonVegLogo.png");
+  const VegLogo = require("../../assets/icons/VegLogo.png");
+  const NonVegLogo = require("../../assets/icons/NonVegLogo.png");
 
   const { currentOrder, dispatch } = useOrderStatus();
 

@@ -319,12 +319,12 @@ const findItem = (foodItem) => {
               <View style={styles.logoContainer}>
                 {foodItem.type === "Vegetarian" ? (
                   <Image
-                    source={require("../../assets/VegLogo.png")}
+                    source={require("../../assets/icons/VegLogo.png")}
                     style={styles.logo}
                   />
                 ) : (
                   <Image
-                    source={require("../../assets/NonVegLogo.png")}
+                    source={require("../../assets/icons/NonVegLogo.png")}
                     style={styles.logo}
                   />
                 )}
@@ -415,7 +415,7 @@ const findItem = (foodItem) => {
         ]}
       >
         <ImageBackground
-          source={require("../../assets/foodsbg.jpg")}
+          source={require("../../assets/images/foodsbg.jpg")}
           style={styles.shopImage}
         />
         <View style={styles.shopInfo}>

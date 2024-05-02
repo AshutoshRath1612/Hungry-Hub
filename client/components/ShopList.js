@@ -91,7 +91,7 @@ const CardItem = ({ item }) => {
       <Pressable style={styles.card} onPress={()=>navigation.navigate('Shop Menu' , {shopName: item.shopName})}>
         <Image
           style={styles.icon}
-          source={require("../assets/Plate.png")}
+          source={require("../assets/images/Plate.png")}
         ></Image>
         <View style={styles.info}>
           <Text style={styles.shopNames}>{item.shopName}</Text>

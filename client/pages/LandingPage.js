@@ -10,7 +10,7 @@ export default function LandingPage({navigation}){
       <LinearGradient colors={['lightblue' , 'violet']}  style={styles.container}>
       <Text style={styles.title} >Hungry Hub</Text>
       <LinearGradient style={styles.content} colors={['pink','purple']}>
-      <Image style={styles.landingbg} source={require('../assets/LandingBG.png')} resizeMode='contain'></Image>
+      <Image style={styles.landingbg} source={require('../assets/images/LandingBG.png')} resizeMode='contain'></Image>
       <View style={styles.about}>
         <Text style={styles.titleContent}>Great Food</Text>
         <Text style={styles.titleContent}>Is</Text>

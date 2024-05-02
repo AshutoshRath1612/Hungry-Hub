@@ -8,14 +8,14 @@ export default function Header() {
         <View style={styles.headerLeft}>
           <Image
             style={styles.logo}
-            source={require("../assets/Logo.png")}
+            source={require("../assets/images/Logo.png")}
             resizeMode="contain"
           />
           <Text style={styles.title}>HungerHub</Text>
         </View>
         <View style={styles.profile}>
           <Image
-            source={require("../assets/icon.png")}
+            source={require("../assets/images/icon.png")}
             style={styles.profileImage}
             resizeMode="contain"
           ></Image>

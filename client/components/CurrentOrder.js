@@ -12,9 +12,9 @@ export default function CurrentOrder() {
   const [currentOrders, setCurrentOrders] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const accepticon = require("../assets/acceptedicon.json");
-  const preparingicon = require("../assets/preparingicon.json");
-  const readyicon = require("../assets/readyicon.json");
+  const accepticon = require("../assets/icons/acceptedicon.json");
+  const preparingicon = require("../assets/icons/preparingicon.json");
+  const readyicon = require("../assets/icons/readyicon.json");
 
   useEffect(() => {
     const data = [

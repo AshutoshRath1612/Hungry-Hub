@@ -22,8 +22,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import QRcode from "../../components/QRCode";
 
 export default function Cart({ navigation, route }) {
-  const vegLogo = require("../../assets/VegLogo.png");
-  const nonVegLogo = require("../../assets/NonVegLogo.png");
+  const vegLogo = require("../../assets/icons/VegLogo.png");
+  const nonVegLogo = require("../../assets/icons/NonVegLogo.png");
 
   const { cart, dispatch } = useCart();
 

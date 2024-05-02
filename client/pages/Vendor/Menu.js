@@ -396,12 +396,12 @@ export default function Menu({ navigation, route }) {
               <View style={styles.logoContainer}>
                 {foodItem.type === "Vegetarian" ? (
                   <Image
-                    source={require("../../assets/VegLogo.png")}
+                    source={require("../../assets/icons/VegLogo.png")}
                     style={styles.logo}
                   />
                 ) : (
                   <Image
-                    source={require("../../assets/NonVegLogo.png")}
+                    source={require("../../assets/icons/NonVegLogo.png")}
                     style={styles.logo}
                   />
                 )}
@@ -474,7 +474,7 @@ export default function Menu({ navigation, route }) {
         <Animated.View style={[styles.header]}>
           <Image
             style={{ resizeMode: "contain", width: "40%" }}
-            source={require("../../assets/Logo.png")}
+            source={require("../../assets/images/Logo.png")}
           />
           <View style={styles.shopInfo}>
             <Text style={{ fontSize: RFValue(25), fontWeight: "bold" }}>

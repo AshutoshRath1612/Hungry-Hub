@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, Text, Animated, TouchableOpacity } from "react-native";
 import LottieView from "lottie-react-native";
-import failedanimation from "../../assets/failed.json";
+import failedanimation from "../../assets/icons/failed.json";
 import { RFValue } from "react-native-responsive-fontsize";
 
 const OrderSuccessScreen = ({ navigation }) => {
@@ -35,7 +35,7 @@ const OrderSuccessScreen = ({ navigation }) => {
         {isSuccess === true ? (
           <>
             <LottieView
-              source={require("../../assets/successful.json")} // Replace 'animation.json' with your Lottie animation file
+              source={require("../../assets/icons/successful.json")} // Replace 'animation.json' with your Lottie animation file
               autoPlay
               loop={false}
               speed={1}
@@ -60,7 +60,7 @@ const OrderSuccessScreen = ({ navigation }) => {
             }}
           >
             <LottieView
-              source={require("../../assets/failed.json")} // Replace 'animation.json' with your Lottie animation file
+              source={require("../../assets/icons/failed.json")} // Replace 'animation.json' with your Lottie animation file
               autoPlay
               loop={false}
               speed={0.5}
