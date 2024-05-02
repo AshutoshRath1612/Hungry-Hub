@@ -12,6 +12,6 @@ router.post('/otp/generate' , OTPGenerate)
 router.post('/otp/verify' , OTPVerify)
 
 router.get('/unique/student/:regdNo/:mobileNo' , StudentUnique)
-router.get('/vendor/unique' , VendorUnique)
+router.get('/unique/vendor/:username/:mobileNo' , VendorUnique)
 
 module.exports = router

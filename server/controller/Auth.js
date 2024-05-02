@@ -3,7 +3,11 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const Vendors = require('../model/Vendors')
 const Otp = require('../model/Otp')
+require('dotenv').config();
 
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = require('twilio')(accountSid, authToken);
 
 const StudentRegister = async(req,res) =>{
     try{
@@ -15,7 +19,7 @@ const StudentRegister = async(req,res) =>{
             mobileNo: req.body.mobileNo,
         })
         await newStudent.save()
-        res.status(200).json(newStudent);
+        res.status(200).send("User added successfully!");
     }
     catch(err){
         console.log(err)
@@ -36,7 +40,7 @@ const VendorRegister = async(req, res) => {
             username: req.body.username,
             password: hash,
             uniqueId: uniqueId,
-            mobileNumber: req.body.mobileNumber,
+            mobileNo: req.body.mobileNo,
             shopName: req.body.shopName
         });
         await vendor.save()
@@ -100,6 +104,14 @@ const OTPGenerate  = async(req,res) => {
     await Otp.deleteOne({phone: phone})
     const newOtp = new Otp({ phone, otp });
     await newOtp.save();
+
+     client.messages
+  .create({
+     body: `Your OTP is ${otp}. Please do not share it with anyone. OTP is valid for 5 minutes.`,
+     from: process.env.TWILIO_PHONE_NUMBER,
+     to: `+91${phone}`
+   })
+  .then(message => console.log(message.sid));
     res.status(200).send({ success: true, message: 'OTP sent successfully' });
 }
 
@@ -128,8 +140,18 @@ const StudentUnique = async(req,res)=>{
     }
 }
 
-const VendorUnique = (req,res)=>{
-
+const VendorUnique = async(req,res)=>{
+    const {username , mobileNo} = req.params;
+    const vendor = await Vendors.findOne({username:username, mobileNo:mobileNo})
+    const vendorUsername  =await Vendors.findOne({username:username})
+    const vendorMobile = await Vendors.findOne({mobileNo:mobileNo})
+    if(vendor || vendorUsername || vendorMobile){
+        console.log(vendor)
+        res.status(400).send("User Already Exists")
+    }
+    else{
+    res.status(200).send("Success")
+    }
 }
 
 module.exports = {StudentRegister,VendorRegister,

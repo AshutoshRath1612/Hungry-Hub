@@ -17,7 +17,7 @@ const VendorSchema = mongoose.Schema({
         type:String,
         required:true
     },
-    mobileNumber:{
+    mobileNo:{
         type:String,
         required:true,
         unique:true

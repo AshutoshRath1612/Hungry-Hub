@@ -11,7 +11,8 @@ export default function StudentSignUp({ navigation }) {
     regdNo: '',
     password: '',
     confirmPassword: '',
-    mobileNo: ''
+    mobileNo: '',
+    isStudent: true
   });
 
   const handleSubmit = () => {
@@ -38,7 +39,7 @@ export default function StudentSignUp({ navigation }) {
       Toast.error(`All fields are mandatory`)
       return false
     }
-    if(studentDetails.regdNo.length < 10){
+    if(studentDetails.regdNo.length !== 10){
       Toast.error(`Regd No has to be 10 digits`)
       return false
     }
@@ -54,7 +55,7 @@ export default function StudentSignUp({ navigation }) {
       Toast.error(`Passwords do not match`)
       return false
     }
-    if(studentDetails.mobileNo.length < 10){
+    if(studentDetails.mobileNo.length !== 10){
       Toast.error(`Mobile No has to be 10 digits`)
       return false
     }
@@ -66,7 +67,7 @@ export default function StudentSignUp({ navigation }) {
     <LinearGradient colors={["#FFCC66", "#FF9933"]} style={styles.container}>
     <Container position='top' width='90%' textStyle={{fontSize:RFValue(15)}} />
       <View style={styles.topic}>
-        <Image style={styles.logo} resizeMode='contain' source={require('../../assets/Logo.png')} />
+        <Image style={styles.logo} resizeMode='contain' source={require('../../assets/images/Logo.png')} />
         <Text style={styles.title}>SignUp</Text>
       </View>
       <View style={styles.form}>

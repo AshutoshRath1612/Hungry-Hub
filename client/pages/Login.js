@@ -26,16 +26,7 @@ const Login = ({ navigation }) => {
     console.log(password);
   };
 
-  const changeFocus = () => {
-    setFocus(!focus);
-  };
-
-  const changeFocusPass = () => {
-    setFocusPass(!focusPass);
-  };
-
   const handleSubmit = () => {
-    // const isValid = verifyCred(uniqueId, password)
     if (true) {
       const data = fetch(`${Host}auth/login`, {
         method: "POST",
@@ -57,7 +48,7 @@ const Login = ({ navigation }) => {
         <Image
           style={styles.logo}
           resizeMode="contain"
-          source={require("../assets/Logo.png")}
+          source={require("../assets/images/Logo.png")}
         />
         <Text style={styles.title}>Login</Text>
       </View>
@@ -68,14 +59,10 @@ const Login = ({ navigation }) => {
           keyboardType="numeric"
           placeholder={focus ? "" : "UID"}
           style={styles.input}
-          onFocus={changeFocus}
-          onBlur={changeFocus}
         />
         <TextInput
           onChangeText={handlePasswordChange}
           placeholder={focusPass ? "" : "Password"}
-          onFocus={changeFocusPass}
-          onBlur={changeFocusPass}
           secureTextEntry={true}
           value={password}
           style={styles.input}

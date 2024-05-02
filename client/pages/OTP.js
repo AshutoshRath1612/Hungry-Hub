@@ -6,8 +6,7 @@ import { Host, OTPGenerateRoute, OTPVerifyRoute } from '../Constants';
 import Container , { Toast } from 'toastify-react-native';
 
 export default function OTP({navigation,route}) {
-  console.log(route)
-
+  const credentials = route.params.studentDetails !== undefined ? route.params.studentDetails : route.params.vendorDetails
   useEffect(()=>{
     sendOTP()
   },[])
@@ -60,7 +59,7 @@ export default function OTP({navigation,route}) {
   const handleSubmit = () => {
     fetch(`${Host}${OTPVerifyRoute}` , {
       method:'POST',
-      body:JSON.stringify({otp:otp.join('') , mobileNo: route.params.studentDetails.mobileNo}),
+      body:JSON.stringify({otp:otp.join('') , mobileNo: credentials.mobileNo}),
       headers:{
         'Content-Type' : 'application/json'
       }
@@ -69,7 +68,21 @@ export default function OTP({navigation,route}) {
     .then(data => {
       console.log(data)
       if(data.success ===true){
-        navigation.navigate('Login')
+        fetch(`${Host}auth/${credentials.isStudent? 'student' : 'vendor'}/register` , {
+          method:'POST',
+          body:JSON.stringify(credentials),
+          headers:{
+            'Content-Type' : 'application/json'
+          }
+        })
+        .then(response => response.status)
+        .then(data => {
+          if(data === 200)
+          navigation.navigate('Login')
+          else{
+            Toast.error('User already exists')
+          }
+        })
       }
       else{
         Toast.error(data.message)
@@ -79,7 +92,7 @@ export default function OTP({navigation,route}) {
   };
   const sendOTP = () => {
     fetch(`${Host}${OTPGenerateRoute}` , {method:'POST' ,
-     body: JSON.stringify({mobileNo:route.params.studentDetails.mobileNo}),
+     body: JSON.stringify({mobileNo:credentials.mobileNo}),
      headers: {
       "Content-Type": "application/json",
     },
@@ -102,7 +115,7 @@ export default function OTP({navigation,route}) {
     <Container position = 'top' />
       <View style={styles.title}>
         <Text style={styles.titleText}>Enter the code sent to</Text>
-        <Text style={[styles.titleText , {fontWeight:'bold'}]}>{route.params.studentDetails.mobileNo}</Text>
+        <Text style={[styles.titleText , {fontWeight:'bold'}]}>{credentials.mobileNo}</Text>
       </View>
       <View style={styles.inputContainer}>
         {inputs.map((input, index) => (

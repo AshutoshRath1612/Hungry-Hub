@@ -15,7 +15,7 @@ export default function Header() {
         </View>
         <View style={styles.profile}>
           <Image
-            source={require("../assets/images/icon.png")}
+            source={require("../assets/icons/icon.png")}
             style={styles.profileImage}
             resizeMode="contain"
           ></Image>
