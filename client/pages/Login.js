@@ -9,25 +9,23 @@ import {
 import React, { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Host, LoginRoute } from "../Constants";
+import Container, { Toast } from 'toastify-react-native';
+import { RFValue } from "react-native-responsive-fontsize";
 
 const Login = ({ navigation }) => {
   const [uniqueId, setUniqueId] = useState("");
   const [password, setPassword] = useState("");
-  const [focus, setFocus] = useState(false);
-  const [focusPass, setFocusPass] = useState(false);
 
   const handleIdChange = (inputText) => {
     setUniqueId(inputText);
-    console.log(uniqueId);
   };
 
   const handlePasswordChange = (inputText) => {
     setPassword(inputText);
-    console.log(password);
   };
 
   const handleSubmit = () => {
-    if (true) {
+    if (isValid()) {
       const data = fetch(`${Host}auth/login`, {
         method: "POST",
         body: JSON.stringify({ uniqueId: uniqueId, password: password }),
@@ -35,15 +33,42 @@ const Login = ({ navigation }) => {
           "Content-Type": "application/json",
         },
       })
-        .then((res) => res.json())
-        .then((data) => console.log(data))
+        .then((res) => {return res.json().then((data) => {
+          return { status: res.status, data: data };
+        });
+    })
+        .then((data) => {
+          if(data.status === 200){
+            navigation.navigate(`${data.data.isStudent ? `Student Home` : `Vendor Home`}` , {user: data.data})
+          }
+          else{
+            Toast.error(data.data.message)
+          }
+        })
         .catch((err) => console.log(err));
-      console.log(data);
+      
     }
-    navigation.navigate("Vendor Home");
   };
+
+  const isValid = () => {
+    if (uniqueId === "" || password === "") {
+      Toast.error("All fields are mandatory");
+      return false;
+    }
+    if (uniqueId.length!== 6 && uniqueId.length !== 10) {
+      Toast.error("UID has to be 6 or 10 digits");
+      return false;
+    }
+    if (password.length < 6) {
+      Toast.error("Password has to be atleast 6 characters");
+      return false;
+    }
+    return true;
+  }
+
   return (
     <LinearGradient colors={["#FFCC66", "#FF9933"]} style={styles.container}>
+    <Container width='90%' textStyle={{fontSize:RFValue(15)}} position='top' />
       <View style={styles.topic}>
         <Image
           style={styles.logo}
@@ -57,12 +82,12 @@ const Login = ({ navigation }) => {
           onChangeText={handleIdChange}
           value={uniqueId}
           keyboardType="numeric"
-          placeholder={focus ? "" : "UID"}
+          placeholder="UID"
           style={styles.input}
         />
         <TextInput
           onChangeText={handlePasswordChange}
-          placeholder={focusPass ? "" : "Password"}
+          placeholder="Password"
           secureTextEntry={true}
           value={password}
           style={styles.input}

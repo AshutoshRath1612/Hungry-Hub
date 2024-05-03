@@ -25,6 +25,7 @@ import VendorOrderSummary from './pages/Vendor/VendorOrderSummary';
 import AddFood from './pages/Vendor/AddFood';
 import Scanner from './pages/Vendor/Scanner';
 import OTP from './pages/OTP';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator();
 
@@ -42,12 +43,30 @@ export default function App() {
     return (<View style={styles.center}><Text>Loading Fonts</Text></View>);
   }
 
+  const isLoggedIn = async() => {
+    const token  = await AsyncStorage.getItem('token')
+    if (token) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  const isStudentLogin = async() => {
+    const user = JSON.parse(await AsyncStorage.getItem('user'))
+    if (user.isStudent) {
+      return true
+    } else {
+      return false
+    }
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <CartProvider>
       <OrderStatusProvider>
         <NavigationContainer>
-          <Stack.Navigator screenOptions={{headerShown: false,}} initialRouteName='Login'>
+          <Stack.Navigator screenOptions={{headerShown: false,}} initialRouteName= {!isLoggedIn() ? 'Login' : isStudentLogin() ? 'Student Home' : 'Vendor Home'} >
             <Stack.Screen name='Landing' component={LandingPage} />
             <Stack.Screen name='Login' component={Login} />
             <Stack.Screen name='Choose User' component={ChooseUser} />

@@ -11,9 +11,22 @@ import ShopList from "../../components/ShopList";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { NavigationContext } from "../../NavContext";
 import CurrentOrder from "../../components/CurrentOrder";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function StudentHome() {
   const route = useRoute();
+  useEffect(()=>{
+    if(route.params !== undefined)
+    setData()
+  },[])
+
+  const setData = async() => {
+    const {token,...userDetails} = route.params.user
+    console.log(userDetails)
+    await AsyncStorage.setItem('user' , JSON.stringify(userDetails))
+    await AsyncStorage.setItem('token' , JSON.stringify(token))
+  }
+
   const navigation = useNavigation();
 
   return (
