@@ -52,18 +52,17 @@ const VendorRegister = async(req, res) => {
 };
 
 const Login = async(req,res) =>{
-    console.log(req.body)
     try{
         const vendor = await Vendors.findOne({uniqueId:req.body.uniqueId})
         const student = await Users.findOne({regdNo:req.body.uniqueId});
         const user = student != null ? student : vendor;
         if(!user){
-            return res.status(404).send("User Not Found!")
+            return res.status(404).send({message:"User Not Found!"})
         }
         else{
             const isCorrectPass = await bcrypt.compare(req.body.password , user.password)
             if (!isCorrectPass) {
-                return res.status(401).send("Invalid Password!")
+                return res.status(401).send({message:"Invalid Password!"})
         }
         try{
         const token = jwt.sign({id:user._id, uid:req.body.uniqueid},process.env.JWT)
