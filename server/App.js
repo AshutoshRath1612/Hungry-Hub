@@ -2,6 +2,9 @@ const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const authRoutes = require('./routes/AuthRoutes')
+const foodRoutes = require('./routes/FoodRoutes');
+const orderRoutes = require('./routes/orderRoutes')
+const errorHandler = require('./errorHandler');
 
 require('dotenv').config()
 
@@ -11,6 +14,12 @@ app.use(express.json());
 app.use(cors())
 
 app.use('/auth',authRoutes)
+app.use('/food', foodRoutes);
+app.use('/order', orderRoutes);
+
+// Error handling middleware
+app.use(errorHandler);
+
 
 app.use((err,req,res,next) => {
     const errorstatus = err.status || 500;
@@ -23,6 +32,7 @@ app.use((err,req,res,next) => {
     })
 })
 
+//DB Connection
  mongoose.connect(process.env.MONGO).then(()=>{
     console.log("DB Connected")
 }).catch((err)=>{
