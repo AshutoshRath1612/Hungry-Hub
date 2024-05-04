@@ -4,19 +4,17 @@ const foodController = require('../controller/FoodController');
 
 
 // Route to create a new food item
-router.post('/foods', foodController.createFood);
+router.post('/', foodController.createFood);
 
 // Route to get all food items
-router.get('/foods', foodController.getAllFoods);
+router.get('/', foodController.getAllFoods);
 
-// // Route to get a specific food item by ID
-// router.get('/foods/:id', foodController.getFoodById);
 
 // Route to get a specific food item by shopName
-router.get('/foods/shopName/:shopName', foodController.getFoodByShopName);
+router.get('/shopName/:shopName', foodController.getFoodByShopName);
 
 // Route to get a specific food item by name
-router.get('/foods/name/:name', foodController.getFoodByName);
+router.get('/name/:name', foodController.getFoodByName);
 
 // Route to update a specific food item by ID
 router.put('/foods/:id', foodController.updateFoodById);

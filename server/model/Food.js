@@ -1,12 +1,11 @@
 const mongoose = require('mongoose')
 
 const FoodSchema = mongoose.Schema({
-    shopName:{
-        type:String,
-        required:true,
-       unique:false
-    },
     name:{
+        type:String,
+        required:true
+    },
+    shopName:{
         type:String,
         required:true
     },
@@ -31,5 +30,7 @@ const FoodSchema = mongoose.Schema({
         default:true
     }
 })
+
+FoodSchema.index({ shopName: 1 }, { unique: false });
 
 module.exports = mongoose.model("Food", FoodSchema) 

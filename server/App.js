@@ -13,9 +13,11 @@ const app = express()
 app.use(express.json());
 app.use(cors())
 
+//Routes
 app.use('/auth',authRoutes)
 app.use('/food', foodRoutes);
 app.use('/order', orderRoutes);
+
 
 // Error handling middleware
 app.use(errorHandler);

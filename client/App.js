@@ -72,7 +72,7 @@ export default function App() {
     return (
       <View style={styles.center}>
         <LottieView
-          source={require('./assets/icons/acceptedicon.json')} // Replace with your animation file
+          source={require('./assets/icons/Loading.json')} // Replace with your animation file
           autoPlay
           loop
           style={{ width: 200, height: 200 }}
@@ -88,7 +88,6 @@ export default function App() {
       <OrderStatusProvider>
         <NavigationContainer>
           <Stack.Navigator screenOptions={{headerShown: false,}} initialRouteName= {initialRouteName} >
-            <Stack.Screen name='Landing' component={LandingPage} />
             <Stack.Screen name='Login' component={Login} />
             <Stack.Screen name='Choose User' component={ChooseUser} />
             <Stack.Screen name='OTP' component={OTP} />
@@ -125,6 +124,7 @@ const styles = StyleSheet.create({
     width:'100%'
   },
   center: {
+    flex:1,
     justifyContent:'center',
     alignItems:'center'
   }

@@ -5,6 +5,7 @@ const Order = require('../model/Order');
 // Route to create a new order
 router.post('/orders', async (req, res) => {
   try {
+    console.log(req.body)
     const { userId, items, totalPrice } = req.body;
     const newOrder = new Order({ userId, items, totalPrice });
     await newOrder.save();
