@@ -1,0 +1,108 @@
+
+Shop Menu,Search:
+
+shopName: "Mio Amore",
+rating: 3.8,
+ratingCount: 600,
+      foods: [
+        {
+          category: "Snacks",
+          items: [
+            {
+              name: "Burger",
+              price: 100,
+              type: "Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+            },
+            {
+              name: "Pizza",
+              price: 600,
+              type: "Non-Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+            },
+	],
+	},
+	{
+          category: "Main Course",
+          items: [
+            {
+              name: "Biryani",
+              price: 200,
+              type: "Non-Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+            },
+            {
+              name: "Fried Rice",
+              price: 150,
+              type: "Vegetarian",
+              rating: 4.5,
+              ratingCount: 600,
+	},
+	],
+	},
+	]
+
+
+
+Cart:
+
+{
+
+"shopName": "Mio Amore",
+items:[
+{"name": "Burger", "price": 100, "quantity": 1, "rating": 4.5, "ratingCount": 600, "type": "Vegetarian",category:'Snacks'}, {"name": "Pizza", "price": 600, "quantity": 1, "rating": 4.5, "ratingCount": 600, "type": "Non-Vegetarian",category:'Main Course'}
+]
+}
+
+
+Recommandation:
+
+[
+ {
+      shopName: "Mio Amore",
+item:[
+ { name: "Item Name 1", quantity: 1, price: 10,"rating": 4.5, "ratingCount": 600, type: "Vegeterian", category:'Snacks' },
+        {
+          name: "Item Name 2",
+          quantity: 2,
+          price: 100,
+          type: "Non-Vegeterian",
+category:'Main Course'
+        },
+] 
+    },
+]
+
+ 
+Order History:
+
+{
+      storeName: "Store Name 1",
+      orderId: "Order Name 1",
+      items: [
+        { name: "Item Name 1", quantity: 1, price: 10,"rating": 4.5, "ratingCount": 600, type: "Vegeterian" ,category:'Main Course'},
+        {
+          name: "Item Name 2",
+          quantity: 2,
+          price: 100,
+          type: "Non-Vegeterian",
+category:'Snacks'
+        },
+        { name: "Item Name 3", quantity: 3, price: 10,"rating": 4.5, "ratingCount": 600, type: "Non-Vegeterian" },
+        { name: "Item Name 4", quantity: 4, price: 100,"rating": 4.5, "ratingCount": 600, type: "Vegeterian" },
+      ],
+      date: new Date().toLocaleDateString("en-IN", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }),
+      status: "Baking",
+      time: new Date().toLocaleTimeString(),
+      orderType: "Dine in",
+      transactionId: "AZHDGYW52S",
+      paymentStatus: "Success",
+    },
+	

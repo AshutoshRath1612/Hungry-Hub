@@ -1,0 +1,58 @@
+{
+  "expo": {
+    "name": "hungerhub",
+    "slug": "hungerhub",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icons/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/images/Splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0F0F52"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "UIActivityViewControllerAllowOfflineAccess": true
+      }
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ]
+    ],
+    "android": {
+      "permissions": [
+        "WRITE_EXTERNAL_STORAGE",
+        "MEDIA_LIBRARY",
+        "ACCESS_NETWORK_STATE"
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "softwareKeyboardLayoutMode": "pan",
+      "package": "com.ashurath.hungerhub"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8e8f665a-2a73-462f-9fde-0056afb2fe46"
+      }
+    }
+  }
+}
