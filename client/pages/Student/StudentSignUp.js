@@ -64,7 +64,7 @@ export default function StudentSignUp({ navigation }) {
     }
   }
   return (
-    <LinearGradient colors={["#FFCC66", "#FF9933"]} style={styles.container}>
+    <LinearGradient colors={["#FFFF66","white"]} style={styles.container}>
     <Container position='top' width='90%' textStyle={{fontSize:RFValue(15)}} />
       <View style={styles.topic}>
         <Image style={styles.logo} resizeMode='contain' source={require('../../assets/images/Logo.png')} />
@@ -120,7 +120,7 @@ const styles =  StyleSheet.create({
     },
     title:{
         fontSize:40,
-        color:'white',
+        color:'#254117',
         fontFamily:'Ubuntu_700Bold'
     },
     logo:{
@@ -142,7 +142,7 @@ const styles =  StyleSheet.create({
         borderRadius:20
     },
     btn:{
-      backgroundColor:'#663300',
+      backgroundColor:'#228B22',
       borderRadius: 20,
       height:50,
       fontWeight: 'bold',

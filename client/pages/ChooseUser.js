@@ -4,7 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 
 export default function ChooseUser({ navigation }) {
   return (
-    <LinearGradient style={styles.container} colors={["#FFCC66", "#FF9933"]}>
+    <LinearGradient style={styles.container} colors={["#FFFF66","white"]}>
       <View style={styles.content}>
         <Text style={styles.title}>Who are you?</Text>
         <View style={styles.choice}>
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 30,
-    color: "#003366",
+    color: "#254117",
     fontFamily: "Ubuntu_700Bold",
   },
   choice: {
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
   },
   btn: {
-    backgroundColor: "#663300",
+    backgroundColor: "#228B22",
     borderRadius: 20,
     height: 50,
     fontWeight: "bold",

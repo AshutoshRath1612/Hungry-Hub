@@ -9,7 +9,7 @@ import {
 import React, { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Host, LoginRoute } from "../Constants";
-import Container, { Toast } from 'toastify-react-native';
+import Container, { Toast } from "toastify-react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 
 const Login = ({ navigation }) => {
@@ -33,20 +33,22 @@ const Login = ({ navigation }) => {
           "Content-Type": "application/json",
         },
       })
-        .then((res) => {return res.json().then((data) => {
-          return { status: res.status, data: data };
-        });
-    })
+        .then((res) => {
+          return res.json().then((data) => {
+            return { status: res.status, data: data };
+          });
+        })
         .then((data) => {
-          if(data.status === 200){
-            navigation.navigate(`${data.data.isStudent ? `Student Home` : `Vendor Home`}` , {user: data.data})
-          }
-          else{
-            Toast.error(data.data.message)
+          if (data.status === 200) {
+            navigation.navigate(
+              `${data.data.isStudent ? `Student Home` : `Vendor Home`}`,
+              { user: data.data }
+            );
+          } else {
+            Toast.error(data.data.message);
           }
         })
         .catch((err) => console.log(err));
-      
     }
   };
 
@@ -55,7 +57,7 @@ const Login = ({ navigation }) => {
       Toast.error("All fields are mandatory");
       return false;
     }
-    if (uniqueId.length!== 6 && uniqueId.length !== 10) {
+    if (uniqueId.length !== 6 && uniqueId.length !== 10) {
       Toast.error("UID has to be 6 or 10 digits");
       return false;
     }
@@ -64,11 +66,15 @@ const Login = ({ navigation }) => {
       return false;
     }
     return true;
-  }
+  };
 
   return (
-    <LinearGradient colors={["#FFCC66", "#FF9933"]} style={styles.container}>
-    <Container width='90%' textStyle={{fontSize:RFValue(15)}} position='top' />
+    <LinearGradient colors={["#FFFF66","white"]} style={styles.container}>
+      <Container
+        width="90%"
+        textStyle={{ fontSize: RFValue(15) }}
+        position="top"
+      />
       <View style={styles.topic}>
         <Image
           style={styles.logo}
@@ -115,6 +121,7 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     alignItems: "center",
+    borderWidth: 1,
   },
   topic: {
     justifyContent: "space-around",
@@ -123,7 +130,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 40,
-    color: "#FFFFFF",
+    color: "#254117",
     fontFamily: "Ubuntu_700Bold",
   },
   logo: {
@@ -136,16 +143,16 @@ const styles = StyleSheet.create({
   input: {
     height: 50,
     width: 300,
-    borderColor: "#666666",
+    borderColor: "#808080",
     borderWidth: 1,
-    fontWeight:'bold',
+    fontWeight: "bold",
     marginBottom: 10,
     padding: 5,
     textAlign: "center",
     borderRadius: 20,
   },
   btn: {
-    backgroundColor: "#663300",
+    backgroundColor: "#228B22",
     borderRadius: 20,
     height: 50,
     fontWeight: "bold",

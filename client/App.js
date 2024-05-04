@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect,useState } from 'react';
 import { ActivityIndicator, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -26,47 +26,68 @@ import AddFood from './pages/Vendor/AddFood';
 import Scanner from './pages/Vendor/Scanner';
 import OTP from './pages/OTP';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LottieView from "lottie-react-native";
+
 
 const Stack = createStackNavigator();
 
 export default function App() {
-  let [fontsLoaded, fontError] = useFonts({
+  const [fontsLoaded] = useFonts({
     Ubuntu_700Bold, Ubuntu_500Medium, Ubuntu_400Regular
   });
 
-  if (fontError) {
-    console.error("Font loading error: ", fontError);
-    return (<View style={styles.center}><Text>Error loading fonts</Text></View>);
-  }
+  const [initialRouteName, setInitialRouteName] = useState('Loading');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    checkLogin();
+  }, []);
+
+  const checkLogin = async () => {
+    const loggedIn = await isLoggedIn();
+    const student = await isStudentLogin();
+    if (loggedIn) {
+      if (student) {
+        setInitialRouteName('Student Home');
+      } else {
+        setInitialRouteName('Vendor Home');
+      }
+    } else {
+      setInitialRouteName('Login');
+    }
+    setLoading(false);
+  };
+
+  const isLoggedIn = async () => {
+    const token = await AsyncStorage.getItem('token');
+    return !!token;
+  };
+
+  const isStudentLogin = async () => {
+    const user = JSON.parse(await AsyncStorage.getItem('user'));
+    return user !== null && user.isStudent;
+  };
 
   if (!fontsLoaded) {
-    return (<View style={styles.center}><Text>Loading Fonts</Text></View>);
+    return (
+      <View style={styles.center}>
+        <LottieView
+          source={require('./assets/icons/acceptedicon.json')} // Replace with your animation file
+          autoPlay
+          loop
+          style={{ width: 200, height: 200 }}
+        />
+      </View>
+    );
   }
 
-  const isLoggedIn = async() => {
-    const token  = await AsyncStorage.getItem('token')
-    if (token) {
-      return true
-    } else {
-      return false
-    }
-  }
-
-  const isStudentLogin = async() => {
-    const user = JSON.parse(await AsyncStorage.getItem('user'))
-    if (user.isStudent) {
-      return true
-    } else {
-      return false
-    }
-  }
 
   return (
     <SafeAreaView style={styles.container}>
       <CartProvider>
       <OrderStatusProvider>
         <NavigationContainer>
-          <Stack.Navigator screenOptions={{headerShown: false,}} initialRouteName= {!isLoggedIn() ? 'Login' : isStudentLogin() ? 'Student Home' : 'Vendor Home'} >
+          <Stack.Navigator screenOptions={{headerShown: false,}} initialRouteName= {initialRouteName} >
             <Stack.Screen name='Landing' component={LandingPage} />
             <Stack.Screen name='Login' component={Login} />
             <Stack.Screen name='Choose User' component={ChooseUser} />
