@@ -10,6 +10,8 @@ router.post('/', foodController.createFood);
 router.get('/', foodController.getAllFoods);
 
 
+router.get('/recommendations/:id', foodController.getRecommandations);
+
 // Route to get a specific food item by shopName
 router.get('/shopName/:shopName', foodController.getFoodByShopName);
 
@@ -17,9 +19,9 @@ router.get('/shopName/:shopName', foodController.getFoodByShopName);
 router.get('/name/:name', foodController.getFoodByName);
 
 // Route to update a specific food item by ID
-router.put('/foods/:id', foodController.updateFoodById);
+router.put('/:id', foodController.updateFoodById);
 
 // Route to delete a specific food item by ID
-router.delete('/foods/:id', foodController.deleteFoodById);
+router.delete('/:id', foodController.deleteFoodById);
 
 module.exports = router;

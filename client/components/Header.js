@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import { Button } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
-import { FontAwesome,Entypo } from "@expo/vector-icons";
+import { FontAwesome,Entypo,MaterialCommunityIcons  } from "@expo/vector-icons";
+import { RFValue } from "react-native-responsive-fontsize";
 
 export default function Header() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -35,9 +36,9 @@ export default function Header() {
   return (
     <View>
       <View style={styles.header}>
-        <Button onPress={() => Logout()}>
+        {/* <Button onPress={() => Logout()}>
           <Text>Press</Text>
-        </Button>
+        </Button> */}
         <View style={styles.headerLeft}>
           <Image
             style={styles.logo}
@@ -64,12 +65,24 @@ export default function Header() {
           {userData && (
             <View style={styles.modalView}>
               <View style={styles.modalHeader}>
-              <View style={{flexDirection:'row' , alignItems:'center'}}>
-
-                <FontAwesome name="user" style={styles.userIcon} size={30} color="green" />
+              <View style={{flexDirection:'row' , alignItems:'center',justifyContent:'space-evenly', width:'70%',height:'100%'}}>
+              <View>
+                <FontAwesome name="user" size={40} color="green" /> 
+              </View>
                 <Text style={styles.modalText}>{userData.regdNo}</Text>
               </View>
-                <Entypo name="cross"onPress={() => setModalVisible(false)}  size={24} color="green" />
+                <Entypo name="cross"onPress={() => setModalVisible(false)}  size={30} color="green" />
+              </View>
+              <View style={styles.line} ></View>
+              <View style={{height:'60%' , justifyContent:'space-around',width:'90%',alignItems:'flex-start'}}>
+              <View style={styles.modalBody}>
+              <MaterialCommunityIcons name="card-account-details" size={26} color="green" />
+              <Text style={styles.modalBodyText}>Account Details</Text>
+              </View>
+              <View style={styles.modalBody} onTouchEnd={()=>Logout()}>
+              <MaterialCommunityIcons name="logout" size={26} color="green" />
+              <Text style={styles.modalBodyText}>Logout</Text>
+              </View>
               </View>
             </View>
           )}
@@ -126,22 +139,38 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    height:'30%'
   },
   
   modalHeader:{
     flexDirection:'row',
     alignItems:'center',
-    borderWidth:1,
     width:'100%',
+    height:'40%',
     justifyContent:'space-between'
   },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center",
-    fontWeight: "bold",
-    fontSize: 20,
+  modalBody:{
+    flexDirection:'row',
+    alignItems:'center',
+    width:'60%',
+    justifyContent:'flex-start',
+    marginVertical:'2%'
   },
-  userIcon:{
-    height:'50%',
+  modalText: {
+    fontWeight: "bold",
+    fontSize: RFValue(25),
+  },
+  modalBodyText:{
+    fontSize: RFValue(18),
+    fontWeight:'bold',
+    marginLeft:'5%'
+  
+  },
+  line:{
+    borderTopWidth:1,
+    borderStyle:'dashed',
+    borderColor:'#808080',
+    width:'90%',
+    marginBottom:'2%'
   }
 });

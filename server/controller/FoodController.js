@@ -1,5 +1,6 @@
 
 const Food = require('../model/Food');
+const cosineSimilarity = require('compute-cosine-similarity');
 
 // Controller function to create a new food item
 const createFood = async (req, res) => {
@@ -28,24 +29,6 @@ const getAllFoods = async (req, res) => {
   };
   
 
-
-// // Controller function to get a specific food item by ID 
-// const getFoodById = async (req, res) => {
-//     const foodId = req.params.id;
-  
-//     try {
-//       const food = await Food.findById(foodId);
-  
-//       if (!food) {
-//         return res.status(404).json({ message: 'Food item not found' });
-//       }
-  
-//       res.status(200).json(food);
-//     } catch (error) {
-//       console.error('Error fetching food item by ID:', error);
-//       res.status(500).json({ message: 'Internal server error' });
-//     }
-//   };
 
 // Controller function to get a specific food item by name
 const getFoodByName = async (req, res) => {
@@ -118,7 +101,40 @@ const updateFoodById = async (req, res) => {
     }
   };
   
+  const getRecommandations = (req, res) => {
+    const userId = req.params.userId;
+const orders = [
+    { userId: 1, item: 'A' },
+    { userId: 1, item: 'B' },
+    { userId: 2, item: 'A' },
+    { userId: 2, item: 'C' },
+    { userId: 3, item: 'B' },
+    { userId: 3, item: 'C' },
+];
   
+const userOrders = orders.filter(order => order.userId === userId);
+
+if (userOrders.length === 0) {
+    // New user: Recommend most ordered items
+    const itemCounts = {};
+    orders.forEach(order => {
+        itemCounts[order.item] = (itemCounts[order.item] || 0) + 1;
+    });
+
+    const mostOrderedItems = Object.keys(itemCounts)
+        .sort((a, b) => itemCounts[b] - itemCounts[a])
+        .slice(0, 3);
+      res.status(200).json(mostOrderedItems);
+  } else {
+    // Existing user: Recommend based on past orders
+    const userItems = userOrders.map(order => order.item);
+    const recommendedItems = orders.filter(order => !userItems.includes(order.item))
+        .map(order => order.item);
+
+
+      res.status(200).json(recommendedItems);
+  }
+  }
   
 
 // Controller function to delete a food item by ID
@@ -137,7 +153,7 @@ const deleteFoodById = async (req, res) => {
 module.exports = {
   createFood,
   getAllFoods,
-//   getFoodById,
+  getRecommandations,
   getFoodByName,
   getFoodByShopName,
   updateFoodById,

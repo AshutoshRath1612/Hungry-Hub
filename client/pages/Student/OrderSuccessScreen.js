@@ -6,7 +6,7 @@ import { RFValue } from "react-native-responsive-fontsize";
 
 const OrderSuccessScreen = ({ navigation }) => {
   const scaleAnim = useRef(new Animated.Value(0)).current;
-  const [isSuccess, setIsSuccess] = useState(true);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
     Animated.timing(scaleAnim, {

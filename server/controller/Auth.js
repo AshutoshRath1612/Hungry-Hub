@@ -19,7 +19,7 @@ const StudentRegister = async(req,res) =>{
             mobileNo: req.body.mobileNo,
         })
         await newStudent.save()
-        res.status(200).send("User added successfully!");
+        res.status(200).json({message: "User added successfully!"});
     }
     catch(err){
         console.log(err)
@@ -44,7 +44,7 @@ const VendorRegister = async(req, res) => {
             shopName: req.body.shopName
         });
         await vendor.save()
-        res.status(200).send(vendor)
+        res.status(200).json({uniqueId:uniqueId})
     }
     catch(err){
         console.log(err)

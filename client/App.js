@@ -27,6 +27,7 @@ import Scanner from './pages/Vendor/Scanner';
 import OTP from './pages/OTP';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LottieView from "lottie-react-native";
+import VendorUID from './pages/Vendor/VendorUID';
 
 
 const Stack = createStackNavigator();
@@ -72,7 +73,7 @@ export default function App() {
     return (
       <View style={styles.center}>
         <LottieView
-          source={require('./assets/icons/Loading.json')} // Replace with your animation file
+          source={require('./assets/icons/Loading.json')}
           autoPlay
           loop
           style={{ width: 200, height: 200 }}
@@ -103,6 +104,7 @@ export default function App() {
             
             {/* For vendor */}
             <Stack.Screen name='Vendor Signup' component={VendorSignUp} />
+            <Stack.Screen name='VendorUID' component={VendorUID} />
             <Stack.Screen name='Vendor Home' component={VendorHome} />
             <Stack.Screen name='Vendor Menu' component={Menu} />
             <Stack.Screen name='Vendor History' component={History} />
