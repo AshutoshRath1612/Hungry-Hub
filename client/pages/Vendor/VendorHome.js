@@ -1,14 +1,32 @@
 import { View, Text, StyleSheet, TextInput, FlatList } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../components/Header";
 import { RFValue } from "react-native-responsive-fontsize";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import Search from "../../components/Search";
 import Nav from "../../components/Nav";
 import { NavigationContext } from "../../NavContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import LottieView from "lottie-react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function VendorHome({ navigation, route}) {
   const [totalOrders, setTotalOrders] = useState(10000);
+  const [Loading,setLoading] = useState(true)
+
+  useEffect(()=>{
+    if(route.params !== undefined){
+    setData()
+    }
+    setLoading(false)
+  },[])
+
+  const setData = async() => {
+    const {token,...userDetails} = route.params.user
+    console.log(userDetails)
+    await AsyncStorage.setItem('user' , JSON.stringify(userDetails))
+    await AsyncStorage.setItem('token' , JSON.stringify(token))
+  }
 
   const [currentOrders, setCurrentOrders] = useState([
     1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
@@ -17,7 +35,19 @@ export default function VendorHome({ navigation, route}) {
   return (
     <NavigationContext.Provider value={{ navigation, route }}>
 
+
     <View style={{ height: "100%" }}>
+    {Loading ? (
+      <View style={styles.center}>
+        <LottieView
+          source={require('../../assets/icons/Loading.json')}
+          autoPlay
+          loop
+          style={{ width: 200, height: 200 }}
+        />
+      </View>
+    ):(
+      <LinearGradient colors={["#FFFF66","white"]} style={{height:'100%'}}>
       <Header />
       <Text
         style={{
@@ -97,7 +127,7 @@ export default function VendorHome({ navigation, route}) {
         {currentOrders.length !== 0 ? (
           <FlatList
             data={currentOrders}
-            style={{marginBottom:'6%'}}
+            style={{marginBottom:'2%'}}
             showsVerticalScrollIndicator={false}
             keyExtractor={(item, index) => index.toString()}
             numColumns={2} // Display two columns
@@ -117,6 +147,9 @@ export default function VendorHome({ navigation, route}) {
       <View style={{ position:'absolute',bottom:0,width:'100%' }}>
       <Nav />
       </View>
+      </LinearGradient>
+    )}
+      
     </View>
     </NavigationContext.Provider>
   );

@@ -20,11 +20,11 @@ import {
 } from "@expo/vector-icons";
 import Search from "../../components/Search";
 import { RFValue } from "react-native-responsive-fontsize";
-import ShopModal from "../../components/ShopModal";
-import CartCard from "../../components/CartCard";
 import Nav from "../../components/Nav";
 import { NavigationContext } from "../../NavContext";
-import { Switch } from "react-native-paper";
+import { GetFoodByShopRoute, Host, UpdateFoodRoute } from "../../Constants";
+import Container, { Toast } from "toastify-react-native";
+import { RadioButton } from "react-native-paper";
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -33,7 +33,44 @@ export default function Menu({ navigation, route }) {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [currentData, setCurrentData] = useState(null);
+  const [foods, setFoods] = useState([]);
 
+  useEffect(() => {
+    fetch(`${Host}${GetFoodByShopRoute}/Mohanty & Co`)
+      .then((res) => res.json())
+      .then((data) => {
+        sortByCategory(data);
+      });
+  }, []);
+
+  function sortByCategory(foodItems) {
+    const categories = {};
+
+    // Group items by category
+    foodItems.forEach((item) => {
+      if (!categories[item.category]) {
+        categories[item.category] = [];
+      }
+      categories[item.category].push(item);
+    });
+
+    // Convert to the desired format
+    const result = Object.keys(categories).map((category) => ({
+      category,
+      items: categories[category].map((item) => ({
+        name: item.name,
+        isAvailable: item.isAvailable,
+        price: item.price,
+        type: item.type === "Vegeterian" ? "Vegetarian" : "Non-Vegetarian",
+        ratings: item.ratings,
+        ratingCount: item.ratingCount,
+        _id: item._id,
+      })),
+    }));
+
+    return setFoods(result);
+  }
+  console.log(foods[0].items)
   const DATA = [
     {
       shopName: "Mio Amore",
@@ -251,7 +288,7 @@ export default function Menu({ navigation, route }) {
   const [expanded, setExpanded] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [warningModal, setWarningModal] = useState(false);
-  const [currentItem, setCurrentItem] = useState(null);
+  const [currentItem, setCurrentItem] = useState();
   const toggleSwitch = () =>
     setCurrentItem({ ...currentItem, isAvailable: !currentItem.isAvailable });
 
@@ -273,6 +310,22 @@ export default function Menu({ navigation, route }) {
 
   const toggleExpand = () => {
     setExpanded(!expanded);
+  };
+
+
+  const handleEditSubmit = (id) => {
+    setModalVisible(false);
+    fetch(`${Host}${UpdateFoodRoute}/${id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(currentItem),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        Toast.success(data.message);
+      });
   };
 
   const EditModal = () => (
@@ -310,30 +363,72 @@ export default function Menu({ navigation, route }) {
             value={currentItem.price.toString()}
           />
           <Text style={{ color: "grey", fontWeight: "500" }}>Type</Text>
-          <TextInput
-            style={{
-              borderWidth: 1,
-              borderColor: "grey",
-              padding: 5,
-              marginVertical: 5,
-            }}
-            value={currentItem.type}
-          />
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            {editModal && (
+              <>
+                <RadioButton
+                  value="Vegetarian"
+                  status={currentItem.type === "Vegetarian" ? "checked" : "unchecked"}
+                  onPress={() => setCurrentItem({ ...currentItem, type: "Vegetarian" })}
+                />
+                <Text style={{ fontSize: RFValue(13), fontWeight: "bold" }}>
+                  Vegetarian
+                </Text>
+                <RadioButton
+                  value="Non-Vegetarian"
+                  status={currentItem.type === "Non-Vegetarian" ? "checked" : "unchecked"}
+                  onPress={() => setCurrentItem({ ...currentItem, type: "Non-Vegetarian" })}
+                />
+                <Text style={{ fontSize: RFValue(13), fontWeight: "bold" }}>
+                  Non-Vegetarian
+                </Text>
+              </>
+            )}
+          </View>
           <Text style={{ color: "grey", fontWeight: "500" }}>Available</Text>
-          <View style={{flexDirection:'row' , backgroundColor:'#939293',marginTop:10 , width:'36%',borderRadius:10}}>
-            <TouchableOpacity onPress={toggleSwitch} style={{borderWidth: currentItem.isAvailable ? 1 : 0,padding:10 ,borderRadius:10}}>
-              <Text style={{fontSize:RFValue(15) , fontWeight:'bold'}}>Yes</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              backgroundColor: "#939293",
+              marginTop: 10,
+              width: "36%",
+              borderRadius: 10,
+            }}
+          >
+            <TouchableOpacity
+              onPress={toggleSwitch}
+              style={{
+                borderWidth: currentItem.isAvailable ? 1 : 0,
+                padding: 10,
+                borderRadius: 10,
+              }}
+            >
+              <Text style={{ fontSize: RFValue(15), fontWeight: "bold" }}>
+                Yes
+              </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={toggleSwitch} style={{borderWidth: !currentItem.isAvailable ? 1 : 0,padding:10 , borderRadius:10}}>
-              <Text style={{fontSize:RFValue(15),fontWeight:'bold'}}>No</Text>
+            <TouchableOpacity
+              onPress={toggleSwitch}
+              style={{
+                borderWidth: !currentItem.isAvailable ? 1 : 0,
+                padding: 10,
+                borderRadius: 10,
+              }}
+            >
+              <Text style={{ fontSize: RFValue(15), fontWeight: "bold" }}>
+                No
+              </Text>
             </TouchableOpacity>
           </View>
-
+  
           <View style={styles.btnView}>
             <Pressable style={styles.btn} onPress={() => setEditModal(false)}>
               <Text style={styles.txt}>Close</Text>
             </Pressable>
-            <Pressable style={styles.btn} onPress={() => setEditModal(false)}>
+            <Pressable
+              style={styles.btn}
+              onPress={() => handleEditSubmit(currentItem._id)}
+            >
               <Text style={styles.txt}>Confirm</Text>
             </Pressable>
           </View>
@@ -341,6 +436,8 @@ export default function Menu({ navigation, route }) {
       </View>
     </Modal>
   );
+  
+  
 
   const DeleteModal = () => (
     <Modal visible={warningModal} animationType="fade" transparent>
@@ -390,6 +487,7 @@ export default function Menu({ navigation, route }) {
     return (
       <TouchableWithoutFeedback onPress={() => setExpanded(false)}>
         <View key={item.category} style={styles.categoryContainer}>
+          <Container position="top" width="90%" />
           <Text style={styles.category}>{item.category}</Text>
           {item.items.map((foodItem, index) => (
             <View key={index} style={styles.menuItem}>
@@ -441,7 +539,7 @@ export default function Menu({ navigation, route }) {
                 <TouchableOpacity
                   onPress={() => {
                     setEditModal(true);
-                    setCurrentItem({ ...foodItem, category: item.category });
+                    setCurrentItem({ ...foodItem, category: item.category ,type:foodItem.type });
                   }}
                 >
                   {currentItem != null && <EditModal />}
@@ -478,7 +576,7 @@ export default function Menu({ navigation, route }) {
           />
           <View style={styles.shopInfo}>
             <Text style={{ fontSize: RFValue(25), fontWeight: "bold" }}>
-              {DATA[0].shopName}
+              {route.params.shopName}
             </Text>
             <View
               style={{
@@ -501,7 +599,7 @@ export default function Menu({ navigation, route }) {
         <AnimatedFlatList
           ref={listRef}
           style={{ marginBottom: RFValue(50) }}
-          data={DATA[0].foods}
+          data={foods}
           keyExtractor={(item, index) => index.toString()}
           renderItem={renderItem} // Add some initial padding
           scrollEventThrottle={16}
@@ -513,7 +611,7 @@ export default function Menu({ navigation, route }) {
         {expanded && (
           <View style={styles.categoryButtonsContainer}>
             <FlatList
-              data={DATA[0].foods}
+              data={foods}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item, index }) =>
                 renderCategoryButton(item, index)

@@ -23,6 +23,7 @@ export default function Header() {
   const getCreds = async () => {
     try {
       const user = await AsyncStorage.getItem("user");
+      console.log(user)
       setUserData(JSON.parse(user));
     } catch (err) {
       console.log(err);

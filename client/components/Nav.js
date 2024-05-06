@@ -1,26 +1,44 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
-import { FontAwesome,MaterialCommunityIcons } from "@expo/vector-icons";
+import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { CartProvider, useCart } from "../CartContext";
 import { NavigationContext } from "../NavContext";
 import { RFValue } from "react-native-responsive-fontsize";
 import { OrderStatusProvider } from "../OrderStatusContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function Nav() {
-  const [user, setUser] = useState("Vendor");
+  const [user, setUser] = useState("Student");
+  const [shopName, setShopName] = useState("");
+
+  useEffect(() => {
+    setUserNav();
+  }, []);
+
+  const setUserNav = async () => {
+    const currentUserJson = await AsyncStorage.getItem("user");
+    if (currentUserJson) {
+      const currentUser = JSON.parse(currentUserJson);
+      setUser(currentUser.isStudent ? "Student" : "Vendor");
+      if (!currentUser.isStudent) {
+        setShopName(currentUser.shopName);
+      }
+    } else {
+      // Handle the case when there is no user data in AsyncStorage
+      console.log("No user data found in AsyncStorage");
+    }
+  };
 
   const { route } = useContext(NavigationContext);
   const navigation = useNavigation();
 
-  const navigateToScreen = (screenName) => {
-    navigation.navigate(screenName);
+  const navigateToScreen = (screenName, data) => {
+    if (data !== undefined) navigation.navigate(screenName, { shopName: data });
+    else navigation.navigate(screenName);
   };
   if (user !== "Vendor") {
-    // const route = useRoute()
-
     const { cart } = useCart();
-
 
     return (
       <View style={styles.navContainer}>
@@ -81,7 +99,7 @@ function Nav() {
   } else {
     return (
       <View style={styles.navContainer}>
-        <View style={[styles.container,{borderRadius:0}]}>
+        <View style={[styles.container, { borderRadius: 0 }]}>
           <TouchableOpacity
             style={[
               styles.tab,
@@ -92,36 +110,63 @@ function Nav() {
             <FontAwesome name="home" style={styles.tabText}></FontAwesome>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[
-              styles.tab,
-              route.name === "Scanner" && styles.selectedTab,
-            ]}
+            style={[styles.tab, route.name === "Scanner" && styles.selectedTab]}
             onPress={() => navigateToScreen("Scanner")}
           >
-            <MaterialCommunityIcons name="qrcode-scan" style={styles.tabText} size={24} color="black" />
+            <MaterialCommunityIcons
+              name="qrcode-scan"
+              style={styles.tabText}
+              size={24}
+              color="#333333"
+            />
           </TouchableOpacity>
-          <View style={{marginHorizontal:'5%'}}></View>
+          <View style={{ marginHorizontal: "5%" }}></View>
           <TouchableOpacity
-            style={[styles.tab,{position:'absolute',bottom:'30%',left:'35%',width:'20%'}, route.name === "Add Food" && styles.selectedTab]}
-            onPress={() => navigateToScreen("Add Food")}
+            style={[
+              styles.tab,
+              {
+                position: "absolute",
+                bottom: "30%",
+                left: "35%",
+                width: "20%",
+              },
+              route.name === "Add Food" && styles.selectedTab,
+            ]}
+            onPress={() => navigateToScreen("Add Food", shopName)}
           >
-           <FontAwesome name="plus" size={25} style={[styles.tabText , {backgroundColor:'red',padding:RFValue(12),paddingHorizontal:RFValue(15),borderRadius:30,zIndex:10 }]} color="black" />
+            <FontAwesome
+              name="plus"
+              size={25}
+              style={[
+                styles.tabText,
+                {
+                  backgroundColor: "#228B22",
+                  padding: RFValue(12),
+                  paddingHorizontal: RFValue(15),
+                  borderRadius: 30,
+                  zIndex: 10,
+                },
+              ]}
+              color="black"
+            />
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.tab, route.name === "Vendor Menu" && styles.selectedTab]}
-            onPress={() => navigateToScreen("Vendor Menu")}
+            style={[
+              styles.tab,
+              route.name === "Vendor Menu" && styles.selectedTab,
+            ]}
+            onPress={() => navigateToScreen("Vendor Menu", shopName)}
           >
-            <FontAwesome  name="book" style={styles.tabText}></FontAwesome>
+            <FontAwesome name="book" style={styles.tabText}></FontAwesome>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.tab, route.name === "Vendor History" && styles.selectedTab]}
+            style={[
+              styles.tab,
+              route.name === "Vendor History" && styles.selectedTab,
+            ]}
             onPress={() => navigateToScreen("Vendor History")}
           >
-
-            <FontAwesome
-              name="history"
-              style={styles.tabText}
-            ></FontAwesome>
+            <FontAwesome name="history" style={styles.tabText}></FontAwesome>
           </TouchableOpacity>
         </View>
       </View>

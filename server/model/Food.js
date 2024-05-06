@@ -28,6 +28,14 @@ const FoodSchema = mongoose.Schema({
         type:Boolean,
         required:true,
         default:true
+    },
+    ratings:{
+        type:Number,
+        default:0
+    },
+    ratingCount:{
+        type:Number,
+        default:0
     }
 })
 

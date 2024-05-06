@@ -1,6 +1,5 @@
 
 const Food = require('../model/Food');
-const cosineSimilarity = require('compute-cosine-similarity');
 
 // Controller function to create a new food item
 const createFood = async (req, res) => {
@@ -8,7 +7,7 @@ const createFood = async (req, res) => {
       const { shopName, name, price, category, type, isAvailable } = req.body;
       const food = new Food({ shopName, name, price, category, type, isAvailable });
       await food.save();
-      res.status(201).json(food);
+      res.status(201).json({message : `${name} added successfully`});
     } catch (error) {
       console.error('Error creating food item:', error);
       res.status(500).json({ message: 'Internal server error' });
@@ -55,7 +54,7 @@ const getFoodByShopName = async (req, res) => {
     const shopName = req.params.shopName;
   
     try {
-      const food = await Food.findOne({ shopName });
+      const food = await Food.find({ shopName });
   
       if (!food) {
         return res.status(404).json({ message: 'Food item not found' });
