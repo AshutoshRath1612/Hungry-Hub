@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import {
   View,
   Text,
@@ -22,9 +22,10 @@ import Search from "../../components/Search";
 import { RFValue } from "react-native-responsive-fontsize";
 import Nav from "../../components/Nav";
 import { NavigationContext } from "../../NavContext";
-import { GetFoodByShopRoute, Host, UpdateFoodRoute } from "../../Constants";
+import { DeleteFoodRoute, GetFoodByShopRoute, Host, UpdateFoodRoute } from "../../Constants";
 import Container, { Toast } from "toastify-react-native";
 import { RadioButton } from "react-native-paper";
+import EditFoodModal from "../../components/EditFoodModal";
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -34,14 +35,19 @@ export default function Menu({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [currentData, setCurrentData] = useState(null);
   const [foods, setFoods] = useState([]);
+  const [shopInfo , setShopInfo] = useState(null)
 
   useEffect(() => {
-    fetch(`${Host}${GetFoodByShopRoute}/Mohanty & Co`)
+    getMenu()
+  }, []);
+
+  const getMenu = () => {
+    fetch(`${Host}${GetFoodByShopRoute}/${route.params.shopName}`)
       .then((res) => res.json())
       .then((data) => {
         sortByCategory(data);
       });
-  }, []);
+    }
 
   function sortByCategory(foodItems) {
     const categories = {};
@@ -70,7 +76,6 @@ export default function Menu({ navigation, route }) {
 
     return setFoods(result);
   }
-  console.log(foods[0].items)
   const DATA = [
     {
       shopName: "Mio Amore",
@@ -287,10 +292,26 @@ export default function Menu({ navigation, route }) {
   const [scrollY] = useState(new Animated.Value(0));
   const [expanded, setExpanded] = useState(false);
   const [editModal, setEditModal] = useState(false);
+  const [isUpdated , setIsUpdated] = useState(false)
   const [warningModal, setWarningModal] = useState(false);
-  const [currentItem, setCurrentItem] = useState();
-  const toggleSwitch = () =>
-    setCurrentItem({ ...currentItem, isAvailable: !currentItem.isAvailable });
+  const [currentItem, setCurrentItem] = useState({
+    name: "",
+    isAvailable: false,
+    price: 0,
+    type: "Vegeterian",
+    ratings: 0,
+    ratingCount: 0,
+    _id: "",
+    category: ""
+  });
+
+  useEffect(()=>{
+    if(isUpdated){
+      getMenu()
+      Toast.success("Food Updated Successfully")
+      setIsUpdated(false)
+    }
+  },[isUpdated])
 
   const HEADER_MAX_HEIGHT = 150;
   const HEADER_MIN_HEIGHT = 0;
@@ -312,132 +333,17 @@ export default function Menu({ navigation, route }) {
     setExpanded(!expanded);
   };
 
-
-  const handleEditSubmit = (id) => {
-    setModalVisible(false);
-    fetch(`${Host}${UpdateFoodRoute}/${id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(currentItem),
+  const handleDelete = () => {
+    fetch(`${Host}${DeleteFoodRoute}/${currentItem._id}`, {
+      method: "DELETE",
     })
       .then((res) => res.json())
       .then((data) => {
-        Toast.success(data.message);
+        setWarningModal(false);
+        getMenu()
+        Toast.error("Food Deleted Successfully")
       });
-  };
-
-  const EditModal = () => (
-    <Modal visible={editModal} animationType="fade" transparent>
-      <View style={styles.modalcontainer}>
-        <View style={styles.containerView}>
-          <Text style={{ color: "grey", fontWeight: "500" }}>Name</Text>
-          <TextInput
-            style={{
-              borderWidth: 1,
-              borderColor: "grey",
-              padding: 5,
-              marginVertical: 5,
-            }}
-            value={currentItem.name}
-          />
-          <Text style={{ color: "grey", fontWeight: "500" }}>Category</Text>
-          <TextInput
-            style={{
-              borderWidth: 1,
-              borderColor: "grey",
-              padding: 5,
-              marginVertical: 5,
-            }}
-            value={currentItem.category}
-          />
-          <Text style={{ color: "grey", fontWeight: "500" }}>Price</Text>
-          <TextInput
-            style={{
-              borderWidth: 1,
-              borderColor: "grey",
-              padding: 5,
-              marginVertical: 5,
-            }}
-            value={currentItem.price.toString()}
-          />
-          <Text style={{ color: "grey", fontWeight: "500" }}>Type</Text>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            {editModal && (
-              <>
-                <RadioButton
-                  value="Vegetarian"
-                  status={currentItem.type === "Vegetarian" ? "checked" : "unchecked"}
-                  onPress={() => setCurrentItem({ ...currentItem, type: "Vegetarian" })}
-                />
-                <Text style={{ fontSize: RFValue(13), fontWeight: "bold" }}>
-                  Vegetarian
-                </Text>
-                <RadioButton
-                  value="Non-Vegetarian"
-                  status={currentItem.type === "Non-Vegetarian" ? "checked" : "unchecked"}
-                  onPress={() => setCurrentItem({ ...currentItem, type: "Non-Vegetarian" })}
-                />
-                <Text style={{ fontSize: RFValue(13), fontWeight: "bold" }}>
-                  Non-Vegetarian
-                </Text>
-              </>
-            )}
-          </View>
-          <Text style={{ color: "grey", fontWeight: "500" }}>Available</Text>
-          <View
-            style={{
-              flexDirection: "row",
-              backgroundColor: "#939293",
-              marginTop: 10,
-              width: "36%",
-              borderRadius: 10,
-            }}
-          >
-            <TouchableOpacity
-              onPress={toggleSwitch}
-              style={{
-                borderWidth: currentItem.isAvailable ? 1 : 0,
-                padding: 10,
-                borderRadius: 10,
-              }}
-            >
-              <Text style={{ fontSize: RFValue(15), fontWeight: "bold" }}>
-                Yes
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={toggleSwitch}
-              style={{
-                borderWidth: !currentItem.isAvailable ? 1 : 0,
-                padding: 10,
-                borderRadius: 10,
-              }}
-            >
-              <Text style={{ fontSize: RFValue(15), fontWeight: "bold" }}>
-                No
-              </Text>
-            </TouchableOpacity>
-          </View>
-  
-          <View style={styles.btnView}>
-            <Pressable style={styles.btn} onPress={() => setEditModal(false)}>
-              <Text style={styles.txt}>Close</Text>
-            </Pressable>
-            <Pressable
-              style={styles.btn}
-              onPress={() => handleEditSubmit(currentItem._id)}
-            >
-              <Text style={styles.txt}>Confirm</Text>
-            </Pressable>
-          </View>
-        </View>
-      </View>
-    </Modal>
-  );
-  
-  
+  }
 
   const DeleteModal = () => (
     <Modal visible={warningModal} animationType="fade" transparent>
@@ -455,7 +361,7 @@ export default function Menu({ navigation, route }) {
             </Pressable>
             <Pressable
               style={styles.btn}
-              onPress={() => setWarningModal(false)}
+              onPress={() => handleDelete()}
             >
               <Text style={styles.txt}>Confirm</Text>
             </Pressable>
@@ -487,7 +393,6 @@ export default function Menu({ navigation, route }) {
     return (
       <TouchableWithoutFeedback onPress={() => setExpanded(false)}>
         <View key={item.category} style={styles.categoryContainer}>
-          <Container position="top" width="90%" />
           <Text style={styles.category}>{item.category}</Text>
           {item.items.map((foodItem, index) => (
             <View key={index} style={styles.menuItem}>
@@ -542,7 +447,7 @@ export default function Menu({ navigation, route }) {
                     setCurrentItem({ ...foodItem, category: item.category ,type:foodItem.type });
                   }}
                 >
-                  {currentItem != null && <EditModal />}
+                  {currentItem != null && <EditFoodModal editModal = {editModal} setEditModal={setEditModal} currentItem={currentItem} setCurrentItem={setCurrentItem} setIsUpdated={setIsUpdated}/>}
                   <MaterialCommunityIcons
                     name="pencil-circle-outline"
                     size={30}
@@ -569,6 +474,7 @@ export default function Menu({ navigation, route }) {
   return (
     <NavigationContext.Provider value={{ navigation, route }}>
       <View style={styles.container}>
+      <Container position='top' width='90%' />
         <Animated.View style={[styles.header]}>
           <Image
             style={{ resizeMode: "contain", width: "40%" }}

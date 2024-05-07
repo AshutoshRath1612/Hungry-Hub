@@ -23,12 +23,9 @@ export default function Search() {
   const categories = ["Vegeterian", "Non-Vegeterian"];
 
   
-const handleOrderPreparing = () => {
-setOrderStatus('delivered');
-};
   const handleNavigate = (e) => {
     if(route.name !== 'Shop Menu' && e.nativeEvent.text !== ''){
-      navigation.navigate('Search Result',{itemName:e.nativeEvent.text})
+      navigation.navigate('Search Result',{itemName:e.nativeEvent.text ,type:categoryy })
     }
   }
   return (

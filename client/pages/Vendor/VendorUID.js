@@ -72,8 +72,8 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     backgroundColor: '#ADFFAD', // Light green color
-    padding: 10,
-    width: '80%',
+    padding: 5,
+    width: '90%',
     height: '20%',
     borderRadius: 10,
     shadowColor: '#000',

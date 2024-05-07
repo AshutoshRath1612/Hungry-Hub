@@ -16,7 +16,7 @@ router.get('/recommendations/:id', foodController.getRecommandations);
 router.get('/shopName/:shopName', foodController.getFoodByShopName);
 
 // Route to get a specific food item by name
-router.get('/name/:name', foodController.getFoodByName);
+router.get('/name/:name/:type?', foodController.getFoodByName);
 
 // Route to update a specific food item by ID
 router.put('/:id', foodController.updateFoodById);

@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const Vendors = require('../model/Vendors')
 const Otp = require('../model/Otp')
+const Shop = require('../model/Shop')
 require('dotenv').config();
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -43,7 +44,11 @@ const VendorRegister = async(req, res) => {
             mobileNo: req.body.mobileNo,
             shopName: req.body.shopName
         });
+        const shop = new Shop({
+            name: req.body.shopName
+        })
         await vendor.save()
+        await shop.save()
         res.status(200).json({uniqueId:uniqueId})
     }
     catch(err){

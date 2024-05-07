@@ -13,11 +13,31 @@ import { RFValue } from "react-native-responsive-fontsize";
 import { FontAwesome } from "@expo/vector-icons";
 import { useCart } from "../../CartContext";
 import CartCard from "../../components/CartCard";
+import { GetFoodByNameRoute, Host } from "../../Constants";
 
 export default function SearchResults({ route, navigation }) {
   const vegLogo = require("../../assets/icons/VegLogo.png");
   const nonVegLogo = require("../../assets/icons/NonVegLogo.png");
 
+  const [searchResults, setSearchResults] = useState([]);
+
+  useEffect(()=>{
+    getResults(route.params.itemName , route.params.type)
+  },[])
+
+  const getResults = (itemName,type) => {
+    fetch(`${Host}${GetFoodByNameRoute}/${itemName}/${type}` , {
+      method:'POST',
+      body: JSON.stringify({itemName:route.params.itemName , type:route.params.type}),
+      headers: {
+        "Content-Type": "application/json",
+      }
+    })
+    .then(res=> res.json())
+    .then((data)=>{
+      setSearchResults(data)
+    })
+  }
   const DATA = [
     {
       shopName: "Shop 1",

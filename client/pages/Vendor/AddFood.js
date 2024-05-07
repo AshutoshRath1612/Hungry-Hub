@@ -55,7 +55,7 @@ export default function AddFood({navigation,route}) {
 
   return (
     <LinearGradient colors={["#FFFF66","white"]} style={styles.container}>
-    <Container position='top' width='90%' />
+    <Container position='top' width='95%' height='10%' />
       <Text
         style={{ fontSize: RFValue(20), fontWeight: "bold", marginBottom: 10 }}
       >

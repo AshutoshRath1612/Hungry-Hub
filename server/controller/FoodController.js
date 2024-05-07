@@ -31,8 +31,10 @@ const getAllFoods = async (req, res) => {
 
 // Controller function to get a specific food item by name
 const getFoodByName = async (req, res) => {
-    const foodName = req.params.name;
   
+    console.log(req.params)
+    const foodName = req.params.name;
+   
     try {
       const food = await Food.findOne({ name: foodName });
   
@@ -71,6 +73,7 @@ const getFoodByShopName = async (req, res) => {
 
 // Controller function to update a food item by ID
 const updateFoodById = async (req, res) => {
+  console.log(req.body)
     try {
       const { name, price, category, type, isAvailable } = req.body;
       const foodId = req.params.id;
@@ -90,9 +93,10 @@ const updateFoodById = async (req, res) => {
         console.log('Food not found with ID:', foodId);
         return res.status(404).json({ message: 'Food not found' });
       }
-  
+      else{
       // Respond with the updated food item
-      res.json(updatedFood);
+      res.status(200).json({message:`Food update Successfully`});
+      }
     } catch (error) {
       // Log any error that occurred during the update operation
       console.error('Error updating food item by ID:', error);
