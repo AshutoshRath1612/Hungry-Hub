@@ -1,5 +1,5 @@
 import { View, Text, FlatList, StyleSheet, Image } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import LottieView from "lottie-react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 
@@ -15,9 +15,10 @@ export default function CurrentOrder() {
   const accepticon = require("../assets/icons/acceptedicon.json");
   const preparingicon = require("../assets/icons/preparingicon.json");
   const readyicon = require("../assets/icons/readyicon.json");
+ const flatListRef = useRef(null);
 
-  useEffect(() => {
-    const data = [
+ useEffect(() => {
+   const data = [
       {
         _id: 1,
         storeName: "Store Name 1",
@@ -39,7 +40,7 @@ export default function CurrentOrder() {
             ratingCount: 600,
             price: 100,
             type: "Non-Vegeterian",
-
+            
             category: "Beverages",
           },
           {
@@ -76,7 +77,27 @@ export default function CurrentOrder() {
     setCurrentOrders(data);
     checkCurrentOrderStatus();
   }, []);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Calculate the index of the next item in a cycle
+      const nextIndex = (currentIndex + 1) % currentOrders.length;
+      setCurrentIndex(nextIndex);
 
+      if (isNaN(nextIndex)) {
+        setCurrentIndex(0);
+        return;
+      }
+
+      // Scroll to the next item
+      flatListRef.current.scrollToIndex({
+        animated: true,
+        index: nextIndex,
+      });
+    }, 5000); // Change the interval time (in milliseconds) as needed
+
+    return () => clearInterval(interval);
+  }, [currentIndex]);
   const checkCurrentOrderStatus = () => {
     setInterval(() => {
       const data = [
@@ -190,8 +211,7 @@ export default function CurrentOrder() {
         },
       ];
       setCurrentOrders(data);
-      console.log(data);
-    }, 60 * 1000);
+    }, 1000);
   };
 
   const CustomScrollIndicator = ({ itemCount, currentIndex }) => {
@@ -238,15 +258,17 @@ export default function CurrentOrder() {
 
   return (
     <View style={{ height: "20%" }}>
-      <FlatList
-        data={currentOrders}
-        renderItem={({ item, index }) => <CardItem item={item} index={index} />}
-        keyExtractor={(item, index) => index.toString()}
-        showsVerticalScrollIndicator={false}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-      />
-    </View>
+    <FlatList
+      ref={flatListRef}
+      data={currentOrders}
+      renderItem={({ item, index }) => <CardItem item={item} index={index} />}
+      keyExtractor={(item, index) => index.toString()}
+      showsVerticalScrollIndicator={false}
+      onScroll={handleScroll}
+      scrollEventThrottle={16}
+      initialScrollIndex={currentIndex}
+    />
+  </View>
   );
 }
 

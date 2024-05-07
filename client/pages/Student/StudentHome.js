@@ -1,6 +1,7 @@
 import {
   View,
   StyleSheet,
+  Animated,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Nav from "../../components/Nav";
@@ -14,6 +15,10 @@ import CurrentOrder from "../../components/CurrentOrder";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function StudentHome() {
+
+
+  const [scrollY] = useState(new Animated.Value(0));
+
   const route = useRoute();
   useEffect(()=>{
     if(route.params !== undefined)
@@ -32,10 +37,10 @@ export default function StudentHome() {
   return (
     <View style={styles.container}>
       <NavigationContext.Provider value={{ navigation, route }}>
-        <View style={styles.top}>
+        <Animated.View style={styles.top}>
           <Header />
           <Search />
-        </View>
+        </Animated.View>
         <View style={styles.bottom}>
           <Reccomandation />
           <CurrentOrder />

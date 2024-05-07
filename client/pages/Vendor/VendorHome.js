@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import Header from "../../components/Header";
 import { RFValue } from "react-native-responsive-fontsize";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
-import Search from "../../components/Search";
 import Nav from "../../components/Nav";
 import { NavigationContext } from "../../NavContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -162,9 +161,8 @@ const styles = StyleSheet.create({
   infoCard: {
     flexDirection: "row",
     justifyContent: "space-around",
-    backgroundColor: "white",
+    backgroundColor: "green",
     elevation: 5,
-    borderWidth: 1,
     padding: 10,
     margin: 10,
     borderRadius: 10,

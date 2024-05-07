@@ -7,7 +7,7 @@ import {
   Modal,
   Pressable,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import { RadioButton } from "react-native-paper";
 import { useNavigation } from '@react-navigation/native';
@@ -17,16 +17,35 @@ export default function Search() {
   const navigation = useNavigation();
   const route  = useRoute();
 
-  const [showFilter, setShowFilter] = useState(false);
-  const [categoryy, setCategory] = useState("");
-
-  const categories = ["Vegeterian", "Non-Vegeterian"];
+  console.log(route)
 
   
-  const handleNavigate = (e) => {
-    if(route.name !== 'Shop Menu' && e.nativeEvent.text !== ''){
-      navigation.navigate('Search Result',{itemName:e.nativeEvent.text ,type:categoryy })
+  const [showFilter, setShowFilter] = useState(false);
+  const [categoryy, setCategory] = useState("");
+  const [searchItem , setSearchItem] = useState("")
+  
+  const categories = ["Vegeterian", "Non-Vegeterian"];
+
+  const handleSubmit = (text) => {
+    if(route.name !== 'Shop Menu' && text !== ''){
+      navigation.navigate('Search Result',{itemName:text ,type:categoryy })
     }
+    if(route.name=== 'Vendor Menu' || route.name === 'Shop Menu'){
+      if(text === ''){
+        fetch(`${Host}${GetFoodByShopRoute}/${route.params.shopName}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setIsLoading(false)
+      });
+      }
+      else{
+
+      }
+    }
+  }
+  
+  const handleNavigate = (e) => {
+   
   }
   return (
     <View style={styles.searchView}>
@@ -77,7 +96,7 @@ export default function Search() {
           placeholder="Find Your Food..."
           placeholderTextColor="gray"
           returnKeyType="search"
-          onSubmitEditing={(e)=>handleNavigate(e)}
+          onSubmitEditing={(e)=>{handleSubmit(e.nativeEvent.text)}}
         />
       </View>
       <FontAwesome

@@ -22,9 +22,9 @@ import Search from "../../components/Search";
 import { RFValue } from "react-native-responsive-fontsize";
 import Nav from "../../components/Nav";
 import { NavigationContext } from "../../NavContext";
-import { DeleteFoodRoute, GetFoodByShopRoute, Host, UpdateFoodRoute } from "../../Constants";
+import { DeleteFoodRoute, GetFoodByShopRoute, Host} from "../../Constants";
 import Container, { Toast } from "toastify-react-native";
-import { RadioButton } from "react-native-paper";
+import LottieView from "lottie-react-native";
 import EditFoodModal from "../../components/EditFoodModal";
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
@@ -36,6 +36,7 @@ export default function Menu({ navigation, route }) {
   const [currentData, setCurrentData] = useState(null);
   const [foods, setFoods] = useState([]);
   const [shopInfo , setShopInfo] = useState(null)
+  const [isLoading,setIsLoading] = useState(true)
 
   useEffect(() => {
     getMenu()
@@ -46,6 +47,7 @@ export default function Menu({ navigation, route }) {
       .then((res) => res.json())
       .then((data) => {
         sortByCategory(data);
+        setIsLoading(false)
       });
     }
 
@@ -81,211 +83,6 @@ export default function Menu({ navigation, route }) {
       shopName: "Mio Amore",
       ratings: 3.8,
       ratingCount: 600,
-      foods: [
-        {
-          category: "Snacks",
-          items: [
-            {
-              name: "Burger",
-              isAvailable: true,
-              price: 100,
-              type: "Vegetarian",
-              ratings: 4.5,
-              ratingCount: 600,
-            },
-            {
-              name: "Pizza",
-              isAvailable: true,
-              price: 600,
-              type: "Non-Vegetarian",
-              ratings: 4.5,
-              ratingCount: 600,
-            },
-            {
-              name: "Sandwich",
-              isAvailable: true,
-              price: 450,
-              type: "Vegetarian",
-              ratings: 4.5,
-              ratingCount: 600,
-            },
-          ],
-        },
-        {
-          category: "Main Course",
-          items: [
-            {
-              name: "Biryani",
-              isAvailable: true,
-              price: 200,
-              type: "Non-Vegetarian",
-              ratings: 4.5,
-              ratingCount: 600,
-            },
-            {
-              name: "Fried Rice",
-              isAvailable: true,
-              price: 150,
-              type: "Vegetarian",
-              ratings: 4.5,
-              ratingCount: 600,
-            },
-            {
-              name: "Noodles",
-              isAvailable: true,
-              price: 180,
-              type: "Vegetarian",
-              ratings: 4.5,
-              ratingCount: 600,
-            },
-          ],
-        },
-        {
-          category: "Desserts",
-          items: [
-            {
-              name: "Ice Cream",
-              isAvailable: true,
-              price: 50,
-              type: "Vegetarian",
-              ratings: 4.5,
-              ratingCount: 600,
-            },
-            {
-              name: "Cake",
-              isAvailable: true,
-              price: 300,
-              type: "Vegetarian",
-              ratings: 4.5,
-              ratingCount: 600,
-            },
-            {
-              name: "Pastry",
-              isAvailable: true,
-              price: 100,
-              type: "Vegetarian",
-              ratings: 4.5,
-              ratingCount: 600,
-            },
-          ],
-        },
-        {
-          category: "Drinks",
-          items: [
-            {
-              name: "Cold Drink",
-              isAvailable: true,
-              price: 30,
-              type: "Vegetarian",
-              ratings: 4.5,
-              ratingCount: 600,
-            },
-            {
-              name: "Juice",
-              isAvailable: true,
-              price: 50,
-              type: "Vegetarian",
-              ratings: 4.5,
-              ratingCount: 600,
-            },
-            {
-              name: "Milk Shake",
-              isAvailable: true,
-              price: 70,
-              type: "Vegetarian",
-              ratings: 4.5,
-              ratingCount: 600,
-            },
-          ],
-        },
-        {
-          category: "Fast Food",
-          items: [
-            {
-              name: "Momos",
-              isAvailable: true,
-              price: 50,
-              type: "Vegetarian",
-              ratings: 4.5,
-              ratingCount: 600,
-            },
-            {
-              name: "Pasta",
-              isAvailable: true,
-              price: 100,
-              type: "Vegetarian",
-              ratings: 4.5,
-              ratingCount: 600,
-            },
-            {
-              name: "French Fries",
-              isAvailable: true,
-              price: 70,
-              type: "Vegetarian",
-              ratings: 4.5,
-              ratingCount: 600,
-            },
-          ],
-        },
-        {
-          category: "Beverages",
-          items: [
-            {
-              name: "Tea",
-              isAvailable: true,
-              price: 10,
-              type: "Vegetarian",
-              ratings: 4.5,
-              ratingCount: 600,
-            },
-            {
-              name: "Coffee",
-              isAvailable: true,
-              price: 20,
-              type: "Vegetarian",
-              ratings: 4.5,
-              ratingCount: 600,
-            },
-            {
-              name: "Cold Coffee",
-              isAvailable: true,
-              price: 30,
-              type: "Vegetarian",
-              ratings: 4.5,
-              ratingCount: 600,
-            },
-          ],
-        },
-        {
-          category: "Ice Cream",
-          items: [
-            {
-              name: "Vanilla",
-              isAvailable: true,
-              price: 20,
-              type: "Vegetarian",
-              ratings: 4.5,
-              ratingCount: 600,
-            },
-            {
-              name: "Chocolate",
-              isAvailable: true,
-              price: 30,
-              type: "Vegetarian",
-              ratings: 4.5,
-              ratingCount: 600,
-            },
-            {
-              name: "Strawberry",
-              isAvailable: true,
-              price: 40,
-              type: "Vegetarian",
-              ratings: 4.5,
-              ratingCount: 600,
-            },
-          ],
-        },
-      ],
     },
   ];
 
@@ -473,7 +270,14 @@ export default function Menu({ navigation, route }) {
 
   return (
     <NavigationContext.Provider value={{ navigation, route }}>
-      <View style={styles.container}>
+     { isLoading ? (
+      <LottieView
+          source={require('../../assets/icons/Loading.json')}
+          autoPlay
+          loop
+          style={{flex:1 }}
+        />
+     ) : (<View style={styles.container}>
       <Container position='top' width='90%' />
         <Animated.View style={[styles.header]}>
           <Image
@@ -538,7 +342,7 @@ export default function Menu({ navigation, route }) {
         <View style={{ position: "absolute", bottom: 0, width: "100%" }}>
           <Nav />
         </View>
-      </View>
+      </View>)}
     </NavigationContext.Provider>
   );
 }
