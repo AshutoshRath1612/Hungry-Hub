@@ -93,12 +93,12 @@ export default function AddFood({navigation,route}) {
         </View>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <RadioButton
-            value="Non-Vegeterian"
-            status={newItem.type === "Non-Vegeterian" ? "checked" : "unchecked"}
-            onPress={() => setNewItem({ ...newItem, type: "Non-Vegeterian" })}
+            value="Non-Vegetarian"
+            status={newItem.type === "Non-Vegetarian" ? "checked" : "unchecked"}
+            onPress={() => setNewItem({ ...newItem, type: "Non-Vegetarian" })}
           />
           <Text style={{ fontSize: RFValue(13), fontWeight: "bold" }}>
-            Non-Vegeterian
+            Non-Vegetarian
           </Text>
         </View>
         <Text style={styles.text}>Available</Text>
