@@ -69,7 +69,7 @@ const Login = ({ navigation }) => {
   };
 
   return (
-    <LinearGradient colors={["#FFFF66","white"]} style={styles.container}>
+    <LinearGradient colors={["#C38888","#FFD7D7"]} style={styles.container}>
       <Container
         width="90%"
         textStyle={{ fontSize: RFValue(15) }}
@@ -130,11 +130,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 40,
-    color: "#254117",
+    color: "#4C2E31",
     fontFamily: "Ubuntu_700Bold",
   },
   logo: {
-    height: "50%",
+    height: "70%",
   },
   form: {
     height: "30%",
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   btn: {
-    backgroundColor: "#228B22",
+    backgroundColor: "#915858",
     borderRadius: 20,
     height: 50,
     fontWeight: "bold",
