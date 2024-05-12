@@ -12,7 +12,8 @@
       "backgroundColor": "#FFD7D7"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/8e8f665a-2a73-462f-9fde-0056afb2fe46"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -37,7 +38,9 @@
       "permissions": [
         "WRITE_EXTERNAL_STORAGE",
         "MEDIA_LIBRARY",
-        "ACCESS_NETWORK_STATE"
+        "ACCESS_NETWORK_STATE",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
@@ -53,6 +56,9 @@
       "eas": {
         "projectId": "8e8f665a-2a73-462f-9fde-0056afb2fe46"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     }
   }
 }
