@@ -1,5 +1,6 @@
 
 const Food = require('../model/Food');
+const Shop = require('../model/Shop');
 
 // Controller function to create a new food item
 const createFood = async (req, res) => {
@@ -53,21 +54,34 @@ const getFoodByName = async (req, res) => {
 
 // Controller function to get a specific food item by shopName
 const getFoodByShopName = async (req, res) => {
-    const shopName = req.params.shopName;
-  
-    try {
-      const food = await Food.find({ shopName });
-  
-      if (!food) {
-        return res.status(404).json({ message: 'Food item not found' });
-      }
-  
-      res.status(200).json(food);
-    } catch (error) {
-      console.error('Error fetching food item by shopName:', error);
-      res.status(500).json({ message: 'Internal server error' });
+  const shopName = req.params.shopName;
+
+  try {
+    const foods = await Food.find({ shopName });
+
+    if (!foods || foods.length === 0) {
+      return res.status(404).json({ message: 'No food items found for the shop' });
     }
-  };
+
+    // Retrieve shop information for the specified shopName
+    const shop = await Shop.findOne({ name: shopName });
+
+    if (!shop) {
+      return res.status(404).json({ message: 'Shop not found' });
+    }
+
+    // Combine food items with shop information
+    const result = {
+      shop,
+      foods
+    };
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Error fetching food items by shopName:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
 
 
 
@@ -138,7 +152,96 @@ if (userOrders.length === 0) {
       res.status(200).json(recommendedItems);
   }
   }
+
+
+// Controller function to get shop information by shopName
+const getShopInfo = async (req, res) => {
+  const shopName = req.params.shopName;
+
+  try {
+      // Find all food items with the specified shopName
+      const shops = await Food.find({ shopName: { $regex: new RegExp(shopName, 'i') } });
+
+      if (shops.length === 0) {
+          return res.status(404).json({ message: `Shop '${shopName}' not found` });
+      }
+
+      res.status(200).json(shops);
+  } catch (error) {
+      console.error('Error fetching shop information:', error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
   
+// Controller function to search for food items by keyword (name)
+const searchFoodByName = async (req, res) => {
+  const keyword = req.params.keyword;
+
+  try {
+      // Use text search on 'name' field to find matching food items
+      const foods = await Food.find({ $text: { $search: keyword } });
+
+      if (foods.length === 0) {
+          return res.status(404).json({ message: `No food items found matching '${keyword}'` });
+      }
+
+      res.status(200).json(foods);
+  } catch (error) {
+      console.error('Error searching for food items by name:', error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+// // Controller function to get food items by category (e.g., "Vegetarian")
+// const getFoodByCategory = async (req, res) => {
+//   const category = req.params.category;
+
+//   try {
+//       const foods = await Food.find({ type: { $regex: new RegExp(category, 'i') } });
+
+//       if (foods.length === 0) {
+//           return res.status(404).json({ message: `No food items found for category '${category}'` });
+//       }
+
+//       res.status(200).json(foods);
+//   } catch (error) {
+//       console.error('Error fetching food items by category:', error);
+//       res.status(500).json({ message: 'Internal server error' });
+//   }
+// };
+
+
+// Controller function to search food items by type and category
+const searchFoodByTypeAndCategory = async (req, res) => {
+  const { type, category } = req.query;
+
+  try {
+    let query = {};
+
+    // Build the MongoDB query based on provided parameters
+    if (type && category) {
+      query = { type: { $regex: new RegExp(type, 'i') }, category: { $regex: new RegExp(category, 'i') } };
+    } else if (type) {
+      query = { type: { $regex: new RegExp(type, 'i') } };
+    } else if (category) {
+      query = { category: { $regex: new RegExp(category, 'i') } };
+    }
+
+    const foods = await Food.find(query);
+
+    if (foods.length === 0) {
+      const message = `No food items found matching type '${type || 'Any'}' and category '${category || 'Any'}'`;
+      return res.status(404).json({ message });
+    }
+
+    res.status(200).json(foods);
+  } catch (error) {
+    console.error('Error searching for food items by type and category:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 
 // Controller function to delete a food item by ID
 const deleteFoodById = async (req, res) => {
@@ -160,5 +263,9 @@ module.exports = {
   getFoodByName,
   getFoodByShopName,
   updateFoodById,
+  searchFoodByName,
+  getShopInfo,
+  
+  searchFoodByTypeAndCategory,
   deleteFoodById
 };

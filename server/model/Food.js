@@ -38,6 +38,8 @@ const FoodSchema = mongoose.Schema({
         default:0
     }
 })
+// Define text index on the 'name' field for search capability
+FoodSchema.index({ name: 'text' });
 
 FoodSchema.index({ shopName: 1 }, { unique: false });
 
