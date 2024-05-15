@@ -36,7 +36,7 @@ export default function Payment({navigation,route}) {
             description: 'Credits towards consultation',
             image: 'https://i.imgur.com/3g7nmJC.png',
             currency: 'INR',
-            key: 'rzp_test_1iMLg2obI6ZsN0', // Your api key
+            key: '', // Your api key
             amount: amount,
             name: 'foo', 
             prefill: {
