@@ -73,9 +73,9 @@ export default function Cart({ navigation, route }) {
       const maxX = 300 - RFValue(50); // Adjust 300 to the width of your view, and RFValue(50) to the size of your circle button
 
       if (gesture.moveX > thresholdX) {
-        navigation.navigate('Payment Success')
-        // Payment successful
-        console.log("Payment Successful");
+        navigation.navigate('Payment',{amount: findPrice() + 5 + (deliveryType === "Dine-in" ? 0 : 5)})
+       // Payment successful
+        console.log("Payment",);
         setShowSuccess(true); // Set a state to show the payment success message
       }
         // Payment not successful, animate the circle back to its initial position

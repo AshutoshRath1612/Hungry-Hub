@@ -1,9 +1,13 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
+
 const authRoutes = require('./routes/AuthRoutes')
 const foodRoutes = require('./routes/FoodRoutes');
 const orderRoutes = require('./routes/orderRoutes')
+const shopRoutes = require('./routes/ShopRoutes')
+const searchRoutes = require('./routes/SearchRoutes')
+
 const errorHandler = require('./errorHandler');
 
 require('dotenv').config()
@@ -16,6 +20,8 @@ app.use(cors())
 //Routes
 app.use('/auth',authRoutes)
 app.use('/food', foodRoutes);
+app.use('/shop',shopRoutes);
+app.use('/search',searchRoutes);
 app.use('/order', orderRoutes);
 
 

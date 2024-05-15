@@ -25,6 +25,7 @@ import VendorOrderSummary from './pages/Vendor/VendorOrderSummary';
 import AddFood from './pages/Vendor/AddFood';
 import Scanner from './pages/Vendor/Scanner';
 import OTP from './pages/OTP';
+import Payment from './pages/Student/Payment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LottieView from "lottie-react-native";
 import VendorUID from './pages/Vendor/VendorUID';
@@ -100,6 +101,7 @@ export default function App() {
             <Stack.Screen options={{headerShown:true}} name='Cart' component={Cart} />
             <Stack.Screen name='Shop Menu' component={ShopMenu} options={({ route }) => ({  headerShown: true, title: route.params.shopName })} />
             <Stack.Screen name='Search Result' component={SearchResults} options={({ route }) => ({  headerShown: true, title: route.params.itemName })} />
+            <Stack.Screen name='Payment' component={Payment} />
             <Stack.Screen name='Payment Success' component={OrderSuccessScreen} />
             
             {/* For vendor */}
