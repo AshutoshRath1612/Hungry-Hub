@@ -97,11 +97,11 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-end",
+    alignItems: "center",
     marginTop: "15%",
   },
   headerLeft: {
-    alignItems: "flex-end",
+    alignItems: "center",
     flexDirection: "row",
   },
   logo: {

@@ -5,6 +5,7 @@ import {
   TextInput,
   Image,
   Pressable,
+  StatusBar,
 } from "react-native";
 import React, { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
@@ -70,6 +71,7 @@ const Login = ({ navigation }) => {
 
   return (
     <LinearGradient colors={["#C38888","#FFD7D7"]} style={styles.container}>
+    <StatusBar backgroundColor='#C38888'  barStyle='dark-content' showHideTransition='fade' />
       <Container
         width="90%"
         textStyle={{ fontSize: RFValue(15) }}
@@ -121,7 +123,7 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     alignItems: "center",
-    borderWidth: 1,
+    // borderWidth: 1,
   },
   topic: {
     justifyContent: "space-around",

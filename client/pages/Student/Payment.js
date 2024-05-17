@@ -4,7 +4,7 @@ import RazorpayCheckout from 'react-native-razorpay'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const createOrder = async (amount) => {
-    const response = await fetch('http://172.168.7.52:8080/create_order', {
+    const response = await fetch('http://192.168.29.15:8080/create_order', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ export default function Payment({navigation,route}) {
             description: 'Credits towards consultation',
             image: 'https://i.imgur.com/3g7nmJC.png',
             currency: 'INR',
-            key: '', // Your api key
+            key: 'rzp_test_1iMLg2obI6ZsN0', // Your api key
             amount: amount,
             name: 'foo', 
             prefill: {
