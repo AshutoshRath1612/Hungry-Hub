@@ -13,6 +13,7 @@ import { useRoute, useNavigation } from "@react-navigation/native";
 import { NavigationContext } from "../../NavContext";
 import { RFValue } from "react-native-responsive-fontsize";
 import { OrderStatusProvider, useOrderStatus } from "../../OrderStatusContext";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function OrderHistory() {
   // Import the images
@@ -321,8 +322,8 @@ export default function OrderHistory() {
       return price;
     };
     return (
+      <LinearGradient colors={["#C0A2A2","white"]} style={styles.items}>
       <Pressable
-        style={styles.items}
         onPress={() => {
           showOrderDetails(item);
         }}
@@ -396,6 +397,7 @@ export default function OrderHistory() {
           <Text style={{ fontWeight: "bold" }}>₹ {findPrice(item.items)}</Text>
         </View>
       </Pressable>
+      </LinearGradient>
     );
   };
 
@@ -431,6 +433,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     borderRadius: 10,
     padding: 10,
+    elevation: 5,
+    shadowColor: "#E0A2A2",
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 2,
   },
   item: {
     paddingVertical: 5,

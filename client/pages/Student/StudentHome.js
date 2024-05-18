@@ -13,11 +13,9 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { NavigationContext } from "../../NavContext";
 import CurrentOrder from "../../components/CurrentOrder";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function StudentHome() {
-
-
-  const [scrollY] = useState(new Animated.Value(0));
 
   const route = useRoute();
   useEffect(()=>{
@@ -35,7 +33,7 @@ export default function StudentHome() {
   const navigation = useNavigation();
 
   return (
-    <View style={styles.container}>
+    <LinearGradient colors={["#C38888","white"]} style={styles.container}>
       <NavigationContext.Provider value={{ navigation, route }}>
         <Animated.View style={styles.top}>
           <Header />
@@ -51,7 +49,7 @@ export default function StudentHome() {
           <Nav />
         </View>
       </NavigationContext.Provider>
-    </View>
+    </LinearGradient>
   );
 }
 
@@ -62,8 +60,9 @@ const styles = StyleSheet.create({
     // backgroundColor:'#001d07'
   },
   top: {
-    height: "20%",
-    justifyContent: "space-between",
+    marginTop:'6%',
+    height: "17%",
+    justifyContent: "space-evenly",
   },
   bottom: {
     height: "73%",

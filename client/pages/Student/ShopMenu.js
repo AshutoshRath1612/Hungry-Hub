@@ -17,6 +17,7 @@ import { RFValue } from "react-native-responsive-fontsize";
 import { useCart } from "../../CartContext";
 import ShopModal from "../../components/ShopModal";
 import CartCard from "../../components/CartCard";
+import { LinearGradient } from "expo-linear-gradient";
 
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
@@ -312,7 +313,7 @@ const findItem = (foodItem) => {
   const renderItem = ({ item }) => {
     return (
       <TouchableWithoutFeedback onPress={() => setExpanded(false)}>
-        <View key={item.category} style={styles.categoryContainer}>
+        <LinearGradient colors={["#FFD7D7","white"]} key={item.category} style={styles.categoryContainer}>
           <Text style={styles.category}>{item.category}</Text>
           {item.items.map((foodItem, index) => (
             <View key={index} style={styles.menuItem}>
@@ -401,7 +402,7 @@ const findItem = (foodItem) => {
               )}
             </View>
           ))}
-        </View>
+        </LinearGradient>
       </TouchableWithoutFeedback>
     );
   };
@@ -439,7 +440,7 @@ const findItem = (foodItem) => {
         data={DATA[0].foods}
         keyExtractor={(item, index) => index.toString()}
         renderItem={renderItem}
-        contentContainerStyle={{ paddingTop: HEADER_MAX_HEIGHT + 20 }} // Add some initial padding
+        contentContainerStyle={{ paddingTop: HEADER_MAX_HEIGHT }} // Add some initial padding
         scrollEventThrottle={16}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
@@ -477,13 +478,13 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    backgroundColor: "#fff",
+    // backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
     zIndex: 100,
-    elevation: 3,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    // elevation: 3,
+    // borderBottomWidth: 1,
+    // borderBottomColor: "#ccc",
     overflow: "hidden",
   },
   shopImage: {
@@ -502,12 +503,12 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     position: "relative",
-    top: RFValue(7),
+    // top: RFValue(7),
     left: 0,
     right: 0,
     zIndex: 1,
     elevation: 2,
-    backgroundColor: "white",
+    backgroundColor: "#FDF1F1",
     paddingVertical: 5,
   },
   category: {
@@ -527,8 +528,6 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 10,
     backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderColor: "grey",
   },
   menuItem: {
     flexDirection: "row",

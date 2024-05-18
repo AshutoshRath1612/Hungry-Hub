@@ -22,7 +22,7 @@ export default function CartCard() {
 const styles = StyleSheet.create({
     cartview:{
         width:'90%',
-        backgroundColor:'red',
+        backgroundColor:'#915858',
         flexDirection:'row',
         justifyContent:'space-around',
         alignItems:'center',

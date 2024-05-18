@@ -29,6 +29,7 @@ import Payment from './pages/Student/Payment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LottieView from "lottie-react-native";
 import VendorUID from './pages/Vendor/VendorUID';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 
 const Stack = createStackNavigator();
@@ -97,7 +98,9 @@ export default function App() {
             <Stack.Screen name='Student Signup' component={StudentSignUp} />
             <Stack.Screen name='Student Home' component={StudentHome} />
             <Stack.Screen options={{headerShown:true}} name='History' component={OrderHistory} />
-            <Stack.Screen options={{headerShown:true}} name='Order Summary' component={OrderSummary} />
+            <Stack.Screen options={{headerShown:true , headerStyle:{
+              backgroundColor:'#E0A2A2',
+            },headerTintColor:'black',headerTitleStyle:{fontSize:RFValue(23)}}} name='Order Summary' component={OrderSummary} />
             <Stack.Screen options={{headerShown:true}} name='Cart' component={Cart} />
             <Stack.Screen name='Shop Menu' component={ShopMenu} options={({ route }) => ({  headerShown: true, title: route.params.shopName })} />
             <Stack.Screen name='Search Result' component={SearchResults} options={({ route }) => ({  headerShown: true, title: route.params.itemName })} />

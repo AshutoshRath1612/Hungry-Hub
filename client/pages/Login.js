@@ -70,7 +70,7 @@ const Login = ({ navigation }) => {
   };
 
   return (
-    <LinearGradient colors={["#C38888","#FFD7D7"]} style={styles.container}>
+    <LinearGradient colors={["#C38888","white"]} style={styles.container}>
     <StatusBar backgroundColor='#C38888'  barStyle='dark-content' showHideTransition='fade' />
       <Container
         width="90%"

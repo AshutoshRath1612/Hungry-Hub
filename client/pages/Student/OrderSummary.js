@@ -13,6 +13,7 @@ import { useRoute } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 import { RFValue } from "react-native-responsive-fontsize";
 import QRcode from "../../components/QRCode";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function OrderSummary() {
   const VegLogo = require("../../assets/icons/VegLogo.png");
@@ -32,6 +33,7 @@ export default function OrderSummary() {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
+    <LinearGradient colors={["#E0A2A2","white"]} style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.OrderSummaryContainer}>
           <View
@@ -229,6 +231,7 @@ export default function OrderSummary() {
             </Text>
           </View>
         )}
+        </LinearGradient>
     </KeyboardAvoidingView>
   );
 }

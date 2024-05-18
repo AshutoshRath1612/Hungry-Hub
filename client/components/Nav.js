@@ -24,9 +24,6 @@ function Nav() {
       if (!currentUser.isStudent) {
         setShopName(currentUser.shopName);
       }
-    } else {
-      // Handle the case when there is no user data in AsyncStorage
-      console.log("No user data found in AsyncStorage");
     }
   };
 

@@ -130,7 +130,7 @@ export default function OTP({ navigation, route }) {
   };
 
   return (
-    <LinearGradient colors={["#FFCC66", "#FF9933"]} style={styles.OTPcontainer}>
+    <LinearGradient colors={["#C38888","#FFD7D7"]} style={styles.OTPcontainer}>
       <Container position="top" width="80%" />
       <View style={styles.title}>
         <Text style={styles.titleText}>Enter the code sent to</Text>
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   titleText: {
-    color: "#003366",
+    color: "#4C2E31",
     fontSize: RFValue(23),
   },
   inputContainer: {
@@ -195,7 +195,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
     marginHorizontal: 5,
-    color: "#003366",
   },
   resendText: {
     color: "#003366",
@@ -205,7 +204,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   submitButton: {
-    backgroundColor: "#663300",
+    backgroundColor: "#915858",
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 5,
