@@ -15,6 +15,7 @@ import { NavigationContext } from "../../NavContext";
 import { RFValue } from "react-native-responsive-fontsize";
 import { OrderStatusProvider, useOrderStatus } from "../../OrderStatusContext";
 import { FontAwesome } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function OrderHistory() {
   // Import the images
@@ -169,7 +170,7 @@ export default function OrderHistory() {
   const route = useRoute();
 
   return (
-    <View style={styles.container}>
+    <LinearGradient colors={["#C38888" , "white"]}  style={styles.container}>
       <NavigationContext.Provider value={{ navigation, route }}>
         <View
           style={{
@@ -209,7 +210,7 @@ export default function OrderHistory() {
           <Nav />
         </View>
       </NavigationContext.Provider>
-    </View>
+    </LinearGradient>
   );
 }
 const styles = StyleSheet.create({

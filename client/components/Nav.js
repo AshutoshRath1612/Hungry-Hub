@@ -137,14 +137,14 @@ function Nav() {
               style={[
                 styles.tabText,
                 {
-                  backgroundColor: "#228B22",
+                  backgroundColor: "#915858",
                   padding: RFValue(12),
                   paddingHorizontal: RFValue(15),
                   borderRadius: 30,
                   zIndex: 10,
                 },
               ]}
-              color="black"
+              color="white"
             />
           </TouchableOpacity>
           <TouchableOpacity

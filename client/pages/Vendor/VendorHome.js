@@ -46,7 +46,7 @@ export default function VendorHome({ navigation, route}) {
         />
       </View>
     ):(
-      <LinearGradient colors={["#FFFF66","white"]} style={{height:'100%'}}>
+      <LinearGradient colors={["#C38888","white"]} style={{height:'100%',justifyContent:'center'}}>
       <Header />
       <Text
         style={{
@@ -75,12 +75,12 @@ export default function VendorHome({ navigation, route}) {
         </Text>
         <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
           <View style={styles.infoCard}>
-            <Ionicons name="fast-food" size={24} color="black" />
-            <Text style={{ fontSize: RFValue(20) }}>10000</Text>
+            <Ionicons name="fast-food" size={24} color="white" />
+            <Text style={{ fontSize: RFValue(20),color:"white" }}>10000</Text>
           </View>
           <View style={styles.infoCard}>
-            <FontAwesome name="rupee" size={24} color="black" />
-            <Text style={{ fontSize: RFValue(20) }}>0</Text>
+            <FontAwesome name="rupee" size={24} color="white" />
+            <Text style={{ fontSize: RFValue(20),color:"white" }}>0</Text>
           </View>
         </View>
       </View>
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   infoCard: {
     flexDirection: "row",
     justifyContent: "space-around",
-    backgroundColor: "green",
+    backgroundColor: "#915858",
     elevation: 5,
     padding: 10,
     margin: 10,

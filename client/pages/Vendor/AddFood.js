@@ -54,7 +54,7 @@ export default function AddFood({navigation,route}) {
   }
 
   return (
-    <LinearGradient colors={["#FFFF66","white"]} style={styles.container}>
+    <LinearGradient colors={["#A56C6C","white"]} style={styles.container}>
     <Container position='top' width='95%' height='10%' />
       <Text
         style={{ fontSize: RFValue(20), fontWeight: "bold", marginBottom: 10 }}
@@ -130,7 +130,11 @@ export default function AddFood({navigation,route}) {
           </View>
       </View>
       <View>
-      <Entypo onPress={()=>navigation.goBack()} name="circle-with-cross" size={RFValue(60)} color="black" />
+      <Entypo onPress={()=>navigation.goBack()} name="cross" size={RFValue(60)} style={
+                {
+                  backgroundColor: "#915858",
+                  borderRadius: 50,
+                }} color="white" />
       </View>
     </LinearGradient>
   );
@@ -143,7 +147,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   containerView: {
-    backgroundColor: "#DDFFDD",
+    backgroundColor: "#FDF1F1",
     padding: 20,
     borderRadius: 10,
     width: "80%",
@@ -168,7 +172,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   btn: {
-    backgroundColor: "#228B22",
+    backgroundColor: "#915858",
     padding: 10,
     borderRadius: 10,
     width: "40%",

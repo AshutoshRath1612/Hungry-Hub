@@ -1,5 +1,6 @@
 const Food = require("../model/Food");
 const Shop = require("../model/Shop");
+const {sortByShopAndCategory } = require("./SearchController");
 
 // Controller function to create a new food item
 const createFood = async (req, res) => {
@@ -55,9 +56,9 @@ const getFoodByName = async (req, res) => {
 // Controller function to get a specific food item by shopName
 const getFoodByShopName = async (req, res) => {
   const shopName = req.params.shopName;
-
+  console.log(shopName)
   try {
-    const foods = await Food.find({ shopName });
+    let foods = await Food.find({ shopName });
 
     if (!foods || foods.length === 0) {
       return res
@@ -71,6 +72,8 @@ const getFoodByShopName = async (req, res) => {
     if (!shop) {
       return res.status(404).json({ message: "Shop not found" });
     }
+
+    foods = sortByShopAndCategory(foods);
 
     // Combine food items with shop information
     const result = {

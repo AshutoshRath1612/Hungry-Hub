@@ -13,12 +13,13 @@ import {
 import { useRoute } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 import { RFValue } from "react-native-responsive-fontsize";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function VendorOrderSummary() {
   const VegLogo = require("../../assets/icons/VegLogo.png");
   const NonVegLogo = require("../../assets/icons/NonVegLogo.png");
   const route = useRoute();
-  const[showModal,setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false);
   const summary = {
     _id: 1,
     storeName: "Store Name 1",
@@ -75,63 +76,105 @@ export default function VendorOrderSummary() {
   };
 
   const customerDetails = {
-    name: 'Ashutosh',
-    phoneNumber: '9348123123',
-    regdNo: '2041018066'
-  }
+    name: "Ashutosh",
+    phoneNumber: "9348123123",
+    regdNo: "2041018066",
+  };
 
   const UpdateStatusModal = () => (
     <Modal
-    animationType="slide"
-    transparent={true}
-    visible={showModal}
-    onRequestClose={
-      () => {
+      animationType="slide"
+      transparent={true}
+      visible={showModal}
+      onRequestClose={() => {
         setShowModal(!showModal);
       }}
     >
       <View style={styles.container}>
         <View style={styles.containerView}>
-          <Text style={{fontSize:RFValue(15) , fontWeight:'500'}}>Update Order Status</Text>
+          <Text style={{ fontSize: RFValue(15), fontWeight: "500" }}>
+            Update Order Status
+          </Text>
 
           <View style={styles.btnView}>
-        {summary.status !== 'Cancelled' && summary.status!=='Delivered' && <View style={styles.status}>
-           <Pressable onPress={()=>setShowModal(false)} style={styles.statusinfo}>
-             <View style={[styles.imgOuter,{backgroundColor: summary.status === 'Accepted' ? 'green' : ''}]}>
-               <Image
-                style={[styles.statusimg, { width: "40%" }]}
-                source={require("../../assets/icons/orderaccept.png")}
-              />
-            </View>
-            <Text style={styles.text}>Accepted</Text>
-          </Pressable>
-          <View style={[styles.line, { width: "10%" }]}></View>
-          <Pressable onPress={()=>setShowModal(false)} style={styles.statusinfo}>
-            <View style={[styles.imgOuter,{backgroundColor: summary.status === 'Preparing' ? 'green' : ''}]}>
-              <Image
-                style={[styles.statusimg, { width: 90 }]}
-                source={require("../../assets/icons/orderpreparing.png")}
-              />
-            </View>
-            <Text style={styles.text}>Preparing</Text>
-          </Pressable>
-          <View style={[styles.line, { width: "10%" }]}></View>
-          <Pressable onPress={()=>setShowModal(false)} style={styles.statusinfo}>
-            <View style={[styles.imgOuter,{backgroundColor: summary.status === 'Ready' ? 'green' : ''}]}>
-              <Image
-                style={styles.statusimg}
-                source={require("../../assets/icons/orderprepared.png")}
-              />
-            </View>
-            <Text style={styles.text}>Ready</Text>
-          </Pressable>
-        </View>}
+            {summary.status !== "Cancelled" &&
+              summary.status !== "Delivered" && (
+                <View style={styles.status}>
+                  <Pressable
+                    onPress={() => setShowModal(false)}
+                    style={styles.statusinfo}
+                  >
+                    <View
+                      style={[
+                        styles.imgOuter,
+                        {
+                          backgroundColor:
+                            summary.status === "Accepted" ? "green" : "",
+                        },
+                      ]}
+                    >
+                      <Image
+                        style={[styles.statusimg, { width: "40%" }]}
+                        source={require("../../assets/icons/orderaccept.png")}
+                      />
+                    </View>
+                    <Text style={styles.text}>Accepted</Text>
+                  </Pressable>
+                  <View style={[styles.line, { width: "10%" }]}></View>
+                  <Pressable
+                    onPress={() => setShowModal(false)}
+                    style={styles.statusinfo}
+                  >
+                    <View
+                      style={[
+                        styles.imgOuter,
+                        {
+                          backgroundColor:
+                            summary.status === "Preparing" ? "green" : "",
+                        },
+                      ]}
+                    >
+                      <Image
+                        style={[styles.statusimg, { width: 90 }]}
+                        source={require("../../assets/icons/orderpreparing.png")}
+                      />
+                    </View>
+                    <Text style={styles.text}>Preparing</Text>
+                  </Pressable>
+                  <View style={[styles.line, { width: "10%" }]}></View>
+                  <Pressable
+                    onPress={() => setShowModal(false)}
+                    style={styles.statusinfo}
+                  >
+                    <View
+                      style={[
+                        styles.imgOuter,
+                        {
+                          backgroundColor:
+                            summary.status === "Ready" ? "green" : "",
+                        },
+                      ]}
+                    >
+                      <Image
+                        style={styles.statusimg}
+                        source={require("../../assets/icons/orderprepared.png")}
+                      />
+                    </View>
+                    <Text style={styles.text}>Ready</Text>
+                  </Pressable>
+                </View>
+              )}
           </View>
-          <Pressable style={[styles.btn,{marginHorizontal:'25%',width:'50%'}]} onPress={()=>setShowModal(false)}><Text style={styles.txt}>Close</Text></Pressable>
-          </View>
+          <Pressable
+            style={[styles.btn, { marginHorizontal: "25%", width: "50%" }]}
+            onPress={() => setShowModal(false)}
+          >
+            <Text style={styles.txt}>Close</Text>
+          </Pressable>
+        </View>
       </View>
     </Modal>
-  )
+  );
 
   const findPrice = (items) => {
     let total = 0;
@@ -142,153 +185,163 @@ export default function VendorOrderSummary() {
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.OrderSummaryContainer}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              width: "100%",
-            }}
-          >
-            <Text style={styles.shopName}>{customerDetails.name}</Text>                  
-          </View>
-          <View style={styles.line}></View>
-          <View style={{flexDirection:'row' ,alignItems:'center' , justifyContent:'space-between'  ,width:'100%'}}>
-          <Text style={styles.info}>
-            {summary.status !== "Cancelled" && summary.status !== "Delivered"
-              ? `This Order is ${summary.status}`
-              : `This Order was ${summary.status}`}
-          </Text>
-          <Pressable style={styles.btn} onPress={() => setShowModal(true)}>
-            <Text>Update Status</Text>
-              <UpdateStatusModal />
+    <LinearGradient colors={["#C38888", "white"]} style={{ flex: 1 }}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.OrderSummaryContainer}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: "100%",
+              }}
+            >
+              <Text style={styles.shopName}>{customerDetails.name}</Text>
+            </View>
+            <View style={styles.line}></View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                width: "100%",
+              }}
+            >
+              <Text style={styles.info}>
+                {summary.status !== "Cancelled" &&
+                summary.status !== "Delivered"
+                  ? `This Order is ${summary.status}...`
+                  : `This Order was ${summary.status}...`}
+              </Text>
+              <Pressable style={styles.btn} onPress={() => setShowModal(true)}>
+                <Text style={{color:"white"}}>Update Status</Text>
+                <UpdateStatusModal />
               </Pressable>
-          </View>
-          <Text style={styles.heading}>Your Order</Text>
-          <View style={styles.line}></View>
-          <View style={styles.itemList}>
-            {summary.items.map((item, index) => (
-              <View style={styles.item} key={index}>
-                <View style={styles.itemnameinfo}>
-                  <Image
-                    style={styles.typeImg}
-                    source={item.type === "Vegeterian" ? VegLogo : NonVegLogo}
-                  />
-                  <Text style={styles.itemname}>{item.name}</Text>
-                </View>
-                <View style={styles.iteminfo}>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      padding: 2,
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text
-                      style={{
-                        borderWidth: 0.5,
-                        fontWeight: "500",
-                        backgroundColor: "#D3D3D3",
-                        paddingVertical: 3,
-                        paddingHorizontal: 5,
-                        borderRadius: 2,
-                        textAlign: "center",
-                      }}
-                    >
-                      {item.quantity}
-                    </Text>
-                    <Text
-                      style={{
-                        fontWeight: "500",
-                        marginHorizontal: RFValue(5),
-                      }}
-                    >
-                      {" "}
-                      X{" "}
-                    </Text>
-                    <Text style={styles.text}>₹{item.price}</Text>
+            </View>
+            <Text style={styles.heading}>Your Order</Text>
+            <View style={styles.line}></View>
+            <View style={styles.itemList}>
+              {summary.items.map((item, index) => (
+                <View style={styles.item} key={index}>
+                  <View style={styles.itemnameinfo}>
+                    <Image
+                      style={styles.typeImg}
+                      source={item.type === "Vegeterian" ? VegLogo : NonVegLogo}
+                    />
+                    <Text style={styles.itemname}>{item.name}</Text>
                   </View>
-                  <Text style={styles.text}>
-                    ₹ {item.price * item.quantity}
-                  </Text>
+                  <View style={styles.iteminfo}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        padding: 2,
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          borderWidth: 0.5,
+                          fontWeight: "500",
+                          backgroundColor: "#D3D3D3",
+                          paddingVertical: 3,
+                          paddingHorizontal: 5,
+                          borderRadius: 2,
+                          textAlign: "center",
+                        }}
+                      >
+                        {item.quantity}
+                      </Text>
+                      <Text
+                        style={{
+                          fontWeight: "500",
+                          marginHorizontal: RFValue(5),
+                        }}
+                      >
+                        {" "}
+                        X{" "}
+                      </Text>
+                      <Text style={styles.text}>₹{item.price}</Text>
+                    </View>
+                    <Text style={styles.text}>
+                      ₹ {item.price * item.quantity}
+                    </Text>
+                  </View>
                 </View>
-              </View>
-            ))}
-          </View>
-          <View style={styles.line}></View>
-          <View style={styles.details}>
-            <Text style={[styles.text, { fontSize: 15 }]}>Item Total</Text>
-            <Text style={[styles.text, { fontSize: 15 }]}>
-              ₹ {findPrice(summary.items)}
-            </Text>
-          </View>
-          <View style={{ width: "100%" }}>
-            <Text style={styles.heading}>Order Details</Text>
+              ))}
+            </View>
             <View style={styles.line}></View>
             <View style={styles.details}>
-              <Text style={styles.info}>Order ID</Text>
-              <Text style={styles.text}>{summary.orderId}</Text>
-            </View>
-            <View style={styles.details}>
-              <Text style={styles.info}>Date</Text>
-              <Text style={styles.text}>
-                {summary.date} at {summary.time}
+              <Text style={[styles.text, { fontSize: 15 }]}>Item Total</Text>
+              <Text style={[styles.text, { fontSize: 15 }]}>
+                ₹ {findPrice(summary.items)}
               </Text>
             </View>
-            <View style={styles.details}>
-              <Text style={styles.info}>Order Type</Text>
-              <Text style={styles.text}>{summary.orderType}</Text>
+            <View style={{ width: "100%" }}>
+              <Text style={styles.heading}>Order Details</Text>
+              <View style={styles.line}></View>
+              <View style={styles.details}>
+                <Text style={styles.info}>Order ID</Text>
+                <Text style={styles.text}>{summary.orderId}</Text>
+              </View>
+              <View style={styles.details}>
+                <Text style={styles.info}>Date</Text>
+                <Text style={styles.text}>
+                  {summary.date} at {summary.time}
+                </Text>
+              </View>
+              <View style={styles.details}>
+                <Text style={styles.info}>Order Type</Text>
+                <Text style={styles.text}>{summary.orderType}</Text>
+              </View>
+              <View style={styles.details}>
+                <Text style={styles.info}>Phone Number</Text>
+                <Text style={styles.text}>9348183XXX</Text>
+              </View>
             </View>
-            <View style={styles.details}>
-              <Text style={styles.info}>Phone Number</Text>
-              <Text style={styles.text}>9348183XXX</Text>
+            <View style={{ width: "100%" }}>
+              <Text style={styles.heading}>Payment Info</Text>
+              <View style={styles.line}></View>
+              <View style={styles.details}>
+                <Text style={styles.info}>Payment</Text>
+                <Text style={styles.text}>Paid: {summary.orderId}</Text>
+              </View>
+
+              <View style={styles.details}>
+                <Text style={styles.info}>Transaction Id</Text>
+                <Text style={styles.text}>{summary.transactionId}</Text>
+              </View>
+
+              <View style={styles.details}>
+                <Text style={styles.info}>Status</Text>
+                <Text style={styles.text}>{summary.paymentStatus}</Text>
+              </View>
+
+              <View style={styles.details}>
+                <Text style={styles.info}>Amount</Text>
+                <Text style={styles.text}>₹ {findPrice(summary.items)}</Text>
+              </View>
+            </View>
+            <View style={{ width: "100%" }}>
+              <Text style={styles.heading}>Customer Details</Text>
+              <View style={styles.line}></View>
+              <View style={styles.details}>
+                <Text style={styles.info}>Name</Text>
+                <Text style={styles.text}>{customerDetails.name}</Text>
+              </View>
+              <View style={styles.details}>
+                <Text style={styles.info}>Regd No.</Text>
+                <Text style={styles.text}>{customerDetails.regdNo}</Text>
+              </View>
+              <View style={styles.details}>
+                <Text style={styles.info}>Phone No.</Text>
+                <Text style={styles.text}>{customerDetails.phoneNumber}</Text>
+              </View>
             </View>
           </View>
-          <View style={{ width: "100%" }}>
-            <Text style={styles.heading}>Payment Info</Text>
-            <View style={styles.line}></View>
-            <View style={styles.details}>
-              <Text style={styles.info}>Payment</Text>
-              <Text style={styles.text}>Paid: {summary.orderId}</Text>
-            </View>
-
-            <View style={styles.details}>
-              <Text style={styles.info}>Transaction Id</Text>
-              <Text style={styles.text}>{summary.transactionId}</Text>
-            </View>
-
-            <View style={styles.details}>
-              <Text style={styles.info}>Status</Text>
-              <Text style={styles.text}>{summary.paymentStatus}</Text>
-            </View>
-
-            <View style={styles.details}>
-              <Text style={styles.info}>Amount</Text>
-              <Text style={styles.text}>₹ {findPrice(summary.items)}</Text>
-            </View>
-          </View>
-          <View style={{width:'100%'}}>
-            <Text style={styles.heading}>Customer Details</Text>
-            <View style={styles.line}></View>
-            <View style={styles.details}>
-              <Text style={styles.info}>Name</Text>
-              <Text style={styles.text}>{customerDetails.name}</Text>
-            </View>
-            <View style={styles.details}>
-              <Text style={styles.info}>Regd No.</Text>
-              <Text style={styles.text}>{customerDetails.regdNo}</Text>
-            </View>
-            <View style={styles.details}>
-              <Text style={styles.info}>Phone No.</Text>
-              <Text style={styles.text}>{customerDetails.phoneNumber}</Text>
-            </View>
-          </View>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </LinearGradient>
   );
 }
 
@@ -303,8 +356,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "flex-start",
     width: "100%",
-    height:'90%',
-    marginVertical:'5%'
+    height: "90%",
+    marginVertical: "5%",
   },
   line: {
     borderBottomWidth: 1,
@@ -347,9 +400,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   info: {
-    color: "grey",
+    color: "#6D2932",
     marginTop: 10,
-    fontSize: RFValue(12),
+    fontSize: RFValue(13),
+    fontWeight: "bold",
   },
   typeImg: {
     height: 15,
@@ -361,14 +415,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
     alignItems: "center",
-  },
-  btn: {
-    flexDirection: "row",
-    backgroundColor: "#C41214",
-    borderRadius: 10,
-    alignItems:'center',
-    justifyContent:'center',
-    padding:10
   },
   heading: {
     fontSize: 20,
@@ -394,14 +440,14 @@ const styles = StyleSheet.create({
   },
   status: {
     width: "100%",
-    marginTop:RFValue(20),
+    marginTop: RFValue(20),
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
   },
   statusinfo: {
     width: "30%",
-    height:'40%',
+    height: "40%",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -417,37 +463,36 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  container:{
-    flex: 1, 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    backgroundColor: 'rgba(0, 0, 0, 0.5)' 
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
-  containerView:{
-    backgroundColor: 'white', 
-    padding: 20, 
+  containerView: {
+    backgroundColor: "white",
+    padding: 20,
     borderRadius: 10,
-    width: '80%',
-    height:'40%',
-    justifyContent:'space-around'
+    width: "80%",
+    height: "40%",
+    justifyContent: "space-around",
   },
-  btnView:{
-    width:'100%',
-    justifyContent:'space-between',
-    flexDirection:'row',
+  btnView: {
+    width: "100%",
+    justifyContent: "space-between",
+    flexDirection: "row",
   },
-  btn:{
-    width:'40%',
-    marginHorizontal:'2.5%',
-    padding:10,
-    alignItems:'center',
-    borderRadius:5,
-    backgroundColor:'#3262A2'
-
+  btn: {
+    width: "40%",
+    marginHorizontal: "2.5%",
+    padding: 10,
+    alignItems: "center",
+    borderRadius: 5,
+    backgroundColor: "#915858",
   },
-  txt:{
-    color:'white',
-    fontWeight:'bold',
-    fontSize:RFValue(12)
-  }
+  txt: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: RFValue(12),
+  },
 });

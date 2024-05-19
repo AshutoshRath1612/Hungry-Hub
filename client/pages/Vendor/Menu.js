@@ -22,7 +22,7 @@ import Search from "../../components/Search";
 import { RFValue } from "react-native-responsive-fontsize";
 import Nav from "../../components/Nav";
 import { NavigationContext } from "../../NavContext";
-import { DeleteFoodRoute, GetFoodByShopRoute, Host} from "../../Constants";
+import { DeleteFoodRoute, GetFoodByShopRoute, Host } from "../../Constants";
 import Container, { Toast } from "toastify-react-native";
 import LottieView from "lottie-react-native";
 import EditFoodModal from "../../components/EditFoodModal";
@@ -32,24 +32,36 @@ const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 export default function Menu({ navigation, route }) {
   const listRef = useRef(null);
 
-  const [modalVisible, setModalVisible] = useState(false);
-  const [currentData, setCurrentData] = useState(null);
-  const [foods, setFoods] = useState([]);
-  const [shopInfo , setShopInfo] = useState(null)
-  const [isLoading,setIsLoading] = useState(true)
+  const [scrollY] = useState(new Animated.Value(0));
+  const [expanded, setExpanded] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [isUpdated, setIsUpdated] = useState(false);
+  const [warningModal, setWarningModal] = useState(false);
+  const [currentItem, setCurrentItem] = useState({
+    name: "",
+    isAvailable: false,
+    price: 0,
+    type: "Vegeterian",
+    ratings: 0,
+    ratingCount: 0,
+    _id: "",
+    category: "",
+  });
+  const [data, setData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    getMenu()
+    getMenu();
   }, []);
 
   const getMenu = () => {
     fetch(`${Host}${GetFoodByShopRoute}/${route.params.shopName}`)
       .then((res) => res.json())
       .then((data) => {
-        sortByCategory(data);
-        setIsLoading(false)
+        setData(data);
+        setIsLoading(false);
       });
-    }
+  };
 
   function sortByCategory(foodItems) {
     const categories = {};
@@ -86,29 +98,13 @@ export default function Menu({ navigation, route }) {
     },
   ];
 
-  const [scrollY] = useState(new Animated.Value(0));
-  const [expanded, setExpanded] = useState(false);
-  const [editModal, setEditModal] = useState(false);
-  const [isUpdated , setIsUpdated] = useState(false)
-  const [warningModal, setWarningModal] = useState(false);
-  const [currentItem, setCurrentItem] = useState({
-    name: "",
-    isAvailable: false,
-    price: 0,
-    type: "Vegeterian",
-    ratings: 0,
-    ratingCount: 0,
-    _id: "",
-    category: ""
-  });
-
-  useEffect(()=>{
-    if(isUpdated){
-      getMenu()
-      Toast.success("Food Updated Successfully")
-      setIsUpdated(false)
+  useEffect(() => {
+    if (isUpdated) {
+      getMenu();
+      Toast.success("Food Updated Successfully");
+      setIsUpdated(false);
     }
-  },[isUpdated])
+  }, [isUpdated]);
 
   const HEADER_MAX_HEIGHT = 150;
   const HEADER_MIN_HEIGHT = 0;
@@ -137,10 +133,10 @@ export default function Menu({ navigation, route }) {
       .then((res) => res.json())
       .then((data) => {
         setWarningModal(false);
-        getMenu()
-        Toast.error("Food Deleted Successfully")
+        getMenu();
+        Toast.error("Food Deleted Successfully");
       });
-  }
+  };
 
   const DeleteModal = () => (
     <Modal visible={warningModal} animationType="fade" transparent>
@@ -156,10 +152,7 @@ export default function Menu({ navigation, route }) {
             >
               <Text style={styles.txt}>Close</Text>
             </Pressable>
-            <Pressable
-              style={styles.btn}
-              onPress={() => handleDelete()}
-            >
+            <Pressable style={styles.btn} onPress={() => handleDelete()}>
               <Text style={styles.txt}>Confirm</Text>
             </Pressable>
           </View>
@@ -241,10 +234,22 @@ export default function Menu({ navigation, route }) {
                 <TouchableOpacity
                   onPress={() => {
                     setEditModal(true);
-                    setCurrentItem({ ...foodItem, category: item.category ,type:foodItem.type });
+                    setCurrentItem({
+                      ...foodItem,
+                      category: item.category,
+                      type: foodItem.type,
+                    });
                   }}
                 >
-                  {currentItem != null && <EditFoodModal editModal = {editModal} setEditModal={setEditModal} currentItem={currentItem} setCurrentItem={setCurrentItem} setIsUpdated={setIsUpdated}/>}
+                  {currentItem != null && (
+                    <EditFoodModal
+                      editModal={editModal}
+                      setEditModal={setEditModal}
+                      currentItem={currentItem}
+                      setCurrentItem={setCurrentItem}
+                      setIsUpdated={setIsUpdated}
+                    />
+                  )}
                   <MaterialCommunityIcons
                     name="pencil-circle-outline"
                     size={30}
@@ -270,79 +275,81 @@ export default function Menu({ navigation, route }) {
 
   return (
     <NavigationContext.Provider value={{ navigation, route }}>
-     { isLoading ? (
-      <LottieView
-          source={require('../../assets/icons/Loading.json')}
+      {isLoading ? (
+        <LottieView
+          source={require("../../assets/icons/Loading.json")}
           autoPlay
           loop
-          style={{flex:1 }}
+          style={{ flex: 1 }}
         />
-     ) : (<View style={styles.container}>
-      <Container position='top' width='90%' />
-        <Animated.View style={[styles.header]}>
-          <Image
-            style={{ resizeMode: "contain", width: "40%" }}
-            source={require("../../assets/images/Logo.png")}
-          />
-          <View style={styles.shopInfo}>
-            <Text style={{ fontSize: RFValue(25), fontWeight: "bold" }}>
-              {route.params.shopName}
-            </Text>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                width: "60%",
-                justifyContent: "space-between",
-              }}
-            >
-              <FontAwesome name="star" size={15} color="black" />
-              <Text style={{ fontSize: 18 }}>3.8</Text>
-              <Text style={{ fontSize: 18 }}>(600+)</Text>
-            </View>
-          </View>
-        </Animated.View>
-        <Animated.View style={[styles.searchContainer]}>
-          <Search />
-        </Animated.View>
-
-        <AnimatedFlatList
-          ref={listRef}
-          style={{ marginBottom: RFValue(50) }}
-          data={foods}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={renderItem} // Add some initial padding
-          scrollEventThrottle={16}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-            { useNativeDriver: true }
-          )}
-        />
-        {expanded && (
-          <View style={styles.categoryButtonsContainer}>
-            <FlatList
-              data={foods}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item, index }) =>
-                renderCategoryButton(item, index)
-              }
+      ) : (
+        <View style={styles.container}>
+          <Container position="top" width="90%" />
+          <Animated.View style={[styles.header]}>
+            <Image
+              style={{ resizeMode: "contain", width: "40%" }}
+              source={require("../../assets/images/Logo.png")}
             />
-          </View>
-        )}
-        <TouchableOpacity
-          style={[styles.floatingButton]}
-          onPress={toggleExpand}
-        >
-          <FontAwesome
-            name={expanded ? "sticky-note" : "book"}
-            size={24}
-            color="white"
+            <View style={styles.shopInfo}>
+              <Text style={{ fontSize: RFValue(25), fontWeight: "bold" }}>
+                {route.params.shopName}
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  width: "60%",
+                  justifyContent: "space-between",
+                }}
+              >
+                <FontAwesome name="star" size={15} color="black" />
+                <Text style={{ fontSize: 18 }}>{data.shop.ratings}</Text>
+                <Text style={{ fontSize: 18 }}>({data.shop.ratingCount}+)</Text>
+              </View>
+            </View>
+          </Animated.View>
+          <Animated.View style={[styles.searchContainer]}>
+            <Search />
+          </Animated.View>
+
+          <AnimatedFlatList
+            ref={listRef}
+            style={{ marginBottom: RFValue(50) }}
+            data={data.foods[0].categories}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={renderItem} // Add some initial padding
+            scrollEventThrottle={16}
+            onScroll={Animated.event(
+              [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+              { useNativeDriver: true }
+            )}
           />
-        </TouchableOpacity>
-        <View style={{ position: "absolute", bottom: 0, width: "100%" }}>
-          <Nav />
+          {expanded && (
+            <View style={styles.categoryButtonsContainer}>
+              <FlatList
+                data={foods}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item, index }) =>
+                  renderCategoryButton(item, index)
+                }
+              />
+            </View>
+          )}
+          <TouchableOpacity
+            style={[styles.floatingButton]}
+            onPress={toggleExpand}
+          >
+            <FontAwesome
+              name={expanded ? "sticky-note" : "book"}
+              size={24}
+              color="white"
+            />
+          </TouchableOpacity>
+          <View style={{ position: "absolute", bottom: 0, width: "100%" }}>
+            <Nav />
+          </View>
         </View>
-      </View>)}
+      )}
     </NavigationContext.Provider>
   );
 }
