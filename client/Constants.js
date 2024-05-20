@@ -22,3 +22,5 @@ export const GetFoodByShopRoute = 'food/shopName'
 export const GetFoodByNameRoute = 'food/name'
 export const UpdateFoodRoute = 'food'
 export const DeleteFoodRoute = 'food'
+
+export const GetAllShopRoute = 'shop'

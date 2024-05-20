@@ -7,11 +7,9 @@ import {
   Animated,
   TouchableOpacity,
   FlatList,
-  ImageBackground,
   Pressable,
   TouchableWithoutFeedback,
   Modal,
-  TextInput,
 } from "react-native";
 import {
   FontAwesome,
@@ -62,41 +60,6 @@ export default function Menu({ navigation, route }) {
         setIsLoading(false);
       });
   };
-
-  function sortByCategory(foodItems) {
-    const categories = {};
-
-    // Group items by category
-    foodItems.forEach((item) => {
-      if (!categories[item.category]) {
-        categories[item.category] = [];
-      }
-      categories[item.category].push(item);
-    });
-
-    // Convert to the desired format
-    const result = Object.keys(categories).map((category) => ({
-      category,
-      items: categories[category].map((item) => ({
-        name: item.name,
-        isAvailable: item.isAvailable,
-        price: item.price,
-        type: item.type === "Vegeterian" ? "Vegetarian" : "Non-Vegetarian",
-        ratings: item.ratings,
-        ratingCount: item.ratingCount,
-        _id: item._id,
-      })),
-    }));
-
-    return setFoods(result);
-  }
-  const DATA = [
-    {
-      shopName: "Mio Amore",
-      ratings: 3.8,
-      ratingCount: 600,
-    },
-  ];
 
   useEffect(() => {
     if (isUpdated) {
@@ -327,7 +290,7 @@ export default function Menu({ navigation, route }) {
           {expanded && (
             <View style={styles.categoryButtonsContainer}>
               <FlatList
-                data={foods}
+                data={data.foods[0].categories}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item, index }) =>
                   renderCategoryButton(item, index)

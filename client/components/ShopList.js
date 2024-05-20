@@ -2,65 +2,28 @@ import React, { useEffect, useRef, useState } from "react";
 import { View, Text, StyleSheet, Image, FlatList, Pressable } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/core";
+import { GetAllShopRoute, Host } from "../Constants";
 
 
 export default function ShopList() {
   const navigation = useNavigation();
-  const DATA = [
-    {
-      shopName: "Roll Shop",
-      rating: 2.1,
-      ratingCount: 200,
-      food: [{ name: "Roll 1" }, { name: "Roll 2" }, { name: "Roll 3" }],
-    },
-    {
-      shopName: "Burger King",
-      rating: 4.3,
-      ratingCount: 300,
-      food: [{ name: "Burger 1" }, { name: "Burger 2" }, { name: "Burger 3" }],
-    },
-    {
-      shopName: "Halka Fhulka",
-      rating: 4.5,
-      ratingCount: 400,
-      food: [
-        { name: "Pani Puri" },
-        { name: "Dahi Puri" },
-        { name: "Sev Puri" },
-      ],
-    },
-    {
-      shopName: "Urban Flavour",
-      rating: 1,
-      ratingCount: 500,
-      food: [
-        { name: "Chicken Tikka Masala" },
-        { name: "Chicken Biryani" },
-        { name: "Chicken Korma" },
-      ],
-    },
-    {
-      shopName: "Maggi Center",
-      rating: 2.5,
-      ratingCount: 100,
-      food: [{ name: "Maggi" }, { name: "Maggi" }, { name: "Maggi" }],
-    },
-    {
-      shopName: "Mio Amore",
-      rating: 3.8,
-      ratingCount: 600,
-      food: [{ name: "Roll" }, { name: "Roll" }, { name: "Roll" }],
-    },
-  ];
+  const [data,setData] = useState([]);
+
+  useEffect(() => {
+    fetch(`${Host}${GetAllShopRoute}`)
+    .then((response) => response.json())
+    .then((data) => {
+      setData(data)
+    })
+},[])
 
 const CardItem = ({ item }) => {
   const [visibleFoodItems, setVisibleFoodItems] = useState([]);
 
-
   useEffect(() => {
     if(visibleFoodItems.length<15){
       let foodItem =''
-      item.food.forEach((food) => {
+      item.foods.forEach((food) => {
         for (let i = 0; i < food.name.length; i++) {
           if (foodItem.length < 20) {
             foodItem += food.name[i];
@@ -88,20 +51,20 @@ const CardItem = ({ item }) => {
   }, []);
   
     return (
-      <Pressable style={styles.card} onPress={()=>navigation.navigate('Shop Menu' , {shopName: item.shopName})}>
+      <Pressable style={styles.card} onPress={()=>navigation.navigate('Shop Menu' , {shopName: item.name})}>
         <Image
           style={styles.icon}
           source={require("../assets/images/Plate.png")}
         ></Image>
         <View style={styles.info}>
-          <Text style={styles.shopNames}>{item.shopName}</Text>
+          <Text style={styles.shopNames}>{item.name}</Text>
           <View style={styles.ratingContainer}>
             <FontAwesome
               name="star"
               size={15}
-              color={item.rating > 4 ? "#006400" : item.rating>3 ? '#90EE90' : item.rating>2 ? '#FAD5A5' : "#FF6347"}
+              color={item.ratings > 4 ? "#006400" : item.ratings>3 ? '#90EE90' : item.ratings>2 ? '#FAD5A5' : "#FF6347"}
             />
-            <Text style={styles.ratings}>{item.rating}</Text>
+            <Text style={styles.ratings}>{item.ratings}</Text>
             <Text>({item.ratingCount})</Text>
           </View>
           <View style={styles.foodContainer}>
@@ -120,7 +83,7 @@ const CardItem = ({ item }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Shops</Text>
       <FlatList
-        data={DATA}
+        data={data}
         renderItem={({ item }) => <CardItem item={item} />}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item, index) => index}

@@ -56,7 +56,6 @@ const getFoodByName = async (req, res) => {
 // Controller function to get a specific food item by shopName
 const getFoodByShopName = async (req, res) => {
   const shopName = req.params.shopName;
-  console.log(shopName)
   try {
     let foods = await Food.find({ shopName });
 
