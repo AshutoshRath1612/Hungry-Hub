@@ -19,215 +19,34 @@ export default function SearchResults({ route, navigation }) {
   const vegLogo = require("../../assets/icons/VegLogo.png");
   const nonVegLogo = require("../../assets/icons/NonVegLogo.png");
 
-  const [searchResults, setSearchResults] = useState([]);
-
-  useEffect(()=>{
-    getResults(route.params.itemName , route.params.type)
-  },[])
-
-  const getResults = (itemName,type) => {
-    fetch(`${Host}${GetFoodByNameRoute}/${itemName}/${type}` , {
-      method:'POST',
-      body: JSON.stringify({itemName:route.params.itemName , type:route.params.type}),
-      headers: {
-        "Content-Type": "application/json",
-      }
-    })
-    .then(res=> res.json())
-    .then((data)=>{
-      setSearchResults(data)
-    })
-  }
-  const DATA = [
-    {
-      shopName: "Shop 1",
-      ratings: 4.5,
-      ratingCount: 100,
-      results: [
-        {
-          category: 'Pizza',
-          items: [
-            {
-              name: "Item 1",
-              ratings: 4.5,
-              ratingCount: 100,
-              type: "Vegeterian",
-              price: 100,
-            },
-            {
-              name: "Item 2",
-              ratings: 4.0,
-              ratingCount: 50,
-              type: "Non-Vegeterian",
-              price: 200,
-            },
-            {
-              name: "Item 3",
-              ratings: 4.5,
-              ratingCount: 100,
-              type: "Vegeterian",
-              price: 100,
-            },
-            {
-              name: "Item 4",
-              ratings: 4.0,
-              ratingCount: 50,
-              type: "Non-Vegeterian",
-              price: 200,
-            },
-          ]
-        },
-        {
-          category: 'Beverages',
-          items: [
-            {
-              name: "Item 1",
-              ratings: 4.5,
-              ratingCount: 100,
-              type: "Vegeterian",
-              price: 100,
-            },
-            {
-              name: "Item 2",
-              ratings: 4.0,
-              ratingCount: 50,
-              type: "Non-Vegeterian",
-              price: 200,
-            },
-            {
-              name: "Item 3",
-              ratings: 4.5,
-              ratingCount: 100,
-              type: "Vegeterian",
-              price: 100,
-            },
-            {
-              name: "Item 4",
-              ratings: 4.0,
-              ratingCount: 50,
-              type: "Non-Vegeterian",
-              price: 200,
-            },
-          ]
-        }
-      ],
-    },
-    {
-      shopName: "Urban Flavours",
-      ratings: 4.5,
-      ratingCount: 100,
-      results: [
-        {
-          category: 'Main Course',
-          items: [
-            {
-              name: "Item 5",
-              ratings: 4.5,
-              ratingCount: 100,
-              type: "Vegeterian",
-              price: 100,
-            },
-            {
-              name: "Item 6",
-              ratings: 4.0,
-              ratingCount: 50,
-              type: "Non-Vegeterian",
-              price: 200,
-            },
-          ]
-        },
-        {
-          category: 'Desserts',
-          items: [
-            {
-              name: "Item 7",
-              ratings: 4.5,
-              ratingCount: 100,
-              type: "Vegeterian",
-              price: 100,
-            },
-            {
-              name: "Item 8",
-              ratings: 4.0,
-              ratingCount: 50,
-              type: "Non-Vegeterian",
-              price: 200,
-            },
-          ]
-        }
-      ],
-    },
-    {
-      shopName: "dominos",
-      ratings: 1,
-      ratingCount: 50,
-      results: [
-        {
-          category: 'Pizza',
-          items: [
-            {
-              name: "Item 9",
-              ratings: 4.0,
-              ratingCount: 50,
-              type: "Non-Vegeterian",
-              price: 200,
-            },
-            {
-              name: "Item 10",
-              ratings: 4.0,
-              ratingCount: 50,
-              type: "Non-Vegeterian",
-              price: 200,
-            },
-          ]
-        },
-        {
-          category: 'Beverages',
-          items: [
-            {
-              name: "Item 11",
-              ratings: 4.0,
-              ratingCount: 50,
-              type: "Non-Vegeterian",
-              price: 200,
-            },
-            {
-              name: "Item 12",
-              ratings: 4.0,
-              ratingCount: 50,
-              type: "Non-Vegeterian",
-              price: 200,
-            },
-          ]
-        }
-      ],
-    },
-  ];
-
+  const [searchResults, setSearchResults] = useState(route.params.data);
   const [totalResult, setTotalResult] = useState(0);
-  const {cart} = useCart()
+  const { cart } = useCart();
 
   useEffect(() => {
     let total = 0;
-    DATA.forEach((shop) => {
-      shop.results.forEach((category) => {
+    if(!searchResults.message){
+    searchResults.forEach((shop) => {
+      shop.categories.forEach((category) => {
         total += category.items.length;
       });
     });
     setTotalResult(total);
-  }, []);
+  }
+  }, [searchResults]);
 
   return (
-    <View style={{ flex: 1, backgroundColor:'white' }}>
+    <>
+   {!searchResults.message ? <View style={{ flex: 1, backgroundColor: "white" }}>
       <View style={styles.searchBox}>
         <Search />
       </View>
       <Text style={styles.resultText}>
-        Showing results for {route.params.itemName} ({totalResult})
+        Showing results for {route.params.searchItem.name} ({totalResult})
       </Text>
       <FlatList
-      style={{marginBottom: cart.length !== 0 ? 80 : 0}}
-        data={DATA}
+        style={{ marginBottom: cart.length !== 0 ? 80 : 0 }}
+        data={searchResults}
         keyExtractor={(item, index) => item.shopName + index}
         renderItem={({ item }) => (
           <View style={styles.card}>
@@ -246,34 +65,39 @@ export default function SearchResults({ route, navigation }) {
                   }}
                 >
                   <FontAwesome name="star" size={18} color="orange" />
-                  <Text style={{ fontSize: RFValue(13) }}>
-                    {item.ratings}
-                  </Text>
-                  <Text style={{ fontSize: RFValue(13) }}>
-                    ({item.ratingCount}+)
-                  </Text>
+                  <Text style={{ fontSize: RFValue(13) }}>3.4</Text>
+                  <Text style={{ fontSize: RFValue(13) }}>(600+)</Text>
                 </View>
               </View>
-              <FontAwesome name="arrow-right" size={25} color="grey" onPress={() => navigation.navigate('Shop Menu', { item })} />
+              <FontAwesome
+                name="arrow-right"
+                size={25}
+                color="grey"
+                onPress={() => navigation.navigate('Shop Menu', { item })}
+              />
             </View>
             <FlatList
-              data={item.results}
+              data={item.categories}
               horizontal
               showsHorizontalScrollIndicator={false}
-              keyExtractor={(category, index) => category.category + index}
+              keyExtractor={(category, index) => category.name + index}
               renderItem={({ item: category }) => (
                 <>
-                  {category.items.map((item, index) => (
-                    <TouchableOpacity key={index} style={styles.foodItems} onPress={() => console.log("Item pressed")}>
+                  {category.items.map((foodItem, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      style={styles.foodItems}
+                      onPress={() => console.log("Item pressed")}
+                    >
                       <View style={styles.foodItemsInfo}>
                         <Image
-                          source={
-                            item.type === "Vegeterian" ? vegLogo : nonVegLogo
-                          }
+                          source={foodItem.type === "Vegetarian" ? vegLogo : nonVegLogo}
                           style={{ width: 20, height: 20 }}
                         />
-                        <Text style={{ fontSize: RFValue(15), fontWeight: "bold" }}>
-                          {item.name}
+                        <Text
+                          style={{ fontSize: RFValue(15), fontWeight: "bold" }}
+                        >
+                          {foodItem.name}
                         </Text>
                         <View
                           style={{
@@ -291,14 +115,16 @@ export default function SearchResults({ route, navigation }) {
                               marginHorizontal: RFValue(5),
                             }}
                           >
-                            {item.ratings}
+                            {foodItem.ratings}
                           </Text>
                           <Text style={{ fontSize: RFValue(13) }}>
-                            ({item.ratingCount})
+                            ({foodItem.ratingCount})
                           </Text>
                         </View>
-                        <Text style={{ fontSize: RFValue(15), fontWeight: "bold" }}>
-                          ₹{item.price}
+                        <Text
+                          style={{ fontSize: RFValue(15), fontWeight: "bold" }}
+                        >
+                          ₹{foodItem.price}
                         </Text>
                       </View>
                       <View style={styles.foodItemsImage}>
@@ -313,7 +139,8 @@ export default function SearchResults({ route, navigation }) {
                         <Pressable
                           style={{
                             ...styles.addbtn,
-                            borderColor: item.type === "Vegeterian" ? "green" : "red",
+                            borderColor:
+                              foodItem.type === "Vegetarian" ? "green" : "red",
                           }}
                           onPress={() => console.log("Add")}
                         >
@@ -336,8 +163,14 @@ export default function SearchResults({ route, navigation }) {
           </View>
         )}
       />
+    </View>:(
+      <View>
+      <Search />
+      <Text style={{justifyContent:'center',alignItems:'center', fontSize:RFValue(15)}}>{searchResults.message}</Text>
+      </View>
+    )}
       {cart.length !== 0 && <CartCard />}
-    </View>
+    </>
   );
 }
 
@@ -379,8 +212,6 @@ const styles = StyleSheet.create({
     margin: 5,
     borderRadius: 10,
     elevation: 3,
-    width: 150,
-    alignItems: "center",
     width: RFValue(250),
     height: RFValue(150),
     marginHorizontal: 5,
@@ -408,6 +239,6 @@ const styles = StyleSheet.create({
     left: "15%",
     elevation: 5,
     zIndex: 5,
-    paddingVertical: 5
+    paddingVertical: 5,
   },
 });

@@ -3,6 +3,7 @@ const Food = require("../model/Food"); // Import the Food model
 
 // Controller function to search food items by type and category
 const searchFood = async (req, res) => {
+  console.log(req.query)
   const { name, type, category, shopName } = req.query;
 
   try {

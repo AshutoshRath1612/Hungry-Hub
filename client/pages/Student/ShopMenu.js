@@ -34,10 +34,11 @@ export default function ShopMenu({ route }) {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  
   useEffect(() => {
     getMenu();
   }, []);
-
+  
   const getMenu = () => {
     fetch(`${Host}${GetFoodByShopRoute}/${route.params.shopName}`)
       .then((res) => res.json())
@@ -46,7 +47,10 @@ export default function ShopMenu({ route }) {
         setIsLoading(false);
       });
   };
-
+  
+  // useEffect(()=>{
+  //   setData({...data, foods:route.params.data})
+  // },[route])
 
   const addToCart = (item) => {
      if (cart.length === 0) {

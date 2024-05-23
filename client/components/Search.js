@@ -12,41 +12,50 @@ import { FontAwesome } from "@expo/vector-icons";
 import { RadioButton } from "react-native-paper";
 import { useNavigation } from '@react-navigation/native';
 import { useRoute } from '@react-navigation/native';
+import { Host, SearchRoute } from "../Constants";
 
 export default function Search() {
   const navigation = useNavigation();
-  const route  = useRoute();
+  const route = useRoute();
 
   console.log(route)
 
-  
+  const [data, setData] = useState(null);
   const [showFilter, setShowFilter] = useState(false);
-  const [categoryy, setCategory] = useState("");
-  const [searchItem , setSearchItem] = useState("")
-  
-  const categories = ["Vegeterian", "Non-Vegeterian"];
+  const [searchItem, setSearchItem] = useState({
+    name: '',
+    shopName: '',
+    type: '',
+    category: ''
+  });
 
-  const handleSubmit = (text) => {
-    if(route.name !== 'Shop Menu' && text !== ''){
-      navigation.navigate('Search Result',{itemName:text ,type:categoryy })
+  const categories = ["Vegetarian", "Non-Vegetarian"];
+
+  useEffect(()=>{
+    if (route.name === 'Vendor Menu' || route.name === 'Shop Menu') {
+      setSearchItem({...searchItem,shopName:route.params.shopName})
     }
-    if(route.name=== 'Vendor Menu' || route.name === 'Shop Menu'){
-      if(text === ''){
-        fetch(`${Host}${GetFoodByShopRoute}/${route.params.shopName}`)
+  },[route])
+
+  const handleSubmit = () => {
+    fetch(`${Host}${SearchRoute}?name=${searchItem.name}&type=${searchItem.type}&category=${searchItem.category}&shopName=${searchItem.shopName}`)
       .then((res) => res.json())
       .then((data) => {
-        setIsLoading(false)
+        setData(data);
+        if (route.name !== 'Shop Menu' && searchItem.name !== '') {
+          navigation.navigate('Search Result', { searchItem, data });
+        }
+        if (route.name === 'Vendor Menu' || route.name === 'Shop Menu') {
+          navigation.navigate('Shop Menu', { searchItem, data });
+        }
       });
-      }
-      else{
+  };
 
-      }
-    }
-  }
-  
-  const handleNavigate = (e) => {
-   
-  }
+  const handleSearch = (text) => {
+    setSearchItem({ ...searchItem, name: text });
+    handleSubmit();
+  };
+
   return (
     <View style={styles.searchView}>
       <Modal
@@ -69,18 +78,18 @@ export default function Search() {
               />
             </View>
             <View style={styles.category}>
-              {categories.map((category, index) => (
-                <RadioButton.Group
-                  key={index}
-                  style={styles.categoryItems}
-                  onValueChange={(value) => setCategory(value)}
-                  value={categoryy}
-                >
-                  <RadioButton.Item label={category} value={category} />
-                </RadioButton.Group>
-              ))}
+              <RadioButton.Group
+                onValueChange={(value) => setSearchItem({ ...searchItem, type: value })}
+                value={searchItem.type}
+              >
+                {categories.map((category, index) => (
+                  <RadioButton.Item label={category} value={category} key={index} />
+                ))}
+              </RadioButton.Group>
             </View>
-            <Pressable style={styles.btn} onPress={()=>setShowFilter(false)}><Text style={styles.btnText}>Submit</Text></Pressable> 
+            <Pressable style={styles.btn} onPress={() => handleSubmit()}>
+              <Text style={styles.btnText}>Submit</Text>
+            </Pressable>
           </View>
         </View>
       </Modal>
@@ -96,7 +105,8 @@ export default function Search() {
           placeholder="Find Your Food..."
           placeholderTextColor="gray"
           returnKeyType="search"
-          onSubmitEditing={(e)=>{handleSubmit(e.nativeEvent.text)}}
+          onChange={(e)=> setSearchItem({...searchItem , name: e.nativeEvent.text})}
+          onSubmitEditing={(e) => handleSearch(e.nativeEvent.text)}
         />
       </View>
       <FontAwesome
@@ -174,8 +184,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignSelf: "flex-end",
   },
-  btnText:{
-    color:"white",
-    fontSize:15
-  }
+  btnText: {
+    color: "white",
+    fontSize: 15,
+  },
 });
