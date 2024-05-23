@@ -56,12 +56,9 @@ export default function StudentHome() {
 const styles = StyleSheet.create({
   container: {
     height: "100%",
-    // justifyContent: "space-between",
-    // backgroundColor:'#001d07'
   },
   top: {
-    marginTop:'6%',
-    height: "17%",
+    height: "20%",
     justifyContent: "space-evenly",
   },
   bottom: {
