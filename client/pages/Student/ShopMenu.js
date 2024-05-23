@@ -18,7 +18,7 @@ import { useCart } from "../../CartContext";
 import ShopModal from "../../components/ShopModal";
 import CartCard from "../../components/CartCard";
 import { LinearGradient } from "expo-linear-gradient";
-import { GetFoodByShopRoute, Host } from "../../Constants";
+import { GetFoodByShopRoute, Host, SearchRoute } from "../../Constants";
 import LottieView from "lottie-react-native";
 
 
@@ -33,9 +33,11 @@ export default function ShopMenu({ route }) {
   const [currentData, setCurrentData] = useState(null);
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [shop, setShop] = useState(null);
 
   
   useEffect(() => {
+    setShop(route.params.shopName);
     getMenu();
   }, []);
   
@@ -43,14 +45,23 @@ export default function ShopMenu({ route }) {
     fetch(`${Host}${GetFoodByShopRoute}/${route.params.shopName}`)
       .then((res) => res.json())
       .then((data) => {
-        setData(data);
+        setData(data[0]);
         setIsLoading(false);
       });
   };
   
-  // useEffect(()=>{
-  //   setData({...data, foods:route.params.data})
-  // },[route])
+  useEffect(() => {
+    if (route.params && route.params.searchItem) {
+      const { searchItem } = route.params;
+      fetch(
+        `${Host}${SearchRoute}?name=${searchItem.name}&shopName=${shop}&type=${searchItem.type}&category=${searchItem.category}`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          setData(data[0])
+        });
+    }
+  }, [route.params.searchItem]);
 
   const addToCart = (item) => {
      if (cart.length === 0) {
@@ -279,7 +290,7 @@ const findItem = (foodItem) => {
    
       <AnimatedFlatList
         ref={listRef}
-        data={data.foods[0].categories}
+        data={data.categories}
         keyExtractor={(item, index) => index.toString()}
         renderItem={renderItem}
         contentContainerStyle={{ paddingTop: HEADER_MAX_HEIGHT }} // Add some initial padding
@@ -292,7 +303,7 @@ const findItem = (foodItem) => {
       {expanded && (
         <View style={styles.categoryButtonsContainer}>
           <FlatList
-            data={data.foods[0].categories}
+            data={data.categories}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item, index }) => renderCategoryButton(item, index)}
           />

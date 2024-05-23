@@ -10,50 +10,35 @@ import {
 import React, { useEffect, useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import { RadioButton } from "react-native-paper";
-import { useNavigation } from '@react-navigation/native';
-import { useRoute } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 import { Host, SearchRoute } from "../Constants";
 
-export default function Search() {
+export default function Search({showResults}) {
   const navigation = useNavigation();
   const route = useRoute();
 
-  console.log(route)
+  console.log(route);
 
-  const [data, setData] = useState(null);
   const [showFilter, setShowFilter] = useState(false);
   const [searchItem, setSearchItem] = useState({
-    name: '',
-    shopName: '',
-    type: '',
-    category: ''
+    name: "",
+    shopName: "",
+    type: "",
+    category: "",
   });
 
   const categories = ["Vegetarian", "Non-Vegetarian"];
 
-  useEffect(()=>{
-    if (route.name === 'Vendor Menu' || route.name === 'Shop Menu') {
-      setSearchItem({...searchItem,shopName:route.params.shopName})
-    }
-  },[route])
 
   const handleSubmit = () => {
-    fetch(`${Host}${SearchRoute}?name=${searchItem.name}&type=${searchItem.type}&category=${searchItem.category}&shopName=${searchItem.shopName}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setData(data);
-        if (route.name !== 'Shop Menu' && searchItem.name !== '') {
-          navigation.navigate('Search Result', { searchItem, data });
-        }
-        if (route.name === 'Vendor Menu' || route.name === 'Shop Menu') {
-          navigation.navigate('Shop Menu', { searchItem, data });
-        }
-      });
-  };
-
-  const handleSearch = (text) => {
-    setSearchItem({ ...searchItem, name: text });
-    handleSubmit();
+    setShowFilter(false);
+    if (route.name !== "Shop Menu" && searchItem.name !== "") {
+      navigation.navigate("Search Result",{searchItem});
+    }
+    if (route.name === "Vendor Menu" || route.name === "Shop Menu" || route.name === "Search Result") {
+      navigation.navigate(route.name, {searchItem});
+    }
   };
 
   return (
@@ -73,17 +58,23 @@ export default function Search() {
               <FontAwesome
                 name="times-circle"
                 size={30}
-                color="#007BFF"
+                color="#915858"
                 onPress={() => setShowFilter(false)}
               />
             </View>
             <View style={styles.category}>
               <RadioButton.Group
-                onValueChange={(value) => setSearchItem({ ...searchItem, type: value })}
+                onValueChange={(value) =>
+                  setSearchItem({ ...searchItem, type: value })
+                }
                 value={searchItem.type}
               >
                 {categories.map((category, index) => (
-                  <RadioButton.Item label={category} value={category} key={index} />
+                  <RadioButton.Item
+                    label={category}
+                    value={category}
+                    key={index}
+                  />
                 ))}
               </RadioButton.Group>
             </View>
@@ -97,7 +88,7 @@ export default function Search() {
         <FontAwesome
           name="search"
           size={20}
-          color="orange"
+          color="#915858"
           style={styles.icon}
         />
         <TextInput
@@ -105,13 +96,15 @@ export default function Search() {
           placeholder="Find Your Food..."
           placeholderTextColor="gray"
           returnKeyType="search"
-          onChange={(e)=> setSearchItem({...searchItem , name: e.nativeEvent.text})}
-          onSubmitEditing={(e) => handleSearch(e.nativeEvent.text)}
+          onChange={(e) =>
+            setSearchItem({ ...searchItem, name: e.nativeEvent.text })
+          }
+          onSubmitEditing={() => handleSubmit()}
         />
       </View>
       <FontAwesome
         style={{ padding: 8, borderRadius: 5 }}
-        color="orange"
+        color="#915858"
         name="filter"
         size={30}
         onPress={() => setShowFilter(true)}
@@ -180,7 +173,7 @@ const styles = StyleSheet.create({
   btn: {
     marginTop: 10,
     padding: 10,
-    backgroundColor: "blue",
+    backgroundColor: "#A56C6C",
     borderRadius: 5,
     alignSelf: "flex-end",
   },

@@ -65,22 +65,19 @@ const getFoodByShopName = async (req, res) => {
         .json({ message: "No food items found for the shop" });
     }
 
-    // Retrieve shop information for the specified shopName
-    const shop = await Shop.findOne({ name: shopName });
-
-    if (!shop) {
-      return res.status(404).json({ message: "Shop not found" });
-    }
-
     foods = sortByShopAndCategory(foods);
 
-    // Combine food items with shop information
-    const result = {
-      shop,
-      foods,
-    };
-
-    res.status(200).json(result);
+    let updatedFood = await Promise.all(
+      foods.map(async (food) => {
+        console.log(food)
+        const shop = await Shop.findOne({ name: food.shopName });
+        return {
+          shop, // Set default value if shop is null
+          categories: food.categories
+        };
+      })
+    );
+    res.status(200).json(updatedFood);
   } catch (error) {
     console.error("Error fetching food items by shopName:", error);
     res.status(500).json({ message: "Internal server error" });

@@ -1,4 +1,4 @@
-export const Host = 'http://192.168.53.248:5000/'
+export const Host = 'http://192.168.29.62:5000/'
 
 export const LoginRoute = 'auth/login'
 export const StudentRegisterRoute = 'auth/student/register'

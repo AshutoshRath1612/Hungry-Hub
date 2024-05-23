@@ -20,7 +20,7 @@ import Search from "../../components/Search";
 import { RFValue } from "react-native-responsive-fontsize";
 import Nav from "../../components/Nav";
 import { NavigationContext } from "../../NavContext";
-import { DeleteFoodRoute, GetFoodByShopRoute, Host } from "../../Constants";
+import { DeleteFoodRoute, GetFoodByShopRoute, Host, SearchRoute } from "../../Constants";
 import Container, { Toast } from "toastify-react-native";
 import LottieView from "lottie-react-native";
 import EditFoodModal from "../../components/EditFoodModal";
@@ -35,6 +35,7 @@ export default function Menu({ navigation, route }) {
   const [editModal, setEditModal] = useState(false);
   const [isUpdated, setIsUpdated] = useState(false);
   const [warningModal, setWarningModal] = useState(false);
+  const [shop,setShop] = useState(null)
   const [currentItem, setCurrentItem] = useState({
     name: "",
     isAvailable: false,
@@ -49,6 +50,7 @@ export default function Menu({ navigation, route }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    setShop(route.params.shopName)
     getMenu();
   }, []);
 
@@ -56,10 +58,24 @@ export default function Menu({ navigation, route }) {
     fetch(`${Host}${GetFoodByShopRoute}/${route.params.shopName}`)
       .then((res) => res.json())
       .then((data) => {
-        setData(data);
+        console.log(data)
+        setData(data[0]);
         setIsLoading(false);
       });
   };
+
+  useEffect(() => {
+    if (route.params && route.params.searchItem) {
+      const { searchItem } = route.params;
+      fetch(
+        `${Host}${SearchRoute}?name=${searchItem.name}&shopName=${shop}&type=${searchItem.type}&category=${searchItem.category}`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          setData(data[0])
+        });
+    }
+  }, [route.params.searchItem]);
 
   useEffect(() => {
     if (isUpdated) {
@@ -278,7 +294,7 @@ export default function Menu({ navigation, route }) {
           <AnimatedFlatList
             ref={listRef}
             style={{ marginBottom: RFValue(50) }}
-            data={data.foods[0].categories}
+            data={data.categories}
             keyExtractor={(item, index) => index.toString()}
             renderItem={renderItem} // Add some initial padding
             scrollEventThrottle={16}
@@ -290,7 +306,7 @@ export default function Menu({ navigation, route }) {
           {expanded && (
             <View style={styles.categoryButtonsContainer}>
               <FlatList
-                data={data.foods[0].categories}
+                data={data.categories}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item, index }) =>
                   renderCategoryButton(item, index)

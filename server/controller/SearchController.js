@@ -1,5 +1,5 @@
 const Food = require("../model/Food"); // Import the Food model
-
+const Shop = require("../model/Shop"); // Import the Shop model
 
 // Controller function to search food items by type and category
 const searchFood = async (req, res) => {
@@ -70,9 +70,21 @@ const searchFood = async (req, res) => {
       const message = `No food items found matching the search criteria`;
       return res.status(404).json({ message });
     }
-     foods = sortByShopAndCategory(foods);
-
-    res.status(200).json(foods);
+    // Update the foods array with shop information
+    
+    foods = sortByShopAndCategory(foods);
+    
+    let updatedFood = await Promise.all(
+      foods.map(async (food) => {
+        console.log(food)
+        const shop = await Shop.findOne({ name: food.shopName });
+        return {
+          shop, // Set default value if shop is null
+          categories: food.categories
+        };
+      })
+    );
+    res.status(200).json(updatedFood);
   } catch (error) {
     console.error(
       "Error searching for food items by type and category:",
@@ -82,34 +94,6 @@ const searchFood = async (req, res) => {
   }
 };
 
-
-// function sortByCategory(foodItems) {
-//   const categories = {};
-
-//   // Group items by category
-//   foodItems.forEach((item) => {
-//     if (!categories[item.category]) {
-//       categories[item.category] = [];
-//     }
-//     categories[item.category].push(item);
-//   });
-
-//   // Convert to the desired format
-//   const result = Object.keys(categories).map((category) => ({
-//     category,
-//     items: categories[category].map((item) => ({
-//       name: item.name,
-//       isAvailable: item.isAvailable,
-//       price: item.price,
-//       type: item.type === "Vegeterian" ? "Vegetarian" : "Non-Vegetarian",
-//       ratings: item.ratings,
-//       ratingCount: item.ratingCount,
-//       _id: item._id,
-//     })),
-//   }));
-
-//   return result
-// }
 
 function sortByShopAndCategory(foodItems) {
   const shops = {};
