@@ -1,13 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, Animated, TouchableOpacity } from "react-native";
+import { View, Text, Animated, TouchableOpacity, BackHandler } from "react-native";
 import LottieView from "lottie-react-native";
+import { useFocusEffect } from '@react-navigation/native';
 import failedanimation from "../../assets/icons/failed.json";
 import { RFValue } from "react-native-responsive-fontsize";
+import { StatusBar } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { AddOrderRotue, Host } from "../../Constants";
 
-const OrderSuccessScreen = ({ navigation }) => {
+const OrderSuccessScreen = ({ navigation,route }) => {
   const scaleAnim = useRef(new Animated.Value(0)).current;
-  const [isSuccess, setIsSuccess] = useState(false);
-
+  const [isSuccess, setIsSuccess] = useState(route.params.isSuccess);
   useEffect(() => {
     Animated.timing(scaleAnim, {
       toValue: 1,
@@ -15,14 +18,48 @@ const OrderSuccessScreen = ({ navigation }) => {
       useNativeDriver: true,
     }).start();
     if(isSuccess === true){
-    setTimeout(()=>{
-      navigation.navigate('Student Home')
-    },4000)
+      setTimeout(()=>{
+        handleAddOrder();
+      },4000);
+    }
+  }, [isSuccess]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        navigation.navigate('Cart');
+        return true;
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      };
+    }, [])
+  );
+
+  const handleAddOrder = async() => {
+    const { order, payment, user, cartData } = route.params.data;
+    fetch(`${Host}${AddOrderRotue}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token}`
+      },
+      body: JSON.stringify({ order, payment, cartData, user })
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data)
+      // if(data.success === true){
+      //   navigation.navigate('Student Home')
+      // }
+    })
   }
-  }, []);
 
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+    <LinearGradient colors={['#F6C8C7' , "white"]} style={{ flex: 1, alignItems: "center", justifyContent: "center"}}>
       <Animated.View
         style={{
           transform: [{ scale: scaleAnim }],
@@ -34,8 +71,9 @@ const OrderSuccessScreen = ({ navigation }) => {
       >
         {isSuccess === true ? (
           <>
+          <StatusBar backgroundColor='#F6C8C7'barStyle='dark-content' showHideTransition='fade' />
             <LottieView
-              source={require("../../assets/icons/successful.json")} // Replace 'animation.json' with your Lottie animation file
+              source={require("../../assets/icons/successful.json")}
               autoPlay
               loop={false}
               speed={1}
@@ -60,7 +98,7 @@ const OrderSuccessScreen = ({ navigation }) => {
             }}
           >
             <LottieView
-              source={require("../../assets/icons/failed.json")} // Replace 'animation.json' with your Lottie animation file
+              source={require("../../assets/icons/failed.json")}
               autoPlay
               loop={false}
               speed={0.5}
@@ -98,7 +136,7 @@ const OrderSuccessScreen = ({ navigation }) => {
           </View>
         )}
       </Animated.View>
-    </View>
+    </LinearGradient>
   );
 };
 

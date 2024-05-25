@@ -9,7 +9,7 @@ const createOrder = async(req,res) => {
     key_secret: process.env.RAZORPAY_SECRET
   });
   const options = {
-    amount: amount * 100, // amount in the smallest currency unit
+    amount: amount, // amount in the smallest currency unit
     currency,
     receipt,
     payment_capture
@@ -23,6 +23,13 @@ const createOrder = async(req,res) => {
   }
 }
 
+const addOrder = (req,res) => {
+  const { order, payment, cartData, user } = req.body;
+  console.log(order, payment, cartData, user);
+  res.json({ success: true });
+}
+
 module.exports = {
   createOrder,
+  addOrder
 };

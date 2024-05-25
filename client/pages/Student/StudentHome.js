@@ -2,6 +2,7 @@ import {
   View,
   StyleSheet,
   Animated,
+  StatusBar,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Nav from "../../components/Nav";
@@ -34,6 +35,7 @@ export default function StudentHome() {
 
   return (
     <LinearGradient colors={["#C38888","white"]} style={styles.container}>
+    <StatusBar backgroundColor='#C38888'  barStyle='dark-content' showHideTransition='fade' />
       <NavigationContext.Provider value={{ navigation, route }}>
         <Animated.View style={styles.top}>
           <Header />
@@ -58,8 +60,8 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   top: {
-    height: "20%",
-    justifyContent: "space-evenly",
+    height: "18%",
+    justifyContent: "space-around",
   },
   bottom: {
     height: "73%",

@@ -26,3 +26,7 @@ export const DeleteFoodRoute = 'food'
 export const GetAllShopRoute = 'shop'
 
 export const SearchRoute = 'search'
+
+
+export const CreateOrderRoute = 'order/create_order'
+export const AddOrderRotue = 'order/add_order'

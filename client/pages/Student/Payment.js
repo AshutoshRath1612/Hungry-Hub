@@ -1,18 +1,18 @@
-import { View, Text, StatusBar, Button, Alert } from 'react-native';
+import { View, Button, Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import RazorpayCheckout from 'react-native-razorpay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Host } from '../../Constants';
+import { CreateOrderRoute, Host } from '../../Constants';
+import LottieView from 'lottie-react-native';
 
 const createOrder = async (amount) => {
     const order = {
         amount: amount * 100, // Convert amount to paise
         currency: 'INR',
-        receipt: 'receipt#1',
         payment_capture: 1
     };
     try {
-        const response = await fetch(`${Host}order/create_order`, {
+        const response = await fetch(`${Host}${CreateOrderRoute}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -30,36 +30,40 @@ const createOrder = async (amount) => {
 };
 
 export default function Payment({ navigation, route }) {
-    const [orderID, setOrderID] = useState(null);
     const [user, setUser] = useState(null);
-    const { amount } = route.params;
+    const [order, setOrder] = useState(null);
+    const [payment, setPayment] = useState(null);
+    const [isSuccess, setIsSuccess] = useState(null);
+
+    const { amount } = route.params.cartData;
 
     useEffect(() => {
         const getUser = async () => {
             var user = await AsyncStorage.getItem('user');
             user = JSON.parse(user);
             setUser(user);
+            initiatePayment(user);
         };
         getUser();
     }, []);
-    // {"code": 0, "description": "{\"error\":{\"code\":\"BAD_REQUEST_ERROR\",\"description\":\"You may have cancelled the payment or there was a delay in response from the UPI app\",\"source\":\"customer\",\"step\":\"payment_authentication\",\"reason\":\"payment_cancelled\",\"metadata\":{}}}", "error": {"code": "BAD_REQUEST_ERROR", "description": "You may have cancelled the payment or there was a delay in response from the UPI app", "metadata": {}, "reason": "payment_cancelled", "source": "customer", "step": "payment_authentication"}}
-    const initiatePayment = async () => {
+
+    const initiatePayment = async (user) => {
         try {
             const orderData = await createOrder(amount); // Create order and get order ID
-            setOrderID(orderData.id);
+            setOrder(orderData);
 
             var options = {
                 description: 'Credits towards consultation',
-                image: 'https://i.imgur.com/3g7nmJC.png',
+                image: '../../assets/images/Logo.png',
                 currency: 'INR',
-                key: '', // Your api key
+                key: 'rzp_test_1iMLg2obI6ZsN0', // Your api key
                 amount: amount * 100, // Convert to paise
-                name: 'foo',
+                name: user.name != null ? user.name : user.regdNo,
                 order_id: orderData.id, // Include order ID
                 prefill: {
                     email: user.email,
                     contact: user.mobileNo,
-                    name: user.name,
+                    name: user.name != null ? user.name : user.regdNo,
                 },
                 theme: { color: '#59a0f7', backdrop_color: '#f7f7f7' },
             };
@@ -68,12 +72,27 @@ export default function Payment({ navigation, route }) {
                 .then(data => {
                     // handle success
                     console.log(data);
-                    alert(`Success: ${data.razorpay_payment_id}`);
+                    setIsSuccess(true);
+                    setPayment(data);
+                    // Show success animation and navigate after a delay
+                    setTimeout(() => {
+                        navigation.navigate('Payment Success', { isSuccess: true, data: {
+                            order: orderData,
+                            payment: data,
+                            user: user,
+                            cartData: route.params.cartData
+                        } });
+                    }, 4000);
                 })
                 .catch(error => {
                     // handle failure
                     console.log(error);
-                    alert(`Error: ${error.description}`);
+                    setIsSuccess(false);
+                    setPayment(error);
+                    // Show failed animation and navigate after a delay
+                    setTimeout(() => {
+                        navigation.navigate('Payment Success', { isSuccess: false });
+                    }, 4000);
                 });
         } catch (error) {
             console.error('Failed to create order:', error);
@@ -83,7 +102,28 @@ export default function Payment({ navigation, route }) {
 
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Button title="Initiate Payment" onPress={initiatePayment} />
+                <LottieView 
+                    source={require('../../assets/icons/Loading.json')} 
+                    autoPlay 
+                    loop 
+                    style={{ width: 200, height: 200 }}
+                />
+            {/* {isSuccess === null ? (
+            ) : isSuccess ? (
+                <LottieView 
+                    source={require('../../assets/icons/successful.json')} 
+                    autoPlay 
+                    loop={false}
+                    style={{ width: 200, height: 200 }}
+                />
+            ) : (
+                <LottieView 
+                    source={require('../../assets/icons/failed.json')} 
+                    autoPlay 
+                    loop={false}
+                    style={{ width: 200, height: 200 }}
+                />
+            )} */}
         </View>
     );
 }
