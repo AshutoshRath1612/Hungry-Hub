@@ -75,6 +75,7 @@ export default function SearchResults({ route, navigation }) {
     addToCart({
       items: [{...foodItem , quantity:1 , category:category.category}],
       shopName: item.shop.name,
+      shopId: item.shop._id
     });
   };
 

@@ -7,22 +7,47 @@ const orderSchema = new mongoose.Schema({
     ref: 'Users', // Reference to the Users model
     required: true
   },
-  items: [
-    {
-      name: { type: String, required: true },
-      quantity: { type: Number, required: true },
-      price: { type: Number, required: true }
-    }
-  ],
-  totalPrice: {
-    type: Number,
+  shopId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Shop', // Reference to the Shops model
     required: true
   },
+  paymentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Payment', // Reference to the Payment model
+    required: false // Allow this to be optional for split bill feature
+  },
+  orderId:{
+    type: String,
+    required: true
+  },
+  items: [
+    {
+      name: {
+        type: String,
+        required: true
+      },
+      quantity: {
+        type: Number,
+        required: true
+      },
+      price: {
+        type: Number,
+        required: true
+      }
+    }
+  ],
   createdDate: {
     type: Date,
     default: Date.now
+  },
+  status: {
+    type: String,
+    enum: ['Pending', 'Accepted', 'Preparing', 'Prepared', 'Delivered'],
+    default: 'Pending',
+    required: true
   }
-});
+}, { timestamps: true });
 
 // Create the Order model based on the schema
 const Order = mongoose.model('Order', orderSchema);

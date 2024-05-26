@@ -51,7 +51,7 @@ const CardItem = ({ item }) => {
   }, []);
   
     return (
-      <Pressable style={styles.card} onPress={()=>navigation.navigate('Shop Menu' , {shopName: item.name})}>
+      <Pressable style={styles.card} onPress={()=>navigation.navigate('Shop Menu' , {shopName: item.name, id: item._id})}>
         <Image
           style={styles.icon}
           source={require("../assets/images/Plate.png")}

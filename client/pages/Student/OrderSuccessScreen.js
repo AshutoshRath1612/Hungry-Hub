@@ -7,6 +7,7 @@ import { RFValue } from "react-native-responsive-fontsize";
 import { StatusBar } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { AddOrderRotue, Host } from "../../Constants";
+import { useCart } from "../../CartContext";
 
 const OrderSuccessScreen = ({ navigation,route }) => {
   const scaleAnim = useRef(new Animated.Value(0)).current;
@@ -39,15 +40,18 @@ const OrderSuccessScreen = ({ navigation,route }) => {
     }, [])
   );
 
+  const {cart,dispatch} = useCart();
+
   const handleAddOrder = async() => {
     const { order, payment, user, cartData } = route.params.data;
+    cartData.items = cart;
     fetch(`${Host}${AddOrderRotue}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${user.token}`
       },
-      body: JSON.stringify({ order, payment, cartData, user })
+      body: JSON.stringify({ order, payment, cartData, user,cart })
     })
     .then(res => res.json())
     .then(data => {

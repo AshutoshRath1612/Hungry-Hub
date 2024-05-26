@@ -35,9 +35,9 @@ export default function ShopMenu({ route }) {
   const [isLoading, setIsLoading] = useState(true);
   const [shop, setShop] = useState(null);
 
-  
+  console.log(route.params)
   useEffect(() => {
-    setShop(route.params.shopName);
+    setShop({shopName: route.params.shopName , id: route.params.id});
     getMenu();
   }, []);
   
@@ -54,7 +54,7 @@ export default function ShopMenu({ route }) {
     if (route.params && route.params.searchItem) {
       const { searchItem } = route.params;
       fetch(
-        `${Host}${SearchRoute}?name=${searchItem.name}&shopName=${shop}&type=${searchItem.type}&category=${searchItem.category}`
+        `${Host}${SearchRoute}?name=${searchItem.name}&shopName=${shop.shopName}&type=${searchItem.type}&category=${searchItem.category}`
       )
         .then((res) => res.json())
         .then((data) => {
@@ -109,6 +109,7 @@ export default function ShopMenu({ route }) {
     addToCart({
       items: [{...foodItem , quantity:1 , category:item.category}],
       shopName: data.shop.name,
+      shopId: data.shop._id
     });
   };
 
