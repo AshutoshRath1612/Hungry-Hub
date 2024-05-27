@@ -14,14 +14,17 @@ import { FontAwesome } from "@expo/vector-icons";
 import { RFValue } from "react-native-responsive-fontsize";
 import QRcode from "../../components/QRCode";
 import { LinearGradient } from "expo-linear-gradient";
+import { useCart } from "../../CartContext";
 
-export default function OrderSummary() {
+export default function OrderSummary({navigation}) {
   const VegLogo = require("../../assets/icons/VegLogo.png");
   const NonVegLogo = require("../../assets/icons/NonVegLogo.png");
   const route = useRoute();
   const summary = route.params.item;
+  console.log(summary)
 
   const [showQR, setShowQR] = useState(false);
+  const {cart , dispatch} = useCart()
 
   const findPrice = (items) => {
     let total = 0;
@@ -30,6 +33,30 @@ export default function OrderSummary() {
     });
     return total;
   };
+
+  const addToCart = (item) => {
+    if (cart.length === 0) {
+     dispatch({ type: "ADD_TO_CART", payload: item });
+   } else {
+     if (cart[0].shopName === item.shopName) {
+       dispatch({ type: "ADD_TO_CART", payload: item });
+     } else {
+       dispatch({ type: "CLEAR_CART" });
+       dispatch({ type: "ADD_TO_CART", payload: item });
+     }
+   }
+ };
+
+  const reOrder = () => {
+    summary.items.forEach((item) => {
+      addToCart({
+        items: [item],
+        shopName: summary.shopId.name,
+        shopId: summary.shopId._id
+      });
+    })
+    navigation.navigate('Cart')
+  }
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
@@ -44,7 +71,7 @@ export default function OrderSummary() {
               width: "100%",
             }}
           >
-            <Text style={styles.shopName}>{summary.storeName}</Text>
+            <Text style={styles.shopName}>{summary.shopId.name}</Text>
             {summary.status !== "Cancelled" &&
               summary.status !== "Delivered" && (
                 <Pressable
@@ -171,7 +198,12 @@ export default function OrderSummary() {
             <View style={styles.details}>
               <Text style={styles.info}>Date</Text>
               <Text style={styles.text}>
-                {summary.date} at {summary.time}
+              {new Date(summary.createdDate).toLocaleDateString("en-IN", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}{" "}
+              at {new Date(summary.createdDate).toLocaleTimeString()}
               </Text>
             </View>
             <View style={styles.details}>
@@ -180,7 +212,7 @@ export default function OrderSummary() {
             </View>
             <View style={styles.details}>
               <Text style={styles.info}>Phone Number</Text>
-              <Text style={styles.text}>9348183XXX</Text>
+              <Text style={styles.text}>{summary.userId.mobileNo}</Text>
             </View>
           </View>
           <View style={{ width: "100%" }}>
@@ -188,17 +220,17 @@ export default function OrderSummary() {
             <View style={styles.line}></View>
             <View style={styles.details}>
               <Text style={styles.info}>Payment</Text>
-              <Text style={styles.text}>Paid: {summary.orderId}</Text>
+              <Text style={styles.text}>{summary.paymentId.status}: {summary.orderId}</Text>
             </View>
 
             <View style={styles.details}>
               <Text style={styles.info}>Transaction Id</Text>
-              <Text style={styles.text}>{summary.transactionId}</Text>
+              <Text style={styles.text}>{summary.paymentId.paymentId}</Text>
             </View>
 
             <View style={styles.details}>
               <Text style={styles.info}>Status</Text>
-              <Text style={styles.text}>{summary.paymentStatus}</Text>
+              <Text style={styles.text}>{summary.paymentId.status}</Text>
             </View>
 
             <View style={styles.details}>
@@ -207,7 +239,7 @@ export default function OrderSummary() {
             </View>
           </View>
         </View>
-        <Pressable style={styles.btn}>
+        <Pressable onPress={()=>reOrder()} style={styles.btn}>
           <FontAwesome name="undo" size={20} color="white" />
           <Text
             style={{
@@ -225,7 +257,7 @@ export default function OrderSummary() {
         summary.status !== "Cancelled" &&
         showQR && (
           <View style={styles.qrcontainer}>
-            <QRcode data={summary} />
+            <QRcode data={summary.orderId+summary.paymentId.paymentId+summary.paymentId.signature} />
             <Text style={{ fontSize: RFValue(15), fontWeight: "bold" }}>
               Scan it to get your item delivered
             </Text>
@@ -325,17 +357,23 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   qrcontainer: {
-    position: "relative",
-    backgroundColor: "white",
-    bottom: 0,
-    height: "35%",
+    position: "absolute",
+    bottom:'0%',
     width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 1,
-    paddingVertical: 10,
-    borderTopRightRadius: 30,
-    borderTopLeftRadius: 30,
+    alignItems:'center',
+    backgroundColor: "white",
+    padding: RFValue(20),
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#D3D3D3",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   status: {
     width: "100%",

@@ -118,7 +118,6 @@ export default function Cart({ navigation, route }) {
     });
     return totalPrice;
   };
-
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
       <View style={styles.container}>

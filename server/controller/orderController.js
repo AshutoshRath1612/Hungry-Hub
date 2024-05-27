@@ -52,7 +52,7 @@ const createOrder = async (req, res) => {
 
 const addOrder = async (req, res) => {
   const { order, payment, cartData, user } = req.body;
-
+  console.log("sent")
   try {
     // Update the payment document with additional details
     const paymentDoc = await Payment.findOne({ orderId: payment.razorpay_order_id });
@@ -74,12 +74,7 @@ const addOrder = async (req, res) => {
       paymentId: paymentDoc._id,
       orderId: order.id,
       orderType: cartData.deliveryType,
-      items: cartData.items[0].items.map(item => ({
-        name: item.name,
-        quantity: item.quantity,
-        price: item.price,
-        type: item.type
-      })),
+      items: cartData.items[0].items,
       status: 'Pending'
     });
 
@@ -117,7 +112,6 @@ const getUserOrders = async (req, res) => {
       .populate('paymentId','paymentId signature status')
       .sort({ createdDate: -1 });
 
-    console.log(orders[0])
     res.json(orders);
   } catch (error) {
     res.status(500).json({ error: 'Failed to get orders', details: error.message });

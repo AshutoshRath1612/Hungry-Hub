@@ -19,7 +19,7 @@ const OrderSuccessScreen = ({ navigation,route }) => {
       useNativeDriver: true,
     }).start();
         handleAddOrder();
-  }, [isSuccess]);
+  }, []);
 
   useFocusEffect(
     React.useCallback(() => {

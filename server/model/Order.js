@@ -40,6 +40,10 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required: true
       },
+      category:{
+        type: String,
+        required: true
+      },
       type:{
         type: String,
         required: true

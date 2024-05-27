@@ -16,286 +16,13 @@ import { OrderStatusProvider, useOrderStatus } from "../../OrderStatusContext";
 import { LinearGradient } from "expo-linear-gradient";
 import { GetOrderByUserRoute, Host } from "../../Constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import LottieView from "lottie-react-native";
 
 export default function OrderHistory() {
   // Import the images
   const VegLogo = require("../../assets/icons/VegLogo.png");
   const NonVegLogo = require("../../assets/icons/NonVegLogo.png");
 
-  const { currentOrder, dispatch } = useOrderStatus();
-
-  const DATA = [
-    {
-      _id: 1,
-      storeName: "Store Name 1",
-      orderId: "Order Name 1",
-      items: [
-        {
-          name: "Item Name 1",
-          quantity: 1,
-          ratings: 5.0,
-          ratingCount: 600,
-          price: 10,
-          type: "Vegeterian",
-          category: "Snacks",
-        },
-        {
-          name: "Item Name 2",
-          quantity: 2,
-          ratings: 5.0,
-          ratingCount: 600,
-          price: 100,
-          type: "Non-Vegeterian",
-
-          category: "Beverages",
-        },
-        {
-          name: "Item Name 3",
-          quantity: 3,
-          ratings: 5.0,
-          ratingCount: 600,
-          price: 10,
-          type: "Non-Vegeterian",
-          category: "Main Course",
-        },
-        {
-          name: "Item Name 4",
-          quantity: 4,
-          ratings: 5.0,
-          ratingCount: 600,
-          price: 100,
-          type: "Vegeterian",
-          category: "Pizza",
-        },
-      ],
-      date: new Date().toLocaleDateString("en-IN", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
-      status: "Preparing",
-      time: new Date().toLocaleTimeString(),
-      orderType: "Dine in",
-      transactionId: "AZHDGYW52S",
-      paymentStatus: "Success",
-    },
-    {
-      _id: 2,
-      storeName: "Store Name 2",
-      orderId: "Order Name 2",
-      items: [
-        {
-          name: "Item Name 1",
-          quantity: 1,
-          ratings: 5.0,
-          ratingCount: 600,
-          price: 10,
-          type: "Vegeterian",
-          category: "Snacks",
-        },
-        {
-          name: "Item Name 2",
-          quantity: 2,
-          ratings: 5.0,
-          ratingCount: 600,
-          price: 100,
-          type: "Non-Vegeterian",
-
-          category: "Beverages",
-        },
-        {
-          name: "Item Name 3",
-          quantity: 3,
-          ratings: 5.0,
-          ratingCount: 600,
-          price: 10,
-          type: "Non-Vegeterian",
-          category: "Main Course",
-        },
-        {
-          name: "Item Name 4",
-          quantity: 4,
-          ratings: 5.0,
-          ratingCount: 600,
-          price: 100,
-          type: "Vegeterian",
-          category: "Pizza",
-        },
-      ],
-      date: new Date().toLocaleDateString("en-IN", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
-      status: "Cancelled",
-      time: new Date().toLocaleTimeString(),
-      orderType: "Dine in",
-      transactionId: "AZHDGYW52S",
-      paymentStatus: "Success",
-    },
-    {
-      _id: 3,
-      storeName: "Store Name 3",
-      orderId: "Order id 3",
-      items: [
-        {
-          name: "Item Name 1",
-          quantity: 1,
-          ratings: 5.0,
-          ratingCount: 600,
-          price: 10,
-          type: "Vegeterian",
-          category: "Snacks",
-        },
-        {
-          name: "Item Name 2",
-          quantity: 2,
-          ratings: 5.0,
-          ratingCount: 600,
-          price: 100,
-          type: "Non-Vegeterian",
-
-          category: "Beverages",
-        },
-        {
-          name: "Item Name 3",
-          quantity: 3,
-          ratings: 5.0,
-          ratingCount: 600,
-          price: 10,
-          type: "Non-Vegeterian",
-          category: "Main Course",
-        },
-        {
-          name: "Item Name 4",
-          quantity: 4,
-          ratings: 5.0,
-          ratingCount: 600,
-          price: 100,
-          type: "Vegeterian",
-          category: "Pizza",
-        },
-      ],
-      date: new Date().toLocaleDateString("en-IN", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
-      status: "Delivered",
-      time: new Date().toLocaleTimeString(),
-      orderType: "Dine in",
-      transactionId: "AZHDGYW52S",
-      paymentStatus: "Success",
-    },
-    {
-      _id: 4,
-      storeName: "Store Name 4",
-      orderId: "Order id 4",
-      items: [
-        {
-          name: "Item Name 1",
-          quantity: 1,
-          ratings: 5.0,
-          ratingCount: 600,
-          price: 10,
-          type: "Vegeterian",
-          category: "Snacks",
-        },
-        {
-          name: "Item Name 2",
-          quantity: 2,
-          ratings: 5.0,
-          ratingCount: 600,
-          price: 100,
-          type: "Non-Vegeterian",
-
-          category: "Beverages",
-        },
-        {
-          name: "Item Name 3",
-          quantity: 3,
-          ratings: 5.0,
-          ratingCount: 600,
-          price: 10,
-          type: "Non-Vegeterian",
-          category: "Main Course",
-        },
-        {
-          name: "Item Name 4",
-          quantity: 4,
-          ratings: 5.0,
-          ratingCount: 600,
-          price: 100,
-          type: "Vegeterian",
-          category: "Pizza",
-        },
-      ],
-      date: new Date().toLocaleDateString("en-IN", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
-      status: "Delivered",
-      time: new Date().toLocaleTimeString(),
-      orderType: "Dine in",
-      transactionId: "AZHDGYW52S",
-      paymentStatus: "Success",
-    },
-    {
-      _id: 5,
-      storeName: "Store Name 5",
-      orderId: "Order id 5",
-      items: [
-        {
-          name: "Item Name 1",
-          quantity: 1,
-          ratings: 5.0,
-          ratingCount: 600,
-          price: 10,
-          type: "Vegeterian",
-          category: "Snacks",
-        },
-        {
-          name: "Item Name 2",
-          quantity: 2,
-          ratings: 5.0,
-          ratingCount: 600,
-          price: 100,
-          type: "Non-Vegeterian",
-
-          category: "Beverages",
-        },
-        {
-          name: "Item Name 3",
-          quantity: 3,
-          ratings: 5.0,
-          ratingCount: 600,
-          price: 10,
-          type: "Non-Vegeterian",
-          category: "Main Course",
-        },
-        {
-          name: "Item Name 4",
-          quantity: 4,
-          ratings: 5.0,
-          ratingCount: 600,
-          price: 100,
-          type: "Vegeterian",
-          category: "Pizza",
-        },
-      ],
-      date: new Date().toLocaleDateString("en-IN", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
-      status: "Accepted",
-      time: new Date().toLocaleTimeString(),
-      orderType: "Dine in",
-      transactionId: "AZHDGYW52S",
-      paymentStatus: "Success",
-    },
-  ];
 
   const [orders, setOrders] = useState(null);
 
@@ -310,7 +37,6 @@ export default function OrderHistory() {
           const response = await fetch(`${Host}${GetOrderByUserRoute}/${id}`);
           const data = await response.json();
 
-          console.log(data);
           setOrders(data);
         }
       } catch (error) {
@@ -335,7 +61,7 @@ export default function OrderHistory() {
   };
 
   const showOrderDetails = (item) => {
-    navigation.navigate("Order Summary", { item });
+    navigation.navigate("Order Summary", { item:item });
   };
 
   const CardItem = ({ item }) => {
@@ -438,7 +164,13 @@ export default function OrderHistory() {
   const route = useRoute();
   return (
     <OrderStatusProvider>
-      <View style={styles.container}>
+        {orders=== null ? 
+        (
+          <LottieView source={require("../../assets/icons/Loading.json")} autoPlay loop style={{alignSelf: "center"}}/>
+        )
+        :
+        (
+          <View style={styles.container}>
         <NavigationContext.Provider value={{ navigation, route }}>
           <FlatList
             style={styles.historyContainer}
@@ -452,6 +184,8 @@ export default function OrderHistory() {
           </View>
         </NavigationContext.Provider>
       </View>
+        )  
+      }
     </OrderStatusProvider>
   );
 }
