@@ -76,7 +76,7 @@ export default function Payment({ navigation, route }) {
                     setPayment(data);
                     // Show success animation and navigate after a delay
                     setTimeout(() => {
-                        navigation.navigate('Payment Success', { isSuccess: true, data: {
+                        navigation.navigate('Payment Success', {  data: {
                             order: orderData,
                             payment: data,
                             user: user,
@@ -91,7 +91,7 @@ export default function Payment({ navigation, route }) {
                     setPayment(error);
                     // Show failed animation and navigate after a delay
                     setTimeout(() => {
-                        navigation.navigate('Payment Success', { isSuccess: false });
+                        navigation.navigate('Payment Success');
                     }, 4000);
                 });
         } catch (error) {
@@ -108,22 +108,6 @@ export default function Payment({ navigation, route }) {
                     loop 
                     style={{ width: 200, height: 200 }}
                 />
-            {/* {isSuccess === null ? (
-            ) : isSuccess ? (
-                <LottieView 
-                    source={require('../../assets/icons/successful.json')} 
-                    autoPlay 
-                    loop={false}
-                    style={{ width: 200, height: 200 }}
-                />
-            ) : (
-                <LottieView 
-                    source={require('../../assets/icons/failed.json')} 
-                    autoPlay 
-                    loop={false}
-                    style={{ width: 200, height: 200 }}
-                />
-            )} */}
         </View>
     );
 }

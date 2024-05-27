@@ -21,6 +21,11 @@ const orderSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  orderType: {
+    type: String,
+    enum: ['Dine-in', 'Pickup'],
+    required: true
+  },
   items: [
     {
       name: {
@@ -34,9 +39,16 @@ const orderSchema = new mongoose.Schema({
       price: {
         type: Number,
         required: true
+      },
+      type:{
+        type: String,
+        required: true
       }
     }
   ],
+  notes: {
+    type: String,
+  },
   createdDate: {
     type: Date,
     default: Date.now

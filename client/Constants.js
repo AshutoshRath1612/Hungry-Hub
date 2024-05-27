@@ -1,4 +1,4 @@
-export const Host = 'http://192.168.29.62:5000/'
+export const Host = 'http://172.168.7.52:5000/'
 
 export const LoginRoute = 'auth/login'
 export const StudentRegisterRoute = 'auth/student/register'
@@ -30,3 +30,4 @@ export const SearchRoute = 'search'
 
 export const CreateOrderRoute = 'order/create_order'
 export const AddOrderRotue = 'order/add_order'
+export const GetOrderByUserRoute = 'order/user'

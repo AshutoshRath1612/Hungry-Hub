@@ -98,10 +98,11 @@ export default function Cart({ navigation, route }) {
     dispatch({ type: "CLEAR_CART" });
   };
 
-  const handleAddItem = (item,shopName) => {
+  const handleAddItem = (item,shopName,shopId) => {
     const newItem = {
       items: [{...item , quantity:1}],
       shopName:shopName,
+      shopId: shopId
     }
     dispatch({ type: "ADD_TO_CART", payload: newItem });
   };
@@ -189,7 +190,7 @@ export default function Cart({ navigation, route }) {
 
                             <TouchableOpacity
                               onPress={() =>
-                                handleAddItem(item, cart[0].shopName)
+                                handleAddItem(item, cart[0].shopName , cart[0].shopId)
                               }
                             >
                               <FontAwesome

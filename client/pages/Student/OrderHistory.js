@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -14,13 +14,15 @@ import { NavigationContext } from "../../NavContext";
 import { RFValue } from "react-native-responsive-fontsize";
 import { OrderStatusProvider, useOrderStatus } from "../../OrderStatusContext";
 import { LinearGradient } from "expo-linear-gradient";
+import { GetOrderByUserRoute, Host } from "../../Constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function OrderHistory() {
   // Import the images
   const VegLogo = require("../../assets/icons/VegLogo.png");
   const NonVegLogo = require("../../assets/icons/NonVegLogo.png");
 
-  const {currentOrder , dispatch} = useOrderStatus();
+  const { currentOrder, dispatch } = useOrderStatus();
 
   const DATA = [
     {
@@ -295,6 +297,29 @@ export default function OrderHistory() {
     },
   ];
 
+  const [orders, setOrders] = useState(null);
+
+  useEffect(() => {
+    const getUserAndFetchOrders = async () => {
+      try {
+        const user = await AsyncStorage.getItem("user");
+        if (user) {
+          const userObj = JSON.parse(user);
+          const id = userObj._id;
+
+          const response = await fetch(`${Host}${GetOrderByUserRoute}/${id}`);
+          const data = await response.json();
+
+          console.log(data);
+          setOrders(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch orders", error);
+      }
+    };
+
+    getUserAndFetchOrders();
+  }, []);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -321,82 +346,90 @@ export default function OrderHistory() {
       });
       return price;
     };
+
     return (
-      <LinearGradient colors={["#C0A2A2","white"]} style={styles.items}>
-      <Pressable
-        onPress={() => {
-          showOrderDetails(item);
-        }}
-      >
-        <View style={styles.itemHeader}>
-          <Image
-            style={{ height: RFValue(50), width: RFValue(50) }}
-            resizeMode="contain"
-            source={require("../../assets/images/Logo.png")}
-          />
-          <View>
-            <Text style={styles.storename}>{item.storeName}</Text>
+      <LinearGradient colors={["#C0A2A2", "white"]} style={styles.items}>
+        <Pressable
+          onPress={() => {
+            showOrderDetails(item);
+          }}
+        >
+          <View style={styles.itemHeader}>
+            <Image
+              style={{ height: RFValue(50), width: RFValue(50) }}
+              resizeMode="contain"
+              source={require("../../assets/images/Logo.png")}
+            />
+            <View>
+              <Text style={styles.storename}>{item.shopId.name}</Text>
+            </View>
+            <Text
+              style={[
+                styles.status,
+                { backgroundColor: getStatusColor(item.status) },
+              ]}
+            >
+              {item.status}
+            </Text>
           </View>
-          <Text
+          <FlatList
+            data={item.items}
+            style={styles.itemList}
+            renderItem={({ item }) => (
+              <View style={styles.item}>
+                <Image
+                  style={{ height: RFValue(15), width: RFValue(15) }}
+                  resizeMode="contain"
+                  source={item.orderType === "Vegeterian" ? VegLogo : NonVegLogo}
+                />
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: RFValue(12),
+                    color: "grey",
+                  }}
+                >
+                  {item.quantity}
+                </Text>
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: RFValue(12),
+                    color: "grey",
+                  }}
+                >
+                  x
+                </Text>
+                <Text style={{ fontWeight: "bold", fontSize: RFValue(12) }}>
+                  {item.name}
+                </Text>
+              </View>
+            )}
+            keyExtractor={(item, index) => index.toString()}
+          />
+          <View
             style={[
-              styles.status,
-              { backgroundColor: getStatusColor(item.status) },
+              styles.item,
+              {
+                width: "100%",
+                justifyContent: "space-between",
+                paddingHorizontal: 5,
+              },
             ]}
           >
-            {item.status}
-          </Text>
-        </View>
-        <FlatList
-          data={item.items}
-          style={styles.itemList}
-          renderItem={({ item }) => (
-            <View style={styles.item}>
-              <Image
-                style={{ height: RFValue(15), width: RFValue(15) }}
-                resizeMode="contain"
-                source={item.type === "Vegeterian" ? VegLogo : NonVegLogo}
-              />
-              <Text
-                style={{
-                  fontWeight: "bold",
-                  fontSize: RFValue(12),
-                  color: "grey",
-                }}
-              >
-                {item.quantity}
-              </Text>
-              <Text
-                style={{
-                  fontWeight: "bold",
-                  fontSize: RFValue(12),
-                  color: "grey",
-                }}
-              >
-                x
-              </Text>
-              <Text style={{ fontWeight: "bold", fontSize: RFValue(12) }}>
-                {item.name}
-              </Text>
-            </View>
-          )}
-          keyExtractor={(item, index) => index.toString()}
-        />
-        <View
-          style={[
-            styles.item,
-            {
-              width: "100%",
-              justifyContent: "space-between",
-              paddingHorizontal: 5,
-            },
-          ]}
-        >
-          <Text style={{ color: "grey", fontWeight: 500 }}>
-            {item.date} at {item.time}
-          </Text>
-          <Text style={{ fontWeight: "bold" }}>₹ {findPrice(item.items)}</Text>
-        </View>
-      </Pressable>
+            <Text style={{ color: "grey", fontWeight: 500 }}>
+              {new Date(item.createdDate).toLocaleDateString("en-IN", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}{" "}
+              at {new Date(item.createdDate).toLocaleTimeString()}
+            </Text>
+            <Text style={{ fontWeight: "bold" }}>
+              ₹ {findPrice(item.items)}
+            </Text>
+          </View>
+        </Pressable>
       </LinearGradient>
     );
   };
@@ -409,7 +442,7 @@ export default function OrderHistory() {
         <NavigationContext.Provider value={{ navigation, route }}>
           <FlatList
             style={styles.historyContainer}
-            data={DATA}
+            data={orders}
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) => <CardItem item={item} />}
             keyExtractor={(item) => item._id.toString()}
@@ -446,7 +479,7 @@ const styles = StyleSheet.create({
     fontSize: RFValue(15),
     alignItems: "center",
     justifyContent: "space-around",
-    width: "40%",
+    width: "60%",
   },
   itemList: {
     paddingVertical: 5,

@@ -11,18 +11,14 @@ import { useCart } from "../../CartContext";
 
 const OrderSuccessScreen = ({ navigation,route }) => {
   const scaleAnim = useRef(new Animated.Value(0)).current;
-  const [isSuccess, setIsSuccess] = useState(route.params.isSuccess);
+  const [isSuccess, setIsSuccess] = useState(null);
   useEffect(() => {
     Animated.timing(scaleAnim, {
       toValue: 1,
       duration: 500,
       useNativeDriver: true,
     }).start();
-    if(isSuccess === true){
-      setTimeout(()=>{
         handleAddOrder();
-      },4000);
-    }
   }, [isSuccess]);
 
   useFocusEffect(
@@ -56,9 +52,13 @@ const OrderSuccessScreen = ({ navigation,route }) => {
     .then(res => res.json())
     .then(data => {
       console.log(data)
-      // if(data.success === true){
-      //   navigation.navigate('Student Home')
-      // }
+      setIsSuccess(data.success)
+      if(data.success === true){
+        dispatch({ type: "CLEAR_CART" });
+        setTimeout(()=>{
+          navigation.navigate('Student Home')
+        },4000)
+      }
     })
   }
 
@@ -73,27 +73,16 @@ const OrderSuccessScreen = ({ navigation,route }) => {
           justifyContent: "center",
         }}
       >
-        {isSuccess === true ? (
-          <>
-          <StatusBar backgroundColor='#F6C8C7'barStyle='dark-content' showHideTransition='fade' />
-            <LottieView
-              source={require("../../assets/icons/successful.json")}
-              autoPlay
-              loop={false}
-              speed={1}
-              style={{ width: RFValue(500), height: RFValue(500) }}
-            />
-            <Text
-              style={{
-                fontSize: RFValue(30),
-                fontWeight: "bold",
-                marginBottom: 20,
-              }}
-            >
-              Order Placed Successfully
-            </Text>
-          </>
-        ) : (
+      {
+        isSuccess === null ? (
+          <LottieView 
+                    source={require('../../assets/icons/Loading.json')} 
+                    autoPlay 
+                    loop 
+                    style={{ width: 200, height: 200 }}
+                />
+        ):
+        isSuccess === false? (
           <View
             style={{
               alignItems: "center",
@@ -138,7 +127,30 @@ const OrderSuccessScreen = ({ navigation,route }) => {
               </Text>
             </TouchableOpacity>
           </View>
-        )}
+        )
+        : 
+        (
+          <>
+          <StatusBar backgroundColor='#F6C8C7'barStyle='dark-content' showHideTransition='fade' />
+            <LottieView
+              source={require("../../assets/icons/successful.json")}
+              autoPlay
+              loop={false}
+              speed={1}
+              style={{ width: RFValue(500), height: RFValue(500) }}
+            />
+            <Text
+              style={{
+                fontSize: RFValue(30),
+                fontWeight: "bold",
+                marginBottom: 20,
+              }}
+            >
+              Order Placed Successfully
+            </Text>
+          </>
+        )
+      }
       </Animated.View>
     </LinearGradient>
   );

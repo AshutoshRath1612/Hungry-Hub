@@ -58,7 +58,10 @@ export default function ShopMenu({ route }) {
       )
         .then((res) => res.json())
         .then((data) => {
-          setData(data[0])
+          if(!data.message)
+            setData(data[0])
+          else
+            setData(data)
         });
     }
   }, [route.params.searchItem]);
@@ -121,16 +124,6 @@ export default function ShopMenu({ route }) {
     listRef.current.scrollToOffset({ animated: true, offset: yOffset });
     setExpanded(false);
   };
-  
-//   cart.map((cartItem) => {
-//     console.log(cartItem)
-//     cartItem.category.map((categories)=>{
-//       console.log(categories)
-//      categories.foodItem.map((item,index)=>{
-//       console.log(item)
-//     })
-//   })
-// })
 
 
 const findItem = (foodItem) => {
@@ -289,7 +282,7 @@ const findItem = (foodItem) => {
       </Animated.View>
       <ShopModal data={currentData} shopName={cart[0]?.shopName} visible={modalVisible} onClose={() => setModalVisible(false)} />
    
-      <AnimatedFlatList
+      {data && !data.message ? (<AnimatedFlatList
         ref={listRef}
         data={data.categories}
         keyExtractor={(item, index) => index.toString()}
@@ -300,8 +293,14 @@ const findItem = (foodItem) => {
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
           { useNativeDriver: true }
         )}
-      />
-      {expanded && (
+      />)
+      : (
+        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+          <Text style={{fontSize:RFValue(20),fontWeight:'bold',color:'red'}}>{data.message}</Text>
+        </View>
+      )
+      }
+      {expanded && !data.message &&  (
         <View style={styles.categoryButtonsContainer}>
           <FlatList
             data={data.categories}
@@ -310,13 +309,13 @@ const findItem = (foodItem) => {
           />
         </View>
       )}
-      <TouchableOpacity style={[styles.floatingButton , {bottom: cart.length != 0 ? 90 : 20}]} onPress={toggleExpand}>
+      {data && !data.message && <TouchableOpacity style={[styles.floatingButton , {bottom: cart.length != 0 ? 90 : 20}]} onPress={toggleExpand}>
         <FontAwesome
           name={expanded ? "sticky-note" : "book"}
           size={24}
           color="white"
         />
-      </TouchableOpacity>
+      </TouchableOpacity>}
       {cart.length !== 0 && <CartCard />}
     </View>)}
     </>

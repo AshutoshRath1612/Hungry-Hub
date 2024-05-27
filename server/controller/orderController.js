@@ -1,6 +1,10 @@
 const Razorpay = require('razorpay');
+const mongoose = require('mongoose')
 const Payment = require('../model/Payment');
-const Order = require('../model/Order'); // Assuming Order schema is already created
+const Shop = require('../model/Shop');
+const User = require('../model/Users');
+const Order = require('../model/Order'); 
+
 
 const createOrder = async (req, res) => {
   const { amount, currency, receipt, payment_capture } = req.body;
@@ -69,10 +73,12 @@ const addOrder = async (req, res) => {
       shopId: cartData.items[0].shopId,
       paymentId: paymentDoc._id,
       orderId: order.id,
+      orderType: cartData.deliveryType,
       items: cartData.items[0].items.map(item => ({
         name: item.name,
         quantity: item.quantity,
-        price: item.price
+        price: item.price,
+        type: item.type
       })),
       status: 'Pending'
     });
@@ -98,7 +104,30 @@ const addOrder = async (req, res) => {
   }
 }
 
+const getUserOrders = async (req, res) => {
+  const userId = req.params.id;
+  try {
+    // Convert userId to ObjectId
+    const objectId = new mongoose.Types.ObjectId(userId);
+
+    // Fetch orders with user and shop details populated
+    let orders = await Order.find({ userId: objectId })
+      .populate('userId', 'mobileNo') // Assuming User model has name and email fields
+      .populate('shopId', 'name') // Assuming Shop model has name and location fields
+      .populate('paymentId','paymentId signature status')
+      .sort({ createdDate: -1 });
+
+    console.log(orders[0])
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get orders', details: error.message });
+  }
+};
+
+module.exports = getUserOrders;
+
 module.exports = {
   createOrder,
-  addOrder
+  addOrder,
+  getUserOrders
 };
