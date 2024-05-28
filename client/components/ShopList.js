@@ -97,6 +97,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 0,
     flex: 1,
+    width:'100%'
   },
   title: {
     fontSize: 25,
@@ -104,10 +105,10 @@ const styles = StyleSheet.create({
     fontFamily: "Ubuntu_700Bold",
   },
   card: {
-    width: 350,
+    width: '95%',
     height: 150,
     backgroundColor: "white",
-    margin: 10,
+    margin: '2.5%',
     justifyContent: "space-evenly",
     alignItems: "center",
     borderRadius: 20,

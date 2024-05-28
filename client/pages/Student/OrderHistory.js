@@ -19,11 +19,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import LottieView from "lottie-react-native";
 
 export default function OrderHistory() {
-  // Import the images
   const VegLogo = require("../../assets/icons/VegLogo.png");
   const NonVegLogo = require("../../assets/icons/NonVegLogo.png");
-
-
+  
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { dispatch } = useOrderStatus();
   const [orders, setOrders] = useState(null);
 
   useEffect(() => {
@@ -38,6 +39,7 @@ export default function OrderHistory() {
           const data = await response.json();
 
           setOrders(data);
+          dispatch({ type: 'ORDERS', payload: data });
         }
       } catch (error) {
         console.error("Failed to fetch orders", error);
@@ -45,7 +47,8 @@ export default function OrderHistory() {
     };
 
     getUserAndFetchOrders();
-  }, []);
+  }, [dispatch, route]);
+  
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -160,35 +163,32 @@ export default function OrderHistory() {
     );
   };
 
-  const navigation = useNavigation();
-  const route = useRoute();
   return (
     <OrderStatusProvider>
-        {orders=== null ? 
+      {orders === null ? 
         (
           <LottieView source={require("../../assets/icons/Loading.json")} autoPlay loop style={{alignSelf: "center"}}/>
-        )
-        :
-        (
+        ) : (
           <View style={styles.container}>
-        <NavigationContext.Provider value={{ navigation, route }}>
-          <FlatList
-            style={styles.historyContainer}
-            data={orders}
-            showsVerticalScrollIndicator={false}
-            renderItem={({ item }) => <CardItem item={item} />}
-            keyExtractor={(item) => item._id.toString()}
-          />
-          <View style={styles.nav}>
-            <Nav navigation={navigation} currentRoute={route.name} />
+            <NavigationContext.Provider value={{ navigation, route }}>
+              <FlatList
+                style={styles.historyContainer}
+                data={orders}
+                showsVerticalScrollIndicator={false}
+                renderItem={({ item }) => <CardItem item={item} />}
+                keyExtractor={(item) => item._id.toString()}
+              />
+              <View style={styles.nav}>
+                <Nav navigation={navigation} currentRoute={route.name} />
+              </View>
+            </NavigationContext.Provider>
           </View>
-        </NavigationContext.Provider>
-      </View>
-        )  
+        )
       }
     </OrderStatusProvider>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -2,82 +2,33 @@ import { View, Text, FlatList, StyleSheet, Image } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import LottieView from "lottie-react-native";
 import { RFValue } from "react-native-responsive-fontsize";
-
 import { useNavigation } from "@react-navigation/native";
+import { useOrderStatus } from "../OrderStatusContext";
 
 export default function CurrentOrder() {
-
   const navigation = useNavigation();
-
+  const { currentOrder } = useOrderStatus();
   const [currentOrders, setCurrentOrders] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const flatListRef = useRef(null);
+
 
   const accepticon = require("../assets/icons/acceptedicon.json");
   const preparingicon = require("../assets/icons/preparingicon.json");
   const readyicon = require("../assets/icons/readyicon.json");
- const flatListRef = useRef(null);
 
- useEffect(() => {
-   const data = [
-      {
-        _id: 1,
-        storeName: "Store Name 1",
-        orderId: "Order Name 1",
-        items: [
-          {
-            name: "Item Name 1",
-            quantity: 1,
-            ratings: 5.0,
-            ratingCount: 600,
-            price: 10,
-            type: "Vegeterian",
-            category: "Snacks",
-          },
-          {
-            name: "Item Name 2",
-            quantity: 2,
-            ratings: 5.0,
-            ratingCount: 600,
-            price: 100,
-            type: "Non-Vegeterian",
-            
-            category: "Beverages",
-          },
-          {
-            name: "Item Name 3",
-            quantity: 3,
-            ratings: 5.0,
-            ratingCount: 600,
-            price: 10,
-            type: "Non-Vegeterian",
-            category: "Main Course",
-          },
-          {
-            name: "Item Name 4",
-            quantity: 4,
-            ratings: 5.0,
-            ratingCount: 600,
-            price: 100,
-            type: "Vegeterian",
-            category: "Pizza",
-          },
-        ],
-        date: new Date().toLocaleDateString("en-IN", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        }),
-        status: "Preparing",
-        time: new Date().toLocaleTimeString(),
-        orderType: "Dine in",
-        transactionId: "AZHDGYW52S",
-        paymentStatus: "Success",
-      },
-    ];
-    setCurrentOrders(data);
-    checkCurrentOrderStatus();
-  }, []);
   
+  useEffect(() => {
+    const checkCurrentOrderStatus = () => {
+      const filteredOrders = currentOrder.filter((order) =>
+        ["Pending", "Accepted", "Baking", "Baked"].includes(order.status)
+      );
+      setCurrentOrders(filteredOrders);
+    };
+
+    checkCurrentOrderStatus();
+  }, [currentOrder]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       // Calculate the index of the next item in a cycle
@@ -97,122 +48,7 @@ export default function CurrentOrder() {
     }, 5000); // Change the interval time (in milliseconds) as needed
 
     return () => clearInterval(interval);
-  }, [currentIndex]);
-  const checkCurrentOrderStatus = () => {
-    setInterval(() => {
-      const data = [
-        {
-          _id: 5,
-          storeName: "Store Name 5",
-          orderId: "Order id 5",
-          items: [
-            {
-              name: "Item Name 1",
-              quantity: 1,
-              ratings: 5.0,
-              ratingCount: 600,
-              price: 10,
-              type: "Vegeterian",
-              category: "Snacks",
-            },
-            {
-              name: "Item Name 2",
-              quantity: 2,
-              ratings: 5.0,
-              ratingCount: 600,
-              price: 100,
-              type: "Non-Vegeterian",
-
-              category: "Beverages",
-            },
-            {
-              name: "Item Name 3",
-              quantity: 3,
-              ratings: 5.0,
-              ratingCount: 600,
-              price: 10,
-              type: "Non-Vegeterian",
-              category: "Main Course",
-            },
-            {
-              name: "Item Name 4",
-              quantity: 4,
-              ratings: 5.0,
-              ratingCount: 600,
-              price: 100,
-              type: "Vegeterian",
-              category: "Pizza",
-            },
-          ],
-          date: new Date().toLocaleDateString("en-IN", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          }),
-          status: "Accepted",
-          time: new Date().toLocaleTimeString(),
-          orderType: "Dine in",
-          transactionId: "AZHDGYW52S",
-          paymentStatus: "Success",
-        },
-        {
-          _id: 1,
-          storeName: "Store Name 1",
-          orderId: "Order Name 1",
-          items: [
-            {
-              name: "Item Name 1",
-              quantity: 1,
-              ratings: 5.0,
-              ratingCount: 600,
-              price: 10,
-              type: "Vegeterian",
-              category: "Snacks",
-            },
-            {
-              name: "Item Name 2",
-              quantity: 2,
-              ratings: 5.0,
-              ratingCount: 600,
-              price: 100,
-              type: "Non-Vegeterian",
-
-              category: "Beverages",
-            },
-            {
-              name: "Item Name 3",
-              quantity: 3,
-              ratings: 5.0,
-              ratingCount: 600,
-              price: 10,
-              type: "Non-Vegeterian",
-              category: "Main Course",
-            },
-            {
-              name: "Item Name 4",
-              quantity: 4,
-              ratings: 5.0,
-              ratingCount: 600,
-              price: 100,
-              type: "Vegeterian",
-              category: "Pizza",
-            },
-          ],
-          date: new Date().toLocaleDateString("en-IN", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          }),
-          status: "Preparing",
-          time: new Date().toLocaleTimeString(),
-          orderType: "Dine in",
-          transactionId: "AZHDGYW52S",
-          paymentStatus: "Success",
-        },
-      ];
-      setCurrentOrders(data);
-    }, 1000);
-  };
+  }, [currentIndex, currentOrders]);
 
   const CustomScrollIndicator = ({ itemCount, currentIndex }) => {
     const dots = Array.from({ length: itemCount }, (_, index) => (
@@ -230,17 +66,20 @@ export default function CurrentOrder() {
 
   const CardItem = ({ item, index }) => {
     return (
-      <View onTouchEnd={()=>navigation.navigate('Order Summary' , {item:item})} style={styles.ordercard}>
+      <View
+        onTouchEnd={() => navigation.navigate('Order Summary', { item: item })}
+        style={styles.ordercard}
+      >
         <LottieView
-              source={item.status === 'Ready' ? readyicon : item.status === 'Accepted' ? accepticon : preparingicon} // Replace 'animation.json' with your Lottie animation file
-              autoPlay
-              loop
-              speed={1.5}
-              style={{ width: RFValue(80), height: RFValue(80) }}
-            />
+          source={item.status === 'Ready' ? readyicon : item.status === 'Accepted' ? accepticon : preparingicon}
+          autoPlay
+          loop
+          speed={1.5}
+          style={{ width: RFValue(80), height: RFValue(80) }}
+        />
         <View style={styles.ordercarditem}>
-          <Text style={{fontSize:RFValue(14) , fontWeight:'bold'}}>Your Food is {item.status}</Text>
-          <Text style={{fontSize:RFValue(13)  , fontWeight:'500'}}>{item.storeName}</Text>
+          <Text style={{ fontSize: RFValue(14), fontWeight: 'bold' }}>Your Food is {item.status}</Text>
+          <Text style={{ fontSize: RFValue(13), fontWeight: '500' }}>{item.shopId.name}</Text>
         </View>
         <CustomScrollIndicator
           itemCount={currentOrders.length}
@@ -251,24 +90,24 @@ export default function CurrentOrder() {
   };
 
   const handleScroll = (event) => {
-    const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
+    const { contentOffset, layoutMeasurement } = event.nativeEvent;
     const currentIndex = Math.floor(contentOffset.y / layoutMeasurement.height);
     setCurrentIndex(currentIndex);
   };
 
   return (
     <View style={{ height: "20%" }}>
-    <FlatList
-      ref={flatListRef}
-      data={currentOrders}
-      renderItem={({ item, index }) => <CardItem item={item} index={index} />}
-      keyExtractor={(item, index) => index.toString()}
-      showsVerticalScrollIndicator={false}
-      onScroll={handleScroll}
-      scrollEventThrottle={16}
-      initialScrollIndex={currentIndex}
-    />
-  </View>
+      <FlatList
+        ref={flatListRef}
+        data={currentOrders}
+        renderItem={({ item, index }) => <CardItem item={item} index={index} />}
+        keyExtractor={(item, index) => index.toString()}
+        showsVerticalScrollIndicator={false}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        initialScrollIndex={currentIndex}
+      />
+    </View>
   );
 }
 

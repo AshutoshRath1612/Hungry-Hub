@@ -1,26 +1,32 @@
-// OrderStatusContext.js
-import React, { createContext, useContext, useReducer } from 'react';
+import React, { createContext, useContext, useReducer } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { GetOrderByUserRoute, Host } from "./Constants";
 
 const OrderStatusContext = createContext();
 
-export const useOrderStatus = () => useContext(OrderStatusContext);
+const initialState = {
+  currentOrder: [],
+};
 
 const orderStatusReducer = (state, action) => {
-  console.log(state)
   switch (action.type) {
-    case 'SET_ORDER_STATUS':
-      return action.payload;
+    case "ORDERS":
+      return { ...state, currentOrder: action.payload };
     default:
       return state;
   }
 };
 
 export const OrderStatusProvider = ({ children }) => {
-  const [currentOrder, dispatch] = useReducer(orderStatusReducer , [])
+  const [state, dispatch] = useReducer(orderStatusReducer, initialState);
 
   return (
-    <OrderStatusContext.Provider value={{ currentOrder, dispatch }}>
+    <OrderStatusContext.Provider value={{ ...state, dispatch }}>
       {children}
     </OrderStatusContext.Provider>
   );
+};
+
+export const useOrderStatus = () => {
+  return useContext(OrderStatusContext);
 };
