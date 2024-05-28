@@ -21,7 +21,6 @@ export default function OrderSummary({navigation}) {
   const NonVegLogo = require("../../assets/icons/NonVegLogo.png");
   const route = useRoute();
   const summary = route.params.item;
-  console.log(summary)
 
   const [showQR, setShowQR] = useState(false);
   const {cart , dispatch} = useCart()

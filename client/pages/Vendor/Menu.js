@@ -266,7 +266,7 @@ export default function Menu({ navigation, route }) {
           <Container position="top" width="90%" />
           <Animated.View style={[styles.header]}>
             <Image
-              style={{ resizeMode: "contain", width: "40%" }}
+              style={{ resizeMode: "contain", width: "30%" }}
               source={require("../../assets/images/Logo.png")}
             />
             <View style={styles.shopInfo}>
@@ -339,6 +339,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f9f9f9",
   },
   header: {
+    height:'25%',
     backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",

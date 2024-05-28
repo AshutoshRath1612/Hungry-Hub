@@ -8,28 +8,48 @@ import { NavigationContext } from "../../NavContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LottieView from "lottie-react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { Host, currentOrderRoute } from "../../Constants";
 
 export default function VendorHome({ navigation, route}) {
   const [totalOrders, setTotalOrders] = useState(10000);
   const [Loading,setLoading] = useState(true)
+  const [user , setUser] = useState({})
+  const [currentOrders, setCurrentOrders] = useState([]);
 
   useEffect(()=>{
     if(route.params !== undefined){
     setData()
     }
+    getUser()
     setLoading(false)
   },[])
+  
+  const getUser = async() => {
+    const user = await AsyncStorage.getItem('user')
+    setUser(JSON.parse(user))
+  }
+  const getCurrentOrders = async () => {
+    fetch(`${Host}${currentOrderRoute}/${user.shopName}`)
+    .then(res => res.json())
+    .then(data => {
+      setCurrentOrders(data)
+    })
+  }
+
+  useEffect(() => {
+
+    getCurrentOrders()
+    setInterval(() => {
+    getCurrentOrders()
+    }
+    , 10000);
+  }, [user]);
 
   const setData = async() => {
     const {token,...userDetails} = route.params.user
-    console.log(userDetails)
     await AsyncStorage.setItem('user' , JSON.stringify(userDetails))
     await AsyncStorage.setItem('token' , JSON.stringify(token))
   }
-
-  const [currentOrders, setCurrentOrders] = useState([
-    1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-  ]);
 
   return (
     <NavigationContext.Provider value={{ navigation, route }}>
@@ -56,7 +76,7 @@ export default function VendorHome({ navigation, route}) {
           marginVertical: 20,
         }}
       >
-        Mio Amore
+        {user.shopName}
       </Text>
       <View style={styles.top}>
         <Text
@@ -123,7 +143,7 @@ export default function VendorHome({ navigation, route}) {
           width:'100%'
         }}
       >
-        {currentOrders.length !== 0 ? (
+        {currentOrders !== null ? (
           <FlatList
             data={currentOrders}
             style={{marginBottom:'2%'}}
@@ -134,7 +154,7 @@ export default function VendorHome({ navigation, route}) {
             renderItem={({ item }) => (
               <View style={styles.ordercard}>
                 <Text style={{ fontSize: RFValue(14), fontWeight: "bold" }}>
-                  No. {item}
+                  No.
                 </Text>
               </View>
             )}

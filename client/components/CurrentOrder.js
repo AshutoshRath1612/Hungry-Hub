@@ -1,9 +1,11 @@
-import { View, Text, FlatList, StyleSheet, Image } from "react-native";
+import { View, Text, FlatList, StyleSheet } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import LottieView from "lottie-react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 import { useNavigation } from "@react-navigation/native";
 import { useOrderStatus } from "../OrderStatusContext";
+import { GetOrderByUserRoute, Host } from "../Constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function CurrentOrder() {
   const navigation = useNavigation();
@@ -12,40 +14,66 @@ export default function CurrentOrder() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef(null);
 
+  const { dispatch } = useOrderStatus();
 
   const accepticon = require("../assets/icons/acceptedicon.json");
   const preparingicon = require("../assets/icons/preparingicon.json");
   const readyicon = require("../assets/icons/readyicon.json");
 
-  
   useEffect(() => {
-    const checkCurrentOrderStatus = () => {
-      const filteredOrders = currentOrder.filter((order) =>
-        ["Pending", "Accepted", "Baking", "Baked"].includes(order.status)
-      );
-      setCurrentOrders(filteredOrders);
-    };
+    fetchOrder();
+  }, []);
+  
+  const fetchOrder = async () => {
+    try {
+      const user = await AsyncStorage.getItem("user");
+      if (user) {
+        const userObj = JSON.parse(user);
+        const id = userObj._id;
 
-    checkCurrentOrderStatus();
+        const response = await fetch(`${Host}${GetOrderByUserRoute}/${id}`);
+        const data = await response.json();
+
+        setCurrentOrders(data);
+        checkCurrentOrderStatus(data);
+        dispatch({ type: 'ORDERS', payload: data });
+      }
+    } catch (error) {
+      console.error("Failed to fetch orders", error);
+    }
+  };
+
+  useEffect(() => {
+    checkCurrentOrderStatus(currentOrder);
+    const interval = setInterval(() => {
+      fetchOrder();
+    }, 10000);
+
+    return () => clearInterval(interval);
   }, [currentOrder]);
+
+  const checkCurrentOrderStatus = (orders) => {
+    if (!orders) return;
+    const filteredOrders = orders.filter((order) =>
+      ["Pending", "Accepted", "Baking", "Baked"].includes(order.status)
+    );
+    setCurrentOrders(filteredOrders);
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
-      // Calculate the index of the next item in a cycle
-      const nextIndex = (currentIndex + 1) % currentOrders.length;
-      setCurrentIndex(nextIndex);
+      if (currentOrders.length > 0) {
+        const nextIndex = (currentIndex + 1) % currentOrders.length;
+        setCurrentIndex(nextIndex);
 
-      if (isNaN(nextIndex)) {
-        setCurrentIndex(0);
-        return;
+        if (flatListRef.current) {
+          flatListRef.current.scrollToIndex({
+            animated: true,
+            index: nextIndex,
+          });
+        }
       }
-
-      // Scroll to the next item
-      flatListRef.current.scrollToIndex({
-        animated: true,
-        index: nextIndex,
-      });
-    }, 5000); // Change the interval time (in milliseconds) as needed
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [currentIndex, currentOrders]);
@@ -67,7 +95,7 @@ export default function CurrentOrder() {
   const CardItem = ({ item, index }) => {
     return (
       <View
-        onTouchEnd={() => navigation.navigate('Order Summary', { item: item })}
+        onTouchEnd={() => navigation.navigate('Order Summary', { item })}
         style={styles.ordercard}
       >
         <LottieView
@@ -96,7 +124,7 @@ export default function CurrentOrder() {
   };
 
   return (
-    <View style={{ height: "20%" }}>
+    <View style={{ height: "22%" }}>
       <FlatList
         ref={flatListRef}
         data={currentOrders}
@@ -106,6 +134,17 @@ export default function CurrentOrder() {
         onScroll={handleScroll}
         scrollEventThrottle={16}
         initialScrollIndex={currentIndex}
+        getItemLayout={(data, index) => ({
+          length: 120, // height of each card (adjust if necessary)
+          offset: 120 * index, // height of each card * index
+          index,
+        })}
+        onScrollToIndexFailed={(info) => {
+          const wait = new Promise(resolve => setTimeout(resolve, 500));
+          wait.then(() => {
+            flatListRef.current.scrollToIndex({ index: info.index, animated: true });
+          });
+        }}
       />
     </View>
   );

@@ -1,17 +1,15 @@
 import React, { createContext, useContext, useReducer } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { GetOrderByUserRoute, Host } from "./Constants";
 
 const OrderStatusContext = createContext();
 
 const initialState = {
-  currentOrder: [],
+  orders: [],
 };
 
 const orderStatusReducer = (state, action) => {
   switch (action.type) {
     case "ORDERS":
-      return { ...state, currentOrder: action.payload };
+      return { ...state, orders: action.payload };
     default:
       return state;
   }

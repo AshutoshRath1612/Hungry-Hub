@@ -118,10 +118,62 @@ const getUserOrders = async (req, res) => {
   }
 };
 
-module.exports = getUserOrders;
+const getCurrentOrders = async (req, res) => {
+  const shopName = req.params.shopName;
+  try {
+    // Fetch orders with user and shop details populated
+    const shopDetails =  await Shop.findOne({name: shopName})
+    let orders = await
+    Order.find ({shopId: shopDetails._id, status: { $in: ['Pending', 'Accepted', 'Preparing', 'Prepared'] }})
+      .populate('userId', 'mobileNo') // Assuming User model has name and email fields
+      .populate('shopId', 'name') // Assuming Shop model has name and location fields
+      .populate('paymentId','paymentId signature status')
+      .sort({ createdDate: -1 });
+    res.json(orders);
+  }
+  catch (error) {
+    res.status(500).json({ error: 'Failed to get orders', details: error.message });
+  }
+}
+
+const getAllOrders = async (req, res) => {
+  const shopName = req.params.shopName;
+  try {
+    const shopDetails =  await Shop.findOne({name: shopName})
+    let orders = await Order.find({shopId: shopDetails._id})
+      .populate('userId', 'mobileNo') // Assuming User model has name and email fields
+      .populate('shopId', 'name') // Assuming Shop model has name and location fields
+      .populate('paymentId','paymentId signature status')
+      .sort({ createdDate: -1 });
+    
+      let sortedOrders  = sortByDates(orders)
+    res.json(sortedOrders);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get orders', details: error.message });
+  }
+}
+
+const sortByDates = (orders) => {
+  console.log("inside")
+  let sorted = {}
+  orders.forEach(order => {
+    let date = order.createdDate.toDateString()
+    if(sorted[date]){
+      sorted[date].push(order)
+    }
+    else{
+      sorted[date] = [order]
+    }
+  })
+  console.log(sorted)
+  return sorted
+}
+
 
 module.exports = {
   createOrder,
   addOrder,
-  getUserOrders
+  getUserOrders,
+  getCurrentOrders,
+  getAllOrders
 };

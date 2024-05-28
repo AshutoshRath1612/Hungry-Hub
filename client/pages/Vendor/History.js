@@ -123,6 +123,8 @@ export default function OrderHistory() {
     },
   ];
 
+  
+
   const getStatusColor = (status) => {
     switch (status) {
       case "Preparing":
