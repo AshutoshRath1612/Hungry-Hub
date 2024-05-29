@@ -42,7 +42,7 @@ export default function StudentHome() {
           <Search />
         </Animated.View>
         <View style={styles.bottom}>
-          <Reccomandation />
+          {/* <Reccomandation /> */}
           <CurrentOrder />
           <ShopList />
         </View>

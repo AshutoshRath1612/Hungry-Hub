@@ -42,7 +42,7 @@ export default function VendorHome({ navigation, route}) {
     setInterval(() => {
     getCurrentOrders()
     }
-    , 10000);
+    , 60 * 1000);
   }, [user]);
 
   const setData = async() => {
@@ -152,10 +152,18 @@ export default function VendorHome({ navigation, route}) {
             numColumns={2} // Display two columns
             contentContainerStyle={{ paddingHorizontal: 10, paddingTop: 10 }}
             renderItem={({ item }) => (
-              <View style={styles.ordercard}>
+              <View onTouchEnd={()=> navigation.navigate('Vendor Order Summary' , {item:item})} style={styles.ordercard}>
                 <Text style={{ fontSize: RFValue(14), fontWeight: "bold" }}>
-                  No.
+                  No. {item.orderNo}
                 </Text>
+                {item.userId.name !== undefined ? <Text style={{ fontSize: RFValue(14), fontWeight: "bold" }}>
+                  Name: {item.userId.name}
+                </Text>
+                :
+                <Text style={{ fontSize: RFValue(14), fontWeight: "bold" }}>
+                  RegdNo: {item.userId.regdNo}
+                  </Text>
+                }
               </View>
             )}
           />
@@ -218,8 +226,8 @@ const styles = StyleSheet.create({
     marginHorizontal:'5%',
     height: 100,
     width: "40%",
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "flex-start",
+    justifyContent: "space-around",
     elevation:5
   },
 });

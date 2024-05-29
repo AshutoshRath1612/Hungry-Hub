@@ -161,7 +161,7 @@ function Nav() {
               styles.tab,
               route.name === "Vendor History" && styles.selectedTab,
             ]}
-            onPress={() => navigateToScreen("Vendor History")}
+            onPress={() => navigateToScreen("Vendor History", shopName)}
           >
             <FontAwesome name="history" style={styles.tabText}></FontAwesome>
           </TouchableOpacity>

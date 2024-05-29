@@ -135,8 +135,8 @@ export default function CurrentOrder() {
         scrollEventThrottle={16}
         initialScrollIndex={currentIndex}
         getItemLayout={(data, index) => ({
-          length: 120, // height of each card (adjust if necessary)
-          offset: 120 * index, // height of each card * index
+          length: RFValue(110), // height of each card (adjust if necessary)
+          offset: RFValue(110) * index, // height of each card * index
           index,
         })}
         onScrollToIndexFailed={(info) => {
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     margin: 10,
-    height: 100,
+    height: RFValue(90),
     alignItems: "center",
     justifyContent: "space-around",
   },

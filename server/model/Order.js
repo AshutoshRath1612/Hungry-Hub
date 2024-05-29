@@ -17,7 +17,11 @@ const orderSchema = new mongoose.Schema({
     ref: 'Payment', // Reference to the Payment model
     required: false // Allow this to be optional for split bill feature
   },
-  orderId:{
+  orderNo: {
+    type: Number,
+    required: true
+  },
+  orderId: {
     type: String,
     required: true
   },
@@ -40,11 +44,11 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required: true
       },
-      category:{
+      category: {
         type: String,
         required: true
       },
-      type:{
+      type: {
         type: String,
         required: true
       }

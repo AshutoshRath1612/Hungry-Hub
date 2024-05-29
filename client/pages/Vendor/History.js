@@ -1,129 +1,31 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
   Text,
   FlatList,
-  Image,
-  Pressable,
   TextInput,
 } from "react-native";
-import Header from "../../components/Header";
-import Nav from "../../components/Nav";
 import { useRoute, useNavigation } from "@react-navigation/native";
-import { NavigationContext } from "../../NavContext";
 import { RFValue } from "react-native-responsive-fontsize";
-import { OrderStatusProvider, useOrderStatus } from "../../OrderStatusContext";
 import { FontAwesome } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { Host, getOrderByVendorRoute } from "../../Constants";
+import Nav from "../../components/Nav";
 
 export default function OrderHistory() {
-  // Import the images
-  const VegLogo = require("../../assets/icons/VegLogo.png");
-  const NonVegLogo = require("../../assets/icons/NonVegLogo.png");
+  const navigation = useNavigation();
+  const route = useRoute();
+  const [data, setData] = useState(null);
 
-  const { currentOrder, dispatch } = useOrderStatus();
-
-  const DATA = [
-    {
-      date: new Date().toLocaleDateString("en-IN", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
-      orders: [
-        {
-          orderId: 1,
-          customerName: "John Doe",
-          status: "Preparing",
-        },
-        {
-          orderId: 2,
-          customerName: "John Doe",
-          status: "Delivered",
-        },
-        {
-          orderId: 3,
-          customerName: "John Doe",
-          status: "Cancelled",
-        },
-      ],
-    },
-    {
-      date: new Date().toLocaleDateString("en-IN", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
-      orders: [
-        {
-          orderId: 4,
-          customerName: "John Doe",
-          status: "Delivered",
-        },
-        {
-          orderId: 5,
-          customerName: "John Doe",
-          status: "Delivered",
-        },
-        {
-          orderId: 6,
-          customerName: "John Doe",
-          status: "Cancelled",
-        },
-      ],
-    },
-    {
-      date: new Date().toLocaleDateString("en-IN", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
-      orders: [
-        {
-          orderId: 7,
-          customerName: "John Doe",
-          status: "Delivered",
-        },
-        {
-          orderId: 8,
-          customerName: "John Doe",
-          status: "Delivered",
-        },
-        {
-          orderId: 9,
-          customerName: "John Doe",
-          status: "Delivered",
-        },
-      ],
-    },
-    {
-      date: new Date().toLocaleDateString("en-IN", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
-      orders: [
-        {
-          orderId: 10,
-          customerName: "John Doe",
-          status: "Delivered",
-        },
-        {
-          orderId: 11,
-          customerName: "John Doe",
-          status: "Delivered",
-        },
-        {
-          orderId: 12,
-          customerName: "John Doe",
-          status: "Delivered",
-        },
-      ],
-    },
-  ];
-
-  
+  useEffect(() => {
+    fetch(`${Host}${getOrderByVendorRoute}/${route.params.shopName}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('Fetched Data:', data);
+        setData(data);
+      });
+  }, []);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -138,83 +40,62 @@ export default function OrderHistory() {
     }
   };
 
-  const showOrderDetails = (item) => {
-    console.log(item);
-  };
-
   const CardItem = ({ item }) => {
     return (
       <View style={styles.CardItem}>
-        <Text  style={{fontSize:RFValue(15),fontWeight:'bold', marginVertical:10}}>{item.date}</Text>
+        <Text style={{ fontSize: RFValue(15), fontWeight: 'bold', marginVertical: 10 }}>{item.date}</Text>
         <FlatList
           data={item.orders}
-          renderItem={( fooditem ) => (
-            <View onTouchEnd={()=>navigation.navigate("Vendor Order Summary" , {item: fooditem.item  ,date:item.date})} style={styles.itemList}>
+          renderItem={({ item: foodItem }) => (
+            <View onTouchEnd={() => navigation.navigate("Vendor Order Summary", { item: foodItem })} style={styles.itemList}>
               <Text style={styles.item}>
-                Order No.: {fooditem.item.orderId}
+                Order No.: {foodItem.orderNo}
               </Text>
               <Text style={styles.item}>
-                Name: {fooditem.item.customerName}
+                RegdNo: {foodItem.userId?.regdNo}
               </Text>
-              <Text
-                style={[styles.item, { color: getStatusColor(fooditem.item.status) }]}
-              >
-                {fooditem.item.status}
+              <Text style={[styles.item, { color: getStatusColor(foodItem.status) }]}>
+                {foodItem.status}
               </Text>
             </View>
           )}
+          keyExtractor={(foodItem, index) => foodItem._id}
         />
       </View>
     );
   };
 
-  const navigation = useNavigation();
-  const route = useRoute();
-
   return (
-    <LinearGradient colors={["#C38888" , "white"]}  style={styles.container}>
-      <NavigationContext.Provider value={{ navigation, route }}>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-around",
-            alignItems: "center",
-          }}
-        >
-          <Text style={{fontSize:RFValue(20) , fontWeight:'bold'}}>Order History</Text>
-          <View style={styles.searchBox}>
-            <FontAwesome
-              name="search"
-              size={20}
-              color="orange"
-              style={styles.icon}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Search Orders..."
-              keyboardType="numeric"
-              placeholderTextColor="gray"
-              returnKeyType="search"
-              onSubmitEditing={(e) => handleNavigate(e)}
-            />
-          </View>
+    <LinearGradient colors={["#C38888", "white"]} style={styles.container}>
+      <View style={{ flexDirection: "row", justifyContent: "space-around", alignItems: "center" }}>
+        <Text style={{ fontSize: RFValue(20), fontWeight: 'bold' }}>Order History</Text>
+        <View style={styles.searchBox}>
+          <FontAwesome name="search" size={20} color="orange" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Search Orders..."
+            keyboardType="numeric"
+            placeholderTextColor="gray"
+            returnKeyType="search"
+          />
         </View>
-        <View style={{height:'85%' , width:'95%'  , padding:15}}>
+      </View>
+      <View style={{ height: '85%', width: '95%', padding: 15 }}>
         <FlatList
           style={styles.historyContainer}
-          data={DATA}
+          data={data}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <CardItem item={item} />}
           keyExtractor={(item, index) => index.toString()}
         />
-        </View>
-        <View style={{ position: "absolute", width: "100%", bottom: 0 }}>
-          <Nav />
-        </View>
-      </NavigationContext.Provider>
+      </View>
+      <View style={{ position: "absolute", width: "100%", bottom: 0 }}>
+        <Nav />
+      </View>
     </LinearGradient>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
@@ -223,19 +104,7 @@ const styles = StyleSheet.create({
   historyContainer: {
     flex: 1,
     width: "100%",
-    marginBottom:'2%'
-  },
-  status: {
-    fontSize: RFValue(10),
-    fontWeight: "bold",
-    padding: 5,
-    borderRadius: 5,
-    color: "white",
-  },
-  nav: {
-    position: "absolute",
-    bottom: 0,
-    width: "100%",
+    marginBottom: '2%'
   },
   searchBox: {
     flexDirection: "row",
@@ -259,16 +128,19 @@ const styles = StyleSheet.create({
     color: "black",
   },
   CardItem: {
-    borderBottomWidth:1,
-    borderColor:'grey',
-    paddingVertical:10
+    borderBottomWidth: 1,
+    borderColor: 'grey',
+    paddingVertical: 10
   },
-  itemList:{
-    flexDirection:'row',
-    justifyContent:'space-around',
-    padding:10,
-    backgroundColor:'white',
-    marginVertical:5,
-    borderRadius:10
+  itemList: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
+    backgroundColor: 'white',
+    marginVertical: 5,
+    borderRadius: 10
   },
+  item: {
+    fontSize: RFValue(12)
+  }
 });

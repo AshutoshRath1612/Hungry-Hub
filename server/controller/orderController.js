@@ -50,9 +50,9 @@ const createOrder = async (req, res) => {
   }
 }
 
+
 const addOrder = async (req, res) => {
   const { order, payment, cartData, user } = req.body;
-  console.log("sent")
   try {
     // Update the payment document with additional details
     const paymentDoc = await Payment.findOne({ orderId: payment.razorpay_order_id });
@@ -67,12 +67,25 @@ const addOrder = async (req, res) => {
 
     await paymentDoc.save();
 
-    // Create the order
+    // Get the current date in 'YYYY-MM-DD' format
+    const currentDate = new Date().toISOString().split('T')[0];
+
+    // Find the highest order number for today
+    const highestOrder = await Order.findOne({ createdDate: { $gte: new Date(currentDate) } })
+      .sort({ orderNo: -1 });
+
+    // Log the highest order found for debugging
+    console.log('Highest order found:', highestOrder);
+
+    const dailyOrderNumber = highestOrder ? highestOrder.orderNo + 1 : 1;
+    console.log(dailyOrderNumber)
+    // Create the order with the daily order number
     const orderData = new Order({
       userId: user._id,
       shopId: cartData.items[0].shopId,
       paymentId: paymentDoc._id,
-      orderId: order.id,
+      orderNo: dailyOrderNumber,
+      orderId: order.id, // Combine date and daily order number
       orderType: cartData.deliveryType,
       items: cartData.items[0].items,
       status: 'Pending'
@@ -95,9 +108,9 @@ const addOrder = async (req, res) => {
       }
     }
 
-    res.status(500).json({ error: 'Failed to process order', details: error.message,success: false });
+    res.status(500).json({ error: 'Failed to process order', details: error.message, success: false });
   }
-}
+};
 
 const getUserOrders = async (req, res) => {
   const userId = req.params.id;
@@ -125,7 +138,7 @@ const getCurrentOrders = async (req, res) => {
     const shopDetails =  await Shop.findOne({name: shopName})
     let orders = await
     Order.find ({shopId: shopDetails._id, status: { $in: ['Pending', 'Accepted', 'Preparing', 'Prepared'] }})
-      .populate('userId', 'mobileNo') // Assuming User model has name and email fields
+      .populate('userId', 'regdNo mobileNo') // Assuming User model has name and email fields
       .populate('shopId', 'name') // Assuming Shop model has name and location fields
       .populate('paymentId','paymentId signature status')
       .sort({ createdDate: -1 });
@@ -135,39 +148,47 @@ const getCurrentOrders = async (req, res) => {
     res.status(500).json({ error: 'Failed to get orders', details: error.message });
   }
 }
-
 const getAllOrders = async (req, res) => {
   const shopName = req.params.shopName;
   try {
-    const shopDetails =  await Shop.findOne({name: shopName})
-    let orders = await Order.find({shopId: shopDetails._id})
-      .populate('userId', 'mobileNo') // Assuming User model has name and email fields
-      .populate('shopId', 'name') // Assuming Shop model has name and location fields
-      .populate('paymentId','paymentId signature status')
+    const shopDetails = await Shop.findOne({ name: shopName });
+    if (!shopDetails) {
+      return res.status(404).json({ error: 'Shop not found' });
+    }
+
+    let orders = await Order.find({ shopId: shopDetails._id })
+      .populate('userId', 'regdNo mobileNo')
+      .populate('shopId', 'name')
+      .populate('paymentId', 'paymentId signature status')
       .sort({ createdDate: -1 });
-    
-      let sortedOrders  = sortByDates(orders)
+
+    let sortedOrders = sortByDates(orders);
     res.json(sortedOrders);
   } catch (error) {
     res.status(500).json({ error: 'Failed to get orders', details: error.message });
   }
-}
+};
 
 const sortByDates = (orders) => {
-  console.log("inside")
-  let sorted = {}
+  let sorted = {};
+
   orders.forEach(order => {
-    let date = order.createdDate.toDateString()
-    if(sorted[date]){
-      sorted[date].push(order)
+    let date = order.createdDate.toDateString();
+    if (sorted[date]) {
+      sorted[date].push(order);
+    } else {
+      sorted[date] = [order];
     }
-    else{
-      sorted[date] = [order]
-    }
-  })
-  console.log(sorted)
-  return sorted
-}
+  });
+
+  // Transform the sorted object into an array of objects
+  let result = Object.keys(sorted).map(date => ({
+    date: date,
+    orders: sorted[date]
+  }));
+
+  return result;
+};
 
 
 module.exports = {

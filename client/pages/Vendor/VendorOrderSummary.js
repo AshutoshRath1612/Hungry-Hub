@@ -20,66 +20,7 @@ export default function VendorOrderSummary() {
   const NonVegLogo = require("../../assets/icons/NonVegLogo.png");
   const route = useRoute();
   const [showModal, setShowModal] = useState(false);
-  const summary = {
-    _id: 1,
-    storeName: "Store Name 1",
-    orderId: "Order Name 1",
-    items: [
-      {
-        name: "Item Name 1",
-        quantity: 1,
-        ratings: 5.0,
-        ratingCount: 600,
-        price: 10,
-        type: "Vegeterian",
-        category: "Snacks",
-      },
-      {
-        name: "Item Name 2",
-        quantity: 2,
-        ratings: 5.0,
-        ratingCount: 600,
-        price: 100,
-        type: "Non-Vegeterian",
-
-        category: "Beverages",
-      },
-      {
-        name: "Item Name 3",
-        quantity: 3,
-        ratings: 5.0,
-        ratingCount: 600,
-        price: 10,
-        type: "Non-Vegeterian",
-        category: "Main Course",
-      },
-      {
-        name: "Item Name 4",
-        quantity: 4,
-        ratings: 5.0,
-        ratingCount: 600,
-        price: 100,
-        type: "Vegeterian",
-        category: "Pizza",
-      },
-    ],
-    date: new Date().toLocaleDateString("en-IN", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }),
-    status: "Preparing",
-    time: new Date().toLocaleTimeString(),
-    orderType: "Dine in",
-    transactionId: "AZHDGYW52S",
-    paymentStatus: "Success",
-  };
-
-  const customerDetails = {
-    name: "Ashutosh",
-    phoneNumber: "9348123123",
-    regdNo: "2041018066",
-  };
+  const summary = route.params.item
 
   const UpdateStatusModal = () => (
     <Modal
@@ -183,7 +124,7 @@ export default function VendorOrderSummary() {
     });
     return total;
   };
-
+  console.log(summary.userId.name)
   return (
     <LinearGradient colors={["#C38888", "white"]} style={{ flex: 1 }}>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
@@ -197,7 +138,7 @@ export default function VendorOrderSummary() {
                 width: "100%",
               }}
             >
-              <Text style={styles.shopName}>{customerDetails.name}</Text>
+              <Text style={styles.shopName}>{summary.userId.name !== undefined ?  summary.userId.name : summary.userId.regdNo}</Text>
             </View>
             <View style={styles.line}></View>
             <View
@@ -281,13 +222,22 @@ export default function VendorOrderSummary() {
               <Text style={styles.heading}>Order Details</Text>
               <View style={styles.line}></View>
               <View style={styles.details}>
+                <Text style={styles.info}>Order Number</Text>
+                <Text style={styles.text}>{summary.orderNo}</Text>
+              </View>
+              <View style={styles.details}>
                 <Text style={styles.info}>Order ID</Text>
                 <Text style={styles.text}>{summary.orderId}</Text>
               </View>
               <View style={styles.details}>
                 <Text style={styles.info}>Date</Text>
                 <Text style={styles.text}>
-                  {summary.date} at {summary.time}
+                {new Date(summary.createdDate).toLocaleDateString("en-IN", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}{" "}
+              at {new Date(summary.createdDate).toLocaleTimeString()}
                 </Text>
               </View>
               <View style={styles.details}>
@@ -296,7 +246,7 @@ export default function VendorOrderSummary() {
               </View>
               <View style={styles.details}>
                 <Text style={styles.info}>Phone Number</Text>
-                <Text style={styles.text}>9348183XXX</Text>
+                <Text style={styles.text}>{summary.userId.mobileNo}</Text>
               </View>
             </View>
             <View style={{ width: "100%" }}>
@@ -309,12 +259,12 @@ export default function VendorOrderSummary() {
 
               <View style={styles.details}>
                 <Text style={styles.info}>Transaction Id</Text>
-                <Text style={styles.text}>{summary.transactionId}</Text>
+                <Text style={styles.text}>{summary.paymentId.paymentId}</Text>
               </View>
 
               <View style={styles.details}>
                 <Text style={styles.info}>Status</Text>
-                <Text style={styles.text}>{summary.paymentStatus}</Text>
+                <Text style={styles.text}>{summary.paymentId.status}</Text>
               </View>
 
               <View style={styles.details}>
@@ -325,17 +275,17 @@ export default function VendorOrderSummary() {
             <View style={{ width: "100%" }}>
               <Text style={styles.heading}>Customer Details</Text>
               <View style={styles.line}></View>
-              <View style={styles.details}>
+              {summary.userId.name &&<View style={styles.details}>
                 <Text style={styles.info}>Name</Text>
-                <Text style={styles.text}>{customerDetails.name}</Text>
-              </View>
+                <Text style={styles.text}>{summary.userId.name}</Text>
+              </View>}
               <View style={styles.details}>
                 <Text style={styles.info}>Regd No.</Text>
-                <Text style={styles.text}>{customerDetails.regdNo}</Text>
+                <Text style={styles.text}>{summary.userId.regdNo}</Text>
               </View>
               <View style={styles.details}>
                 <Text style={styles.info}>Phone No.</Text>
-                <Text style={styles.text}>{customerDetails.phoneNumber}</Text>
+                <Text style={styles.text}>{summary.userId.mobileNo}</Text>
               </View>
             </View>
           </View>
