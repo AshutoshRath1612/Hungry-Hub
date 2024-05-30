@@ -11,9 +11,11 @@ import {
   Modal,
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
-import { FontAwesome } from "@expo/vector-icons";
 import { RFValue } from "react-native-responsive-fontsize";
 import { LinearGradient } from "expo-linear-gradient";
+import { RadioButton } from "react-native-paper";
+import Container , {Toast} from 'toastify-react-native'
+import { Host, updateStatusRoute } from "../../Constants";
 
 export default function VendorOrderSummary() {
   const VegLogo = require("../../assets/icons/VegLogo.png");
@@ -21,6 +23,27 @@ export default function VendorOrderSummary() {
   const route = useRoute();
   const [showModal, setShowModal] = useState(false);
   const summary = route.params.item
+
+  const categories = ['Accepted', 'Preparing', 'Prepared']
+
+  const handleChangeStatus = (status) =>{
+    fetch(`${Host}${updateStatusRoute}`,{
+      method:'PUT',
+      headers:{
+        'Content-Type':'application/json'
+      },
+      body: JSON.stringify({orderId: summary.orderId , status: status})
+    })
+    .then(res=>res.json())
+    .then(data => {
+      if(data.isSuccess){
+        setShowModal(false)
+      }
+      else{
+        Toast.error(data.message)
+      }
+    })
+  }
 
   const UpdateStatusModal = () => (
     <Modal
@@ -40,70 +63,20 @@ export default function VendorOrderSummary() {
           <View style={styles.btnView}>
             {summary.status !== "Cancelled" &&
               summary.status !== "Delivered" && (
-                <View style={styles.status}>
-                  <Pressable
-                    onPress={() => setShowModal(false)}
-                    style={styles.statusinfo}
-                  >
-                    <View
-                      style={[
-                        styles.imgOuter,
-                        {
-                          backgroundColor:
-                            summary.status === "Accepted" ? "green" : "",
-                        },
-                      ]}
-                    >
-                      <Image
-                        style={[styles.statusimg, { width: "40%" }]}
-                        source={require("../../assets/icons/orderaccept.png")}
-                      />
-                    </View>
-                    <Text style={styles.text}>Accepted</Text>
-                  </Pressable>
-                  <View style={[styles.line, { width: "10%" }]}></View>
-                  <Pressable
-                    onPress={() => setShowModal(false)}
-                    style={styles.statusinfo}
-                  >
-                    <View
-                      style={[
-                        styles.imgOuter,
-                        {
-                          backgroundColor:
-                            summary.status === "Preparing" ? "green" : "",
-                        },
-                      ]}
-                    >
-                      <Image
-                        style={[styles.statusimg, { width: 90 }]}
-                        source={require("../../assets/icons/orderpreparing.png")}
-                      />
-                    </View>
-                    <Text style={styles.text}>Preparing</Text>
-                  </Pressable>
-                  <View style={[styles.line, { width: "10%" }]}></View>
-                  <Pressable
-                    onPress={() => setShowModal(false)}
-                    style={styles.statusinfo}
-                  >
-                    <View
-                      style={[
-                        styles.imgOuter,
-                        {
-                          backgroundColor:
-                            summary.status === "Ready" ? "green" : "",
-                        },
-                      ]}
-                    >
-                      <Image
-                        style={styles.statusimg}
-                        source={require("../../assets/icons/orderprepared.png")}
-                      />
-                    </View>
-                    <Text style={styles.text}>Ready</Text>
-                  </Pressable>
-                </View>
+                <RadioButton.Group
+                onValueChange={(value) =>
+                 handleChangeStatus(value)
+                }
+                value={summary.status}
+              >
+                {categories.map((category, index) => (
+                  <RadioButton.Item
+                    label={category}
+                    value={category}
+                    key={index}
+                  />
+                ))}
+              </RadioButton.Group>
               )}
           </View>
           <Pressable
@@ -127,6 +100,7 @@ export default function VendorOrderSummary() {
   console.log(summary.userId.name)
   return (
     <LinearGradient colors={["#C38888", "white"]} style={{ flex: 1 }}>
+    <Container position='top' />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.OrderSummaryContainer}>

@@ -256,7 +256,7 @@ export default function OrderSummary({navigation}) {
         summary.status !== "Cancelled" &&
         showQR && (
           <View style={styles.qrcontainer}>
-            <QRcode data={summary.orderId+summary.paymentId.paymentId+summary.paymentId.signature} />
+            <QRcode data={`${summary.orderId}|${summary.paymentId.paymentId}|${summary.paymentId.signature}`} />
             <Text style={{ fontSize: RFValue(15), fontWeight: "bold" }}>
               Scan it to get your item delivered
             </Text>
