@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, FlatList, Pressable } from "react-native
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/core";
 import { GetAllShopRoute, Host } from "../Constants";
+import { RFValue } from "react-native-responsive-fontsize";
 
 
 export default function ShopList() {
@@ -100,7 +101,7 @@ const styles = StyleSheet.create({
     width:'100%'
   },
   title: {
-    fontSize: 25,
+    fontSize: RFValue(25),
     marginLeft: 10,
     fontFamily: "Ubuntu_700Bold",
   },
@@ -130,12 +131,12 @@ const styles = StyleSheet.create({
     width: "60%",
   },
   shopNames: {
-    fontSize: 25,
+    fontSize: RFValue(25),
     color: "black",
     fontFamily: "Ubuntu_700Bold",
   },
   ratings: {
-    fontSize: 16,
+    fontSize: RFValue(16),
     color: "grey",
   },
   ratingContainer: {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   StyleSheet,
   View,
@@ -6,7 +6,7 @@ import {
   FlatList,
   TextInput,
 } from "react-native";
-import { useRoute, useNavigation } from "@react-navigation/native";
+import { useRoute, useNavigation, useFocusEffect } from "@react-navigation/native";
 import { RFValue } from "react-native-responsive-fontsize";
 import { FontAwesome } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -17,15 +17,25 @@ export default function OrderHistory() {
   const navigation = useNavigation();
   const route = useRoute();
   const [data, setData] = useState(null);
+  const [search, setSearch] = useState(""); 
 
-  useEffect(() => {
+  const fetchData = () => {
     fetch(`${Host}${getOrderByVendorRoute}/${route.params.shopName}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log('Fetched Data:', data);
         setData(data);
       });
+  };
+
+  useEffect(() => {
+    fetchData();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [])
+  );
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -40,6 +50,27 @@ export default function OrderHistory() {
     }
   };
 
+const handleSearch = (text) => {
+  setSearch(text);
+
+  if (text === "") {
+    fetchData(); // Fetch and reset data when search is cleared
+  } else {
+    const filteredData = data.map((item) => {
+      // Filter the orders for each item
+      const filteredOrders = item.orders.filter((order) =>
+        order.orderNo.toString().includes(text)
+      );
+
+      // Return a new item object with the filtered orders
+      return { ...item, orders: filteredOrders };
+    });
+
+    // Set the filtered data to the state
+    setData(filteredData);
+  }
+};
+
   const CardItem = ({ item }) => {
     return (
       <View style={styles.CardItem}>
@@ -47,7 +78,10 @@ export default function OrderHistory() {
         <FlatList
           data={item.orders}
           renderItem={({ item: foodItem }) => (
-            <View onTouchEnd={() => navigation.navigate("Vendor Order Summary", { item: foodItem })} style={styles.itemList}>
+            <View
+              onTouchEnd={() => navigation.navigate("Vendor Order Summary", { item: foodItem })}
+              style={styles.itemList}
+            >
               <Text style={styles.item}>
                 Order No.: {foodItem.orderNo}
               </Text>
@@ -77,6 +111,8 @@ export default function OrderHistory() {
             keyboardType="numeric"
             placeholderTextColor="gray"
             returnKeyType="search"
+            value={search}
+            onChangeText={(text) => handleSearch(text)}
           />
         </View>
       </View>
@@ -85,7 +121,7 @@ export default function OrderHistory() {
           style={styles.historyContainer}
           data={data}
           showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => <CardItem item={item} />}
+          renderItem={({ item }) => item.orders.length !== 0 && <CardItem item={item} />}
           keyExtractor={(item, index) => index.toString()}
         />
       </View>
@@ -115,7 +151,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 9,
     backgroundColor: "white",
-    width: "40%",
+    width: "50%",
     height: 40,
   },
   icon: {

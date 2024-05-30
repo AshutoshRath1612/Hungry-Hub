@@ -13,6 +13,7 @@ export default function CurrentOrder() {
   const [currentOrders, setCurrentOrders] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef(null);
+  const intervalRef = useRef(null);
 
   const { dispatch } = useOrderStatus();
 
@@ -47,7 +48,7 @@ export default function CurrentOrder() {
     checkCurrentOrderStatus(currentOrder);
     const interval = setInterval(() => {
       fetchOrder();
-    }, 10000);
+    }, 10 * 1000);
 
     return () => clearInterval(interval);
   }, [currentOrder]);
@@ -55,7 +56,7 @@ export default function CurrentOrder() {
   const checkCurrentOrderStatus = (orders) => {
     if (!orders) return;
     const filteredOrders = orders.filter((order) =>
-      ["Pending", "Accepted", "Baking", "Baked"].includes(order.status)
+      ["Pending", "Accepted", "Prepared", "Preparing"].includes(order.status)
     );
     setCurrentOrders(filteredOrders);
   };

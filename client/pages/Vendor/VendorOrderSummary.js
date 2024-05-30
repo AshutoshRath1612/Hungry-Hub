@@ -21,8 +21,9 @@ export default function VendorOrderSummary() {
   const VegLogo = require("../../assets/icons/VegLogo.png");
   const NonVegLogo = require("../../assets/icons/NonVegLogo.png");
   const route = useRoute();
-  const [showModal, setShowModal] = useState(false);
   const summary = route.params.item
+  const [showModal, setShowModal] = useState(false);
+  const [status, setStatus] = useState(summary.status);
 
   const categories = ['Accepted', 'Preparing', 'Prepared']
 
@@ -38,6 +39,7 @@ export default function VendorOrderSummary() {
     .then(data => {
       if(data.isSuccess){
         setShowModal(false)
+        setStatus(status)
       }
       else{
         Toast.error(data.message)
@@ -67,7 +69,7 @@ export default function VendorOrderSummary() {
                 onValueChange={(value) =>
                  handleChangeStatus(value)
                 }
-                value={summary.status}
+                value={status}
               >
                 {categories.map((category, index) => (
                   <RadioButton.Item
@@ -126,13 +128,14 @@ export default function VendorOrderSummary() {
               <Text style={styles.info}>
                 {summary.status !== "Cancelled" &&
                 summary.status !== "Delivered"
-                  ? `This Order is ${summary.status}...`
-                  : `This Order was ${summary.status}...`}
+                  ? `This Order is ${status}...`
+                  : `This Order was ${status}...`}
               </Text>
-              <Pressable style={styles.btn} onPress={() => setShowModal(true)}>
+             {summary.status !== "Cancelled" &&
+                summary.status !== "Delivered" && <Pressable style={styles.btn} onPress={() => setShowModal(true)}>
                 <Text style={{color:"white"}}>Update Status</Text>
                 <UpdateStatusModal />
-              </Pressable>
+              </Pressable>}
             </View>
             <Text style={styles.heading}>Your Order</Text>
             <View style={styles.line}></View>

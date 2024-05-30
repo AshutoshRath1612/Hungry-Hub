@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import Header from "../../components/Header";
 import Nav from "../../components/Nav";
-import { useRoute, useNavigation } from "@react-navigation/native";
+import { useRoute, useNavigation, useFocusEffect } from "@react-navigation/native";
 import { NavigationContext } from "../../NavContext";
 import { RFValue } from "react-native-responsive-fontsize";
 import { OrderStatusProvider, useOrderStatus } from "../../OrderStatusContext";
@@ -28,26 +28,33 @@ export default function OrderHistory() {
   const [orders, setOrders] = useState(null);
 
   useEffect(() => {
-    const getUserAndFetchOrders = async () => {
-      try {
-        const user = await AsyncStorage.getItem("user");
-        if (user) {
-          const userObj = JSON.parse(user);
-          const id = userObj._id;
-
-          const response = await fetch(`${Host}${GetOrderByUserRoute}/${id}`);
-          const data = await response.json();
-
-          setOrders(data);
-          dispatch({ type: 'ORDERS', payload: data });
-        }
-      } catch (error) {
-        console.error("Failed to fetch orders", error);
-      }
-    };
-
+    
     getUserAndFetchOrders();
   }, [dispatch, route]);
+
+  useFocusEffect(
+    useCallback(() => {
+      getUserAndFetchOrders();
+    }, [])
+  );
+  
+  const getUserAndFetchOrders = async () => {
+    try {
+      const user = await AsyncStorage.getItem("user");
+      if (user) {
+        const userObj = JSON.parse(user);
+        const id = userObj._id;
+
+        const response = await fetch(`${Host}${GetOrderByUserRoute}/${id}`);
+        const data = await response.json();
+
+        setOrders(data);
+        dispatch({ type: 'ORDERS', payload: data });
+      }
+    } catch (error) {
+      console.error("Failed to fetch orders", error);
+    }
+  };
   
 
   const getStatusColor = (status) => {

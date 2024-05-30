@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -15,15 +15,19 @@ import { RFValue } from "react-native-responsive-fontsize";
 import QRcode from "../../components/QRCode";
 import { LinearGradient } from "expo-linear-gradient";
 import { useCart } from "../../CartContext";
+import io from 'socket.io-client';
+import { Host } from "../../Constants";
 
-export default function OrderSummary({navigation}) {
+export default function OrderSummary({ navigation }) {
   const VegLogo = require("../../assets/icons/VegLogo.png");
   const NonVegLogo = require("../../assets/icons/NonVegLogo.png");
   const route = useRoute();
   const summary = route.params.item;
+  const socket = io(Host);
 
   const [showQR, setShowQR] = useState(false);
-  const {cart , dispatch} = useCart()
+  const { cart, dispatch } = useCart();
+  const [orderStatus, setOrderStatus] = useState(summary.status);
 
   const findPrice = (items) => {
     let total = 0;
@@ -33,236 +37,278 @@ export default function OrderSummary({navigation}) {
     return total;
   };
 
+  useEffect(() => {
+    socket.on("orderStatusUpdate", (data) => {
+      console.log("Order status updated:", data);
+      setOrderStatus(data.status);
+    });
+
+    return () => {
+      socket.off("orderStatusUpdate");
+    };
+  }, []);
+
   const addToCart = (item) => {
     if (cart.length === 0) {
-     dispatch({ type: "ADD_TO_CART", payload: item });
-   } else {
-     if (cart[0].shopName === item.shopName) {
-       dispatch({ type: "ADD_TO_CART", payload: item });
-     } else {
-       dispatch({ type: "CLEAR_CART" });
-       dispatch({ type: "ADD_TO_CART", payload: item });
-     }
-   }
- };
+      dispatch({ type: "ADD_TO_CART", payload: item });
+    } else {
+      if (cart[0].shopName === item.shopName) {
+        dispatch({ type: "ADD_TO_CART", payload: item });
+      } else {
+        dispatch({ type: "CLEAR_CART" });
+        dispatch({ type: "ADD_TO_CART", payload: item });
+      }
+    }
+  };
 
   const reOrder = () => {
     summary.items.forEach((item) => {
       addToCart({
         items: [item],
         shopName: summary.shopId.name,
-        shopId: summary.shopId._id
+        shopId: summary.shopId._id,
       });
-    })
-    navigation.navigate('Cart')
-  }
+    });
+    navigation.navigate("Cart");
+  };
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
-    <LinearGradient colors={["#E0A2A2","white"]} style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.OrderSummaryContainer}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              width: "100%",
-            }}
-          >
-            <Text style={styles.shopName}>{summary.shopId.name}</Text>
-            {summary.status !== "Cancelled" &&
-              summary.status !== "Delivered" && (
-                <Pressable
-                  onPress={() => setShowQR(!showQR)}
-                  style={{
-                    flexDirection: "row",
-                    backgroundColor: "#4694D2",
-                    borderRadius: 10,
-                    padding: 10,
-                    alignItems: "flex-end",
-                    justifyContent: "space-between",
-                    width: "30%",
-                  }}
-                >
-                  <FontAwesome name="qrcode" size={18} />
-                  <Text style={{ fontSize: RFValue(13), fontWeight: "bold" }}>
-                    {showQR ? "Hide QR" : "QR Code"}
-                  </Text>
-                </Pressable>
-              )}
-          </View>
-          <View style={styles.line}></View>
-          <Text style={styles.info}>
-            {summary.status !== "Cancelled" && summary.status !== "Delivered"
-              ? `This Order is ${summary.status}`
-              : `This Order was ${summary.status}`}
-          </Text>
-         {summary.status !== 'Cancelled' && summary.status!=='Delivered' && <View style={styles.status}>
-            <View style={styles.statusinfo}>
-              <View style={[styles.imgOuter,{backgroundColor: summary.status === 'Accepted' ? 'green' : ''}]}>
-                <Image
-                  style={[styles.statusimg, { width: "40%" }]}
-                  source={require("../../assets/icons/orderaccept.png")}
-                />
-              </View>
-              <Text style={styles.text}>Accepted</Text>
-            </View>
-            <View style={[styles.line, { width: "10%" }]}></View>
-            <View style={styles.statusinfo}>
-              <View style={[styles.imgOuter,{backgroundColor: summary.status === 'Preparing' ? 'green' : ''}]}>
-                <Image
-                  style={[styles.statusimg, { width: 90 }]}
-                  source={require("../../assets/icons/orderpreparing.png")}
-                />
-              </View>
-              <Text style={styles.text}>Preparing</Text>
-            </View>
-            <View style={[styles.line, { width: "10%" }]}></View>
-            <View style={styles.statusinfo}>
-              <View style={[styles.imgOuter,{backgroundColor: summary.status === 'Ready' ? 'green' : ''}]}>
-                <Image
-                  style={styles.statusimg}
-                  source={require("../../assets/icons/orderprepared.png")}
-                />
-              </View>
-              <Text style={styles.text}>Ready</Text>
-            </View>
-          </View>}
-          <Text style={styles.heading}>Your Order</Text>
-          <View style={styles.line}></View>
-          <View style={styles.itemList}>
-            {summary.items.map((item, index) => (
-              <View style={styles.item} key={index}>
-                <View style={styles.itemnameinfo}>
-                  <Image
-                    style={styles.typeImg}
-                    source={item.type === "Vegeterian" ? VegLogo : NonVegLogo}
-                  />
-                  <Text style={styles.itemname}>{item.name}</Text>
-                </View>
-                <View style={styles.iteminfo}>
-                  <View
+      <LinearGradient colors={["#E0A2A2", "white"]} style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.OrderSummaryContainer}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: "100%",
+              }}
+            >
+              <Text style={styles.shopName}>{summary.shopId.name}</Text>
+              {summary.status !== "Cancelled" &&
+                summary.status !== "Delivered" && (
+                  <Pressable
+                    onPress={() => setShowQR(!showQR)}
                     style={{
                       flexDirection: "row",
-                      padding: 2,
-                      alignItems: "center",
+                      backgroundColor: "#4694D2",
+                      borderRadius: 10,
+                      padding: 10,
+                      alignItems: "flex-end",
+                      justifyContent: "space-between",
+                      width: "30%",
                     }}
                   >
-                    <Text
-                      style={{
-                        borderWidth: 0.5,
-                        fontWeight: "500",
-                        backgroundColor: "#D3D3D3",
-                        paddingVertical: 3,
-                        paddingHorizontal: 5,
-                        borderRadius: 2,
-                        textAlign: "center",
-                      }}
-                    >
-                      {item.quantity}
+                    <FontAwesome name="qrcode" size={18} />
+                    <Text style={{ fontSize: RFValue(13), fontWeight: "bold" }}>
+                      {showQR ? "Hide QR" : "QR Code"}
                     </Text>
-                    <Text
-                      style={{
-                        fontWeight: "500",
-                        marginHorizontal: RFValue(5),
-                      }}
-                    >
-                      {" "}
-                      X{" "}
-                    </Text>
-                    <Text style={styles.text}>₹{item.price}</Text>
-                  </View>
-                  <Text style={styles.text}>
-                    ₹ {item.price * item.quantity}
-                  </Text>
-                </View>
-              </View>
-            ))}
-          </View>
-          <View style={styles.line}></View>
-          <View style={styles.details}>
-            <Text style={[styles.text, { fontSize: 15 }]}>Item Total</Text>
-            <Text style={[styles.text, { fontSize: 15 }]}>
-              ₹ {findPrice(summary.items)}
+                  </Pressable>
+                )}
+            </View>
+            <View style={styles.line}></View>
+            <Text style={styles.info}>
+              {orderStatus !== "Cancelled" && orderStatus !== "Delivered"
+                ? `This Order is ${orderStatus}`
+                : `This Order was ${orderStatus}`}
             </Text>
-          </View>
-          <View style={{ width: "100%" }}>
-            <Text style={styles.heading}>Order Details</Text>
+            {summary.status !== "Cancelled" &&
+              summary.status !== "Delivered" && (
+                <View style={styles.status}>
+                  <View style={styles.statusinfo}>
+                    <View
+                      style={[
+                        styles.imgOuter,
+                        {
+                          backgroundColor:
+                            summary.status === "Accepted" ? "green" : "",
+                        },
+                      ]}
+                    >
+                      <Image
+                        style={[styles.statusimg, { width: "40%" }]}
+                        source={require("../../assets/icons/orderaccept.png")}
+                      />
+                    </View>
+                    <Text style={styles.text}>Accepted</Text>
+                  </View>
+                  <View style={[styles.line, { width: "10%" }]}></View>
+                  <View style={styles.statusinfo}>
+                    <View
+                      style={[
+                        styles.imgOuter,
+                        {
+                          backgroundColor:
+                            summary.status === "Preparing" ? "green" : "",
+                        },
+                      ]}
+                    >
+                      <Image
+                        style={[styles.statusimg, { width: 90 }]}
+                        source={require("../../assets/icons/orderpreparing.png")}
+                      />
+                    </View>
+                    <Text style={styles.text}>Preparing</Text>
+                  </View>
+                  <View style={[styles.line, { width: "10%" }]}></View>
+                  <View style={styles.statusinfo}>
+                    <View
+                      style={[
+                        styles.imgOuter,
+                        {
+                          backgroundColor:
+                            summary.status === "Ready" ? "green" : "",
+                        },
+                      ]}
+                    >
+                      <Image
+                        style={styles.statusimg}
+                        source={require("../../assets/icons/orderprepared.png")}
+                      />
+                    </View>
+                    <Text style={styles.text}>Ready</Text>
+                  </View>
+                </View>
+              )}
+            <Text style={styles.heading}>Your Order</Text>
+            <View style={styles.line}></View>
+            <View style={styles.itemList}>
+              {summary.items.map((item, index) => (
+                <View style={styles.item} key={index}>
+                  <View style={styles.itemnameinfo}>
+                    <Image
+                      style={styles.typeImg}
+                      source={item.type === "Vegeterian" ? VegLogo : NonVegLogo}
+                    />
+                    <Text style={styles.itemname}>{item.name}</Text>
+                  </View>
+                  <View style={styles.iteminfo}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        padding: 2,
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          borderWidth: 0.5,
+                          fontWeight: "500",
+                          backgroundColor: "#D3D3D3",
+                          paddingVertical: 3,
+                          paddingHorizontal: 5,
+                          borderRadius: 2,
+                          textAlign: "center",
+                        }}
+                      >
+                        {item.quantity}
+                      </Text>
+                      <Text
+                        style={{
+                          fontWeight: "500",
+                          marginHorizontal: RFValue(5),
+                        }}
+                      >
+                        {" "}
+                        X{" "}
+                      </Text>
+                      <Text style={styles.text}>₹{item.price}</Text>
+                    </View>
+                    <Text style={styles.text}>
+                      ₹ {item.price * item.quantity}
+                    </Text>
+                  </View>
+                </View>
+              ))}
+            </View>
             <View style={styles.line}></View>
             <View style={styles.details}>
-              <Text style={styles.info}>Order ID</Text>
-              <Text style={styles.text}>{summary.orderId}</Text>
-            </View>
-            <View style={styles.details}>
-              <Text style={styles.info}>Date</Text>
-              <Text style={styles.text}>
-              {new Date(summary.createdDate).toLocaleDateString("en-IN", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}{" "}
-              at {new Date(summary.createdDate).toLocaleTimeString()}
+              <Text style={[styles.text, { fontSize: 15 }]}>Item Total</Text>
+              <Text style={[styles.text, { fontSize: 15 }]}>
+                ₹ {findPrice(summary.items)}
               </Text>
             </View>
-            <View style={styles.details}>
-              <Text style={styles.info}>Order Type</Text>
-              <Text style={styles.text}>{summary.orderType}</Text>
+            <View style={{ width: "100%" }}>
+              <Text style={styles.heading}>Order Details</Text>
+              <View style={styles.line}></View>
+              <View style={styles.details}>
+                <Text style={styles.info}>Order ID</Text>
+                <Text style={styles.text}>{summary.orderId}</Text>
+              </View>
+              <View style={styles.details}>
+                <Text style={styles.info}>Date</Text>
+                <Text style={styles.text}>
+                  {new Date(summary.createdDate).toLocaleDateString("en-IN", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}{" "}
+                  at {new Date(summary.createdDate).toLocaleTimeString()}
+                </Text>
+              </View>
+              <View style={styles.details}>
+                <Text style={styles.info}>Order Type</Text>
+                <Text style={styles.text}>{summary.orderType}</Text>
+              </View>
+              <View style={styles.details}>
+                <Text style={styles.info}>Phone Number</Text>
+                <Text style={styles.text}>{summary.userId.mobileNo}</Text>
+              </View>
             </View>
-            <View style={styles.details}>
-              <Text style={styles.info}>Phone Number</Text>
-              <Text style={styles.text}>{summary.userId.mobileNo}</Text>
+            <View style={{ width: "100%" }}>
+              <Text style={styles.heading}>Payment Info</Text>
+              <View style={styles.line}></View>
+              <View style={styles.details}>
+                <Text style={styles.info}>Payment</Text>
+                <Text style={styles.text}>
+                  {summary.paymentId.status}: {summary.orderId}
+                </Text>
+              </View>
+
+              <View style={styles.details}>
+                <Text style={styles.info}>Transaction Id</Text>
+                <Text style={styles.text}>{summary.paymentId.paymentId}</Text>
+              </View>
+
+              <View style={styles.details}>
+                <Text style={styles.info}>Status</Text>
+                <Text style={styles.text}>{summary.paymentId.status}</Text>
+              </View>
+
+              <View style={styles.details}>
+                <Text style={styles.info}>Amount</Text>
+                <Text style={styles.text}>{findPrice(summary.items)}</Text>
+              </View>
             </View>
           </View>
-          <View style={{ width: "100%" }}>
-            <Text style={styles.heading}>Payment Info</Text>
-            <View style={styles.line}></View>
-            <View style={styles.details}>
-              <Text style={styles.info}>Payment</Text>
-              <Text style={styles.text}>{summary.paymentId.status}: {summary.orderId}</Text>
-            </View>
-
-            <View style={styles.details}>
-              <Text style={styles.info}>Transaction Id</Text>
-              <Text style={styles.text}>{summary.paymentId.paymentId}</Text>
-            </View>
-
-            <View style={styles.details}>
-              <Text style={styles.info}>Status</Text>
-              <Text style={styles.text}>{summary.paymentId.status}</Text>
-            </View>
-
-            <View style={styles.details}>
-              <Text style={styles.info}>Amount</Text>
-              <Text style={styles.text}>{findPrice(summary.items)}</Text>
-            </View>
-          </View>
-        </View>
-        <Pressable onPress={()=>reOrder()} style={styles.btn}>
-          <FontAwesome name="undo" size={20} color="white" />
-          <Text
-            style={{
-              fontSize: RFValue(20),
-              color: "white",
-              fontWeight: "bold",
-              marginHorizontal: RFValue(5),
-            }}
-          >
-            Reorder
-          </Text>
-        </Pressable>
-      </ScrollView>
-      {summary.status !== "Delivered" &&
-        summary.status !== "Cancelled" &&
-        showQR && (
-          <View style={styles.qrcontainer}>
-            <QRcode data={`${summary.orderId}|${summary.paymentId.paymentId}|${summary.paymentId.signature}`} />
-            <Text style={{ fontSize: RFValue(15), fontWeight: "bold" }}>
-              Scan it to get your item delivered
+          <Pressable onPress={() => reOrder()} style={styles.btn}>
+            <FontAwesome name="undo" size={20} color="white" />
+            <Text
+              style={{
+                fontSize: RFValue(20),
+                color: "white",
+                fontWeight: "bold",
+                marginHorizontal: RFValue(5),
+              }}
+            >
+              Reorder
             </Text>
-          </View>
-        )}
-        </LinearGradient>
+          </Pressable>
+        </ScrollView>
+        {summary.status !== "Delivered" &&
+          summary.status !== "Cancelled" &&
+          showQR && (
+            <View style={styles.qrcontainer}>
+              <QRcode
+                data={`${summary.orderId}|${summary.paymentId.paymentId}|${summary.paymentId.signature}`}
+              />
+              <Text style={{ fontSize: RFValue(15), fontWeight: "bold" }}>
+                Scan it to get your item delivered
+              </Text>
+            </View>
+          )}
+      </LinearGradient>
     </KeyboardAvoidingView>
   );
 }
@@ -357,9 +403,9 @@ const styles = StyleSheet.create({
   },
   qrcontainer: {
     position: "absolute",
-    bottom:'0%',
+    bottom: "0%",
     width: "100%",
-    alignItems:'center',
+    alignItems: "center",
     backgroundColor: "white",
     padding: RFValue(20),
     borderRadius: 10,
@@ -376,7 +422,7 @@ const styles = StyleSheet.create({
   },
   status: {
     width: "100%",
-    marginTop:RFValue(20),
+    marginTop: RFValue(20),
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",

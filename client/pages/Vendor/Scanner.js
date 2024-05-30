@@ -11,10 +11,7 @@ import {
   Image,
   Modal,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons"; // for icons
-import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
-import jsQR from "jsqr";
+import { Ionicons } from "@expo/vector-icons";
 import LottieView from "lottie-react-native";
 import { Host, orderDelivery, updateStatusRoute } from "../../Constants";
 import Container, { Toast } from "toastify-react-native";
