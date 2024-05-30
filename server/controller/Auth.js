@@ -4,6 +4,9 @@ const jwt = require('jsonwebtoken')
 const Vendors = require('../model/Vendors')
 const Otp = require('../model/Otp')
 const Shop = require('../model/Shop')
+const Payment  = require('../model/Payment')
+const Order = require('../model/Order')
+
 require('dotenv').config();
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -158,7 +161,36 @@ const VendorUnique = async(req,res)=>{
     }
 }
 
+const orderDelivery = async(req,res) => {
+    const uniqueCode = req.body.code;
+    
+    try{
+        const paymentData = await Payment.findOne({orderId:uniqueCode.split("|")[0]});
+        if(paymentData){
+            const order = await Order.findOne({orderId : paymentData.orderId})
+            const paymentCode = `${paymentData.orderId}|${paymentData.paymentId}|${paymentData.signature}`
+            if(uniqueCode === paymentCode && order.status !== 'Delivered'){
+                res.status(200).json({isSuccess: true})
+            }
+            else{
+                if(uniqueCode !== paymentCode){
+                    res.status(404).json({message: "Invalid QR Code",isSuccess : false})
+                }
+                else{
+                    res.status(404).json({message: "Order Already Delivered", isSuccess : false})
+                }
+            }
+        }
+        else
+        res.status(404).json({isSuccess: false})
+    }
+    catch(err){
+       res.status(500).json({message: "Internal Server Error"}) 
+    }  
+}
+
 module.exports = {StudentRegister,VendorRegister,
     Login,verifyToken,
     OTPGenerate,OTPVerify,
+    orderDelivery,
     StudentUnique,VendorUnique}
