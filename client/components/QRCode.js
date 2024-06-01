@@ -10,9 +10,9 @@ export default function QRcode({data}) {
        <QRCode
       value={data}
       logo={logo}
-      logoSize={30}
-      size={200}
-      logoBackgroundColor='transparent'
+      logoSize={100}
+      size={300}
+      color='#C38888'
     />
     </View>
   )

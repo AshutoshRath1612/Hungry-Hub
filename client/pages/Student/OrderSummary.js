@@ -8,6 +8,7 @@ import {
   Pressable,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
+  TouchableOpacity,
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
@@ -17,6 +18,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useCart } from "../../CartContext";
 import io from 'socket.io-client';
 import { Host } from "../../Constants";
+import { Modal } from "react-native-paper";
+import LottieView from "lottie-react-native";
 
 export default function OrderSummary({ navigation }) {
   const VegLogo = require("../../assets/icons/VegLogo.png");
@@ -28,6 +31,7 @@ export default function OrderSummary({ navigation }) {
   const [showQR, setShowQR] = useState(false);
   const { cart, dispatch } = useCart();
   const [orderStatus, setOrderStatus] = useState(summary.status);
+  const [modalVisible , setModalVisible] = useState(false)
 
   const findPrice = (items) => {
     let total = 0;
@@ -41,6 +45,11 @@ export default function OrderSummary({ navigation }) {
     socket.on("orderStatusUpdate", (data) => {
       console.log("Order status updated:", data);
       setOrderStatus(data.status);
+      if(data.status === 'Delivered'){
+        summary.status = data.status
+        setModalVisible(true)
+        setShowQR(false)
+      }
     });
 
     return () => {
@@ -308,6 +317,27 @@ export default function OrderSummary({ navigation }) {
               </Text>
             </View>
           )}
+      {
+        modalVisible &&
+        <Modal visible={modalVisible} onDismiss={()=> setModalVisible(false)} animationType="fade">
+        <View style={styles.modalBackground}>
+    
+            <View style={styles.modalContent}>
+              <LottieView
+                source={require("../../assets/icons/DeliverSuccess.json")}
+                loop
+                autoPlay
+                style={{ height: 200, width: 200 }}
+              />
+              <Text
+                style={[styles.txt, { color: "black", textAlign: "center" }]}
+              >
+                Happy Eating...
+              </Text>
+            </View>
+        </View>
+        </Modal>
+      }
       </LinearGradient>
     </KeyboardAvoidingView>
   );
@@ -443,5 +473,31 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
+  },
+  modalBackground: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    width: 300,
+    padding: 20,
+    borderRadius: 10,
+    backgroundColor: "white",
+    alignItems: "center",
+  },
+  btn: {
+    backgroundColor: "#A33C3C",
+    padding: 10,
+    borderRadius: 10,
+    margin: 10,
+    width: "40%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  txt: {
+    fontSize: RFValue(22),
+    fontWeight: "bold",
+    margin: 10,
+    color: "white",
   },
 });

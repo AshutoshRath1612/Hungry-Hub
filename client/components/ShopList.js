@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     width: "60%",
   },
   shopNames: {
-    fontSize: RFValue(25),
+    fontSize: RFValue(22),
     color: "black",
     fontFamily: "Ubuntu_700Bold",
   },

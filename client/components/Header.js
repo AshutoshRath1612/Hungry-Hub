@@ -20,6 +20,10 @@ export default function Header() {
       console.error("Error removing items from AsyncStorage:", error);
     }
   };
+  const handleNavigate = () => {
+    navigation.navigate("Profile", {userData});
+  }
+
   const getCreds = async () => {
     try {
       const user = await AsyncStorage.getItem("user");
@@ -76,7 +80,7 @@ export default function Header() {
               </View>
               <View style={styles.line} ></View>
               <View style={{height:'60%' , justifyContent:'space-around',width:'90%',alignItems:'flex-start'}}>
-              <View style={styles.modalBody}>
+              <View style={styles.modalBody} onTouchEnd={()=>handleNavigate()}>
               <MaterialCommunityIcons name="card-account-details" size={26} color="green" />
               <Text style={styles.modalBodyText}>Account Details</Text>
               </View>

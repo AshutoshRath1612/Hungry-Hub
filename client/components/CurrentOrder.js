@@ -45,7 +45,7 @@ export default function CurrentOrder() {
   };
 
   useEffect(() => {
-    checkCurrentOrderStatus(currentOrder);
+    fetchOrder()
     const interval = setInterval(() => {
       fetchOrder();
     }, 10 * 1000);

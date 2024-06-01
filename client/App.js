@@ -30,6 +30,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import LottieView from "lottie-react-native";
 import VendorUID from './pages/Vendor/VendorUID';
 import { RFValue } from 'react-native-responsive-fontsize';
+import Profile from './pages/Profile';
 
 
 const Stack = createStackNavigator();
@@ -94,6 +95,7 @@ export default function App() {
             <Stack.Screen name='Login' component={Login} />
             <Stack.Screen name='Choose User' component={ChooseUser} />
             <Stack.Screen name='OTP' component={OTP} />
+            <Stack.Screen name='Profile' component={Profile} />
             {/* For Student */}
             <Stack.Screen name='Student Signup' component={StudentSignUp} />
             <Stack.Screen name='Student Home' component={StudentHome} />
