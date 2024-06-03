@@ -161,6 +161,26 @@ const VendorUnique = async(req,res)=>{
     }
 }
 
+const saveToken = async(req,res) => {
+    const { userId, expoPushToken,isStudent } = req.body;
+  try {
+    let user;
+    if(isStudent){
+      user = await Users.findByIdAndUpdate(userId, { expoPushToken });
+    }
+    else{
+    user =  await Vendors.findByIdAndUpdate(userId , {expoPushToken})
+    }
+    if (!user) {
+      return res.status(404).send({ message: 'User not found' });
+    }
+    console.log(user)
+    res.status(200).send('Token saved');
+  } catch (error) {
+    res.status(500).send('Error saving token');
+  }
+}
+
 const orderDelivery = async(req,res) => {
     const uniqueCode = req.body.code;
     
@@ -193,4 +213,5 @@ module.exports = {StudentRegister,VendorRegister,
     Login,verifyToken,
     OTPGenerate,OTPVerify,
     orderDelivery,
+    saveToken,
     StudentUnique,VendorUnique}

@@ -1,32 +1,35 @@
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
+  name: {
+    type: String,
+  },
   regdNo: {
     type: Number,
     required: true,
-    unique: true
+    unique: true,
   },
   password: {
     type: String,
-    required: true
+    required: true,
   },
   mobileNo: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   isStudent: {
     type: Boolean,
     required: true,
-    default: true
+    default: true,
   },
   expoPushToken: {
     type: String,
   },
   createdDate: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Users', UserSchema);

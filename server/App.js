@@ -30,7 +30,6 @@ app.use('/shop',shopRoutes);
 app.use('/search',searchRoutes);
 app.use('/order', orderRoutes);
 
-console.log(io.emit())
 // Error handling middleware
 app.use(errorHandler);
 

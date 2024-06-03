@@ -28,6 +28,9 @@ const VendorSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  expoPushToken: {
+    type: String,
+  },
   createdDate: {
     type: Date,
     default: Date.now
