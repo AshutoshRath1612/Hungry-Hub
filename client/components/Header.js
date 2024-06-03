@@ -22,6 +22,7 @@ export default function Header() {
   };
   const handleNavigate = () => {
     navigation.navigate("Profile", {userData});
+    setModalVisible(false);
   }
 
   const getCreds = async () => {
@@ -41,9 +42,6 @@ export default function Header() {
   return (
     <View>
       <View style={styles.header}>
-        {/* <Button onPress={() => Logout()}>
-          <Text>Press</Text>
-        </Button> */}
         <View style={styles.headerLeft}>
           <Image
             style={styles.logo}

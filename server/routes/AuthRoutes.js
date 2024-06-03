@@ -1,5 +1,5 @@
 const express = require('express')
-const {StudentRegister,VendorRegister, Login ,OTPGenerate,OTPVerify, StudentUnique , VendorUnique, orderDelivery, saveToken} = require('../controller/Auth')
+const {StudentRegister,VendorRegister, Login ,OTPGenerate,OTPVerify, StudentUnique , VendorUnique, orderDelivery, saveToken, changePassword, updateProfile} = require('../controller/Auth')
 
 
 const router = express.Router()
@@ -10,6 +10,8 @@ router.post('/vendor/register',VendorRegister)
 router.post('/login' , Login)
 router.post('/otp/generate' , OTPGenerate)
 router.post('/otp/verify' , OTPVerify)
+router.post('/change-password' , changePassword)
+router.post('/update-profile' , updateProfile)
 
 router.post('/delivery' , orderDelivery);
 router.post('/save-token' ,saveToken)

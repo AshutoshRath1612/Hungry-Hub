@@ -1,9 +1,11 @@
-export const Host = 'http://172.168.7.52:5000/'
+export const Host = 'http://192.168.29.163:5000/'
 
 export const LoginRoute = 'auth/login'
 export const StudentRegisterRoute = 'auth/student/register'
 export const VendorRegisterRoute = 'auth/vendor/register'
 export const SaveTokenRoute = 'auth/save-token'
+export const changePasswordRoute = 'auth/change-password'
+export const updateProfileRoute = 'auth/update-profile'
 
 export const orderDelivery = 'auth/delivery'
 

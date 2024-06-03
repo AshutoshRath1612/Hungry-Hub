@@ -209,8 +209,51 @@ const orderDelivery = async(req,res) => {
     }  
 }
 
+const changePassword  = async(req,res) => {
+    const {id , isStudent , newPassword ,password} = req.body;
+    try{
+        const user = isStudent ? await Users.findById(id) : await Vendors.findById(id)
+        const isCorrect = await bcrypt.compare(password , user.password)
+        if(!isCorrect){
+            return res.status(401).json({isSuccess:false , message:"Invalid Password"})
+        }
+        const salt = bcrypt.genSaltSync(10)
+        const hash = bcrypt.hashSync(newPassword,salt)
+        if(isStudent){
+            await Users.findByIdAndUpdate(id , {password:hash})
+        }
+        else{
+            await Vendors.findByIdAndUpdate(id , {password:hash})
+        }
+        res.status(200).json({isSuccess:true , message:"Password Changed Successfully"})
+    }
+    catch(err){
+        console.log(err)
+        res.status(500).json({isSuccess:false , message:"Internal Server Error"})
+    }
+}
+
+const updateProfile = async(req,res) => {
+    const data = req.body
+    const id = data.id
+    const isStudent = data.isStudent
+    try{
+        if(isStudent){
+            await Users.findByIdAndUpdate(id , data)
+        }
+        else{
+            await Vendors.findByIdAndUpdate(id , data)
+        }
+        res.status(200).json({isSuccess:true})
+    }
+    catch(err){
+        res.status(500).json({isSuccess:false})
+    }
+}
+
 module.exports = {StudentRegister,VendorRegister,
     Login,verifyToken,
+    changePassword,updateProfile,
     OTPGenerate,OTPVerify,
     orderDelivery,
     saveToken,

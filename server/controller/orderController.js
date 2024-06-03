@@ -259,10 +259,11 @@ const sendPushNotification = async (expoPushToken, message) => {
   });
 
   const chunks = expo.chunkPushNotifications(messages);
+  console.log("Chunks", chunks)
   for (const chunk of chunks) {
     try {
       const receipts = await expo.sendPushNotificationsAsync(chunk);
-      console.log(receipts);
+      console.log("receipts", receipts);
     } catch (error) {
       console.error(error);
     }

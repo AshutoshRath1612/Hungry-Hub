@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useFonts, Ubuntu_700Bold, Ubuntu_500Medium, Ubuntu_400Regular } from '@expo-google-fonts/ubuntu';
 import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
 import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LottieView from "lottie-react-native";
@@ -35,6 +36,7 @@ import Payment from './pages/Student/Payment';
 import VendorUID from './pages/Vendor/VendorUID';
 import Profile from './pages/Profile';
 import { Host, SaveTokenRoute } from './Constants';
+import ChangePassword from './pages/ChangePassword';
 
 const Stack = createStackNavigator();
 
@@ -48,6 +50,14 @@ export default function App() {
 
   useEffect(() => {
     registerForPushNotificationsAsync();
+    Notifications.addNotificationResponseReceivedListener((response) => {
+      console.log("Notification received", response.notification.request.content.data.message);
+    }
+    );
+    Notifications.addNotificationReceivedListener((notification) => {
+      console.log("Notification received", notification.request.content.data.message);
+    }
+    );
     checkLogin();
   }, []);
 
@@ -78,6 +88,7 @@ export default function App() {
 
   const registerForPushNotificationsAsync = async () => {
     let token;
+    if(Device.isDevice) {
       const { status: existingStatus } = await Notifications.getPermissionsAsync();
       let finalStatus = existingStatus;
       if (existingStatus !== 'granted') {
@@ -88,7 +99,9 @@ export default function App() {
         alert('Failed to get push token for push notification!');
         return;
       }
-      token = (await Notifications.getExpoPushTokenAsync()).data;
+      token = (await Notifications.getExpoPushTokenAsync({
+        projectId: Constants.expoConfig?.extra?.projectId,
+      })).data;
       console.log(token);
 
       // Save the token to your server
@@ -104,13 +117,13 @@ export default function App() {
           body: JSON.stringify({ userId: user._id, expoPushToken: token , isStudent:user.isStudent }),
         });
       }
-    // } else {
-    //   alert('Must use physical device for Push Notifications');
-    // }
+    } else {
+      alert('Must use physical device for Push Notifications');
+    }
 
     if (Platform.OS === 'android') {
-      Notifications.setNotificationChannelAsync('default', {
-        name: 'default',
+     await Notifications.setNotificationChannelAsync('default', {
+        name: 'Hunger Hub',
         importance: Notifications.AndroidImportance.MAX,
         vibrationPattern: [0, 250, 250, 250],
         lightColor: '#FF231F7C',
@@ -160,6 +173,7 @@ export default function App() {
               <Stack.Screen name='Vendor Order Summary' component={VendorOrderSummary} />
               <Stack.Screen name='Add Food' component={AddFood} />
               <Stack.Screen name='Scanner' component={Scanner} />
+              <Stack.Screen name='Change Password' component={ChangePassword} />
             </Stack.Navigator>
           </NavigationContainer>
         </OrderStatusProvider>

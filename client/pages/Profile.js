@@ -1,12 +1,42 @@
 import { View, Text, StyleSheet } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import { RFValue } from "react-native-responsive-fontsize";
+import { TextInput } from "react-native-gesture-handler";
+import { Host, updateProfileRoute } from "../Constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Container, { Toast } from "toastify-react-native";
 
-export default function Profile({ route }) {
-  console.log(route.params);
+export default function Profile({ route, navigation }) {
+  const [edit, setEdit] = useState(false);
+  const [data, setData] = useState(route.params.userData);
+  console.log("data", data);
+
+  const handleSubmit = () => {
+    fetch(`${Host}${updateProfileRoute}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        data,
+      }),
+    })
+      .then((res) => res.json())
+      .then(async (data) => {
+        if (data.isSuccess) {
+          Toast.success("Profile Updated Successfully");
+          await AsyncStorage.setItem("user", JSON.stringify(data.user));
+          navigation.navigate("Home", { user: data.user });
+        } else {
+          Toast.error(data.message);
+        }
+      });
+  };
+
   return (
     <View style={styles.container}>
+      <Container position="top" duration={4000} width="90%" />
       <View style={styles.header}>
         <View style={styles.topic}>
           <FontAwesome name="user" size={24} color="black" />
@@ -14,28 +44,108 @@ export default function Profile({ route }) {
             General Info
           </Text>
         </View>
-        <View>
+        <View onTouchEnd={() => setEdit(!edit)}>
           <FontAwesome name="edit" size={24} color="black" />
         </View>
       </View>
       <View style={styles.cards}>
-        <Text style={styles.title}>Shop Name</Text>
-        <Text style={styles.content}>{route.params.userData.shopName}</Text>
+        <Text style={styles.title}>
+          {route.params.userData.isStudent ? "Name" : "Shop Name"}
+        </Text>
+        {edit ? (
+          <TextInput
+            style={styles.input}
+            value={data.isStudent ? data.name : data.shopName}
+            onChangeText={(text) =>
+              setData({
+                ...data,
+                [data.isStudent ? "name" : "shopName"]: text,
+              })
+            }
+          />
+        ) : (
+          <Text style={styles.content}>
+            {route.params.userData.isStudent
+              ? route.params.userData.name
+              : route.params.userData.shopName}
+          </Text>
+        )}
         <View style={styles.marginBox}></View>
-        <Text style={styles.title}>username</Text>
-        <Text style={styles.content}>{route.params.userData.username}</Text>
-        <View style={styles.marginBox}></View>
-        <Text style={styles.title}>Unique Id</Text>
-        <Text style={styles.content}>{route.params.userData.uniqueId}</Text>
-        <View style={styles.marginBox}></View>
+        <Text style={styles.title}>
+          {route.params.userData.isStudent ? "Registration No" : "Username"}
+        </Text>
+        {edit && data.isStudent === false ? (
+          <TextInput
+            style={styles.input}
+            value={data.username}
+            onChangeText={(text) =>
+              setData({
+                ...data,
+                "username": text,
+              })
+            }
+          />
+        ) : (
+          <Text style={styles.content}>
+            {route.params.userData.isStudent
+              ? route.params.userData.regdNo
+              : route.params.userData.username}
+          </Text>
+        )}
+        {route.params.userData.isStudent === false ? (
+          <>
+            <View style={styles.marginBox}></View>
+            <Text style={styles.title}>Unique Id</Text>
+            <Text style={styles.content}>
+              {route.params.userData.uniqueId}
+            </Text>
+            <View style={styles.marginBox}></View>
+          </>
+        ) : (
+          <></>
+        )}
         <Text style={styles.title}>Phone</Text>
         <Text style={styles.content}>{route.params.userData.mobileNo}</Text>
       </View>
-      <View style={[styles.cards , {flexDirection:'row' , height:'7%' , alignItems:'center' , paddingHorizontal:'20%'}]}>
-        <Text style={{ fontSize: RFValue(15), fontWeight: "bold" }}>
-        Change Password
-        </Text>
-      </View>
+      {edit ? (
+        <View
+          onTouchEnd={() => handleSubmit()}
+          style={[
+            styles.cards,
+            {
+              flexDirection: "row",
+              height: "7%",
+              alignItems: "center",
+              paddingHorizontal: "20%",
+            },
+          ]}
+        >
+          <Text style={{ fontSize: RFValue(15), fontWeight: "bold" }}>
+            Submit
+          </Text>
+        </View>
+      ) : (
+        <View
+          onTouchEnd={() =>
+            navigation.navigate("Change Password", {
+              user: route.params.userData,
+            })
+          }
+          style={[
+            styles.cards,
+            {
+              flexDirection: "row",
+              height: "7%",
+              alignItems: "center",
+              paddingHorizontal: "20%",
+            },
+          ]}
+        >
+          <Text style={{ fontSize: RFValue(15), fontWeight: "bold" }}>
+            Change Password
+          </Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -60,12 +170,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: RFValue(12),
-    color:'grey',
+    color: "grey",
     fontWeight: "bold",
   },
-  content:{
-    fontSize:RFValue(15),
-    fontWeight:'bold'
+  content: {
+    fontSize: RFValue(15),
+    fontWeight: "bold",
   },
   cards: {
     width: "90%",
@@ -73,12 +183,21 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
     alignItems: "flex-start",
     backgroundColor: "white",
-    padding:10,
-    borderRadius:15,
-    marginVertical:'2.5%',
-    elevation:3,
+    padding: 10,
+    borderRadius: 15,
+    marginVertical: "2.5%",
+    elevation: 3,
   },
   marginBox: {
     marginVertical: "2.5%",
+  },
+  input: {
+    width: "90%",
+    padding: 10,
+    borderRadius: 10,
+    marginVertical: 10,
+    marginHorizontal: "auto",
+    backgroundColor: "white",
+    elevation: 5,
   },
 });
