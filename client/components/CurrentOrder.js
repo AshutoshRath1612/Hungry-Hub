@@ -10,11 +10,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function CurrentOrder() {
   const navigation = useNavigation();
   const { currentOrder } = useOrderStatus();
-  const [currentOrders, setCurrentOrders] = useState([]);
+  const [currentOrders, setCurrentOrders] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef(null);
-  const intervalRef = useRef(null);
-
   const { dispatch } = useOrderStatus();
 
   const accepticon = require("../assets/icons/acceptedicon.json");
@@ -24,7 +22,7 @@ export default function CurrentOrder() {
   useEffect(() => {
     fetchOrder();
   }, []);
-  
+
   const fetchOrder = async () => {
     try {
       const user = await AsyncStorage.getItem("user");
@@ -37,7 +35,7 @@ export default function CurrentOrder() {
 
         setCurrentOrders(data);
         checkCurrentOrderStatus(data);
-        dispatch({ type: 'ORDERS', payload: data });
+        dispatch({ type: "ORDERS", payload: data });
       }
     } catch (error) {
       console.error("Failed to fetch orders", error);
@@ -45,7 +43,6 @@ export default function CurrentOrder() {
   };
 
   useEffect(() => {
-    fetchOrder()
     const interval = setInterval(() => {
       fetchOrder();
     }, 10 * 1000);
@@ -62,8 +59,8 @@ export default function CurrentOrder() {
   };
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (currentOrders.length > 0) {
+    if (currentOrders && currentOrders.length > 0) {
+      const interval = setInterval(() => {
         const nextIndex = (currentIndex + 1) % currentOrders.length;
         setCurrentIndex(nextIndex);
 
@@ -73,10 +70,10 @@ export default function CurrentOrder() {
             index: nextIndex,
           });
         }
-      }
-    }, 5000);
+      }, 5000);
 
-    return () => clearInterval(interval);
+      return () => clearInterval(interval);
+    }
   }, [currentIndex, currentOrders]);
 
   const CustomScrollIndicator = ({ itemCount, currentIndex }) => {
@@ -96,24 +93,30 @@ export default function CurrentOrder() {
   const CardItem = ({ item, index }) => {
     return (
       <View
-        onTouchEnd={() => navigation.navigate('Order Summary', { item })}
+        onTouchEnd={() => navigation.navigate("Order Summary", { item })}
         style={styles.ordercard}
       >
         <LottieView
-          source={item.status === 'Ready' ? readyicon : item.status === 'Accepted' ? accepticon : preparingicon}
+          source={
+            item.status === "Ready"
+              ? readyicon
+              : item.status === "Accepted"
+              ? accepticon
+              : preparingicon
+          }
           autoPlay
           loop
           speed={1.5}
           style={{ width: RFValue(80), height: RFValue(80) }}
         />
         <View style={styles.ordercarditem}>
-          <Text style={{ fontSize: RFValue(14), fontWeight: 'bold' }}>Your Food is {item.status}</Text>
-          <Text style={{ fontSize: RFValue(13), fontWeight: '500' }}>{item.shopId.name}</Text>
+          <Text style={{ fontSize: RFValue(14), fontWeight: "bold" }}>
+            Your Food is {item.status}
+          </Text>
+          <Text style={{ fontSize: RFValue(13), fontWeight: "500" }}>
+            {item.shopId.name}
+          </Text>
         </View>
-        <CustomScrollIndicator
-          itemCount={currentOrders.length}
-          currentIndex={index}
-        />
       </View>
     );
   };
@@ -125,29 +128,38 @@ export default function CurrentOrder() {
   };
 
   return (
-    <View style={{ height: "22%" }}>
-      <FlatList
-        ref={flatListRef}
-        data={currentOrders}
-        renderItem={({ item, index }) => <CardItem item={item} index={index} />}
-        keyExtractor={(item, index) => index.toString()}
-        showsVerticalScrollIndicator={false}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        initialScrollIndex={currentIndex}
-        getItemLayout={(data, index) => ({
-          length: RFValue(110), // height of each card (adjust if necessary)
-          offset: RFValue(110) * index, // height of each card * index
-          index,
-        })}
-        onScrollToIndexFailed={(info) => {
-          const wait = new Promise(resolve => setTimeout(resolve, 500));
-          wait.then(() => {
-            flatListRef.current.scrollToIndex({ index: info.index, animated: true });
-          });
-        }}
-      />
-    </View>
+    <>
+      {currentOrders && currentOrders.length > 0 ? (
+        <View style={{ height: "22%" }}>
+        <FlatList
+          ref={flatListRef}
+          data={currentOrders}
+          renderItem={({ item, index }) => <CardItem item={item} index={index} />}
+          keyExtractor={(item, index) => index.toString()}
+          showsVerticalScrollIndicator={false}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
+          initialScrollIndex={currentIndex}
+          getItemLayout={(data, index) => ({
+            length: RFValue(110), // height of each card (adjust if necessary)
+            offset: RFValue(110) * index, // height of each card * index
+            index,
+          })}
+          onScrollToIndexFailed={(info) => {
+            const wait = new Promise((resolve) => setTimeout(resolve, 500));
+            wait.then(() => {
+              flatListRef.current.scrollToIndex({
+                index: info.index,
+                animated: true,
+              });
+            });
+          }}
+        />
+        </View>
+      ) : (
+        <Text style={styles.noOrdersText}>No current orders</Text>
+      )}
+    </>
   );
 }
 
@@ -183,5 +195,10 @@ const styles = StyleSheet.create({
     height: 8,
     borderRadius: 4,
     marginVertical: 2,
+  },
+  noOrdersText: {
+    fontSize: RFValue(16),
+    textAlign: "center",
+    marginTop: RFValue(20),
   },
 });

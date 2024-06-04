@@ -5,7 +5,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
   },
   regdNo: {
-    type: Number,
+    type: String,
     required: true,
     unique: true,
   },

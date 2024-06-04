@@ -92,6 +92,7 @@ const addOrder = async (req, res) => {
       orderType: cartData.deliveryType,
       items: cartData.items[0].items,
       status: "Pending",
+      notes: cartData.notes
     });
 
     await orderData.save();
@@ -296,6 +297,28 @@ const todayOrder = async (req, res) => {
   }
 };
 
+const getMostOrder = async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const orders = await Order.aggregate([
+      { $match: { userId: new mongoose.Types.ObjectId(userId) } }, // Filter by userId
+      { $unwind: '$items' }, // Deconstruct the items array field
+      { $group: { _id: '$items.name', count: { $sum: '$items.quantity' } } }, // Group by item name and sum quantities
+      { $sort: { count: -1 } }, // Sort by count in descending order
+      { $limit: 5 }, // Limit to top 5 items
+      { $project: { _id: 0, itemName: '$_id', count: 1 } } // Project the required fields
+    ]);
+
+    console.log('Aggregated orders:', orders); // Debugging: log the result
+
+    res.status(200).json(orders);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ "message": "Internal Server Error" });
+  }
+};
+
 module.exports = {
   createOrder,
   addOrder,
@@ -303,5 +326,6 @@ module.exports = {
   getCurrentOrders,
   getAllOrders,
   todayOrder,
+  getMostOrder,
   updateOrderStatus,
 };

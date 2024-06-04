@@ -17,7 +17,7 @@ import { RFValue } from "react-native-responsive-fontsize";
 import Nav from "../../components/Nav";
 import { NavigationContext } from "../../NavContext";
 import Reccomandation from "../../components/Reccomandation";
-import { RadioButton } from "react-native-paper";
+import { RadioButton, TextInput } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
 import QRcode from "../../components/QRCode";
 
@@ -26,12 +26,12 @@ export default function Cart({ navigation, route }) {
   const nonVegLogo = require("../../assets/icons/NonVegLogo.png");
 
   const { cart, dispatch } = useCart();
+  console.log(cart)
 
   const [showRecommandation, setShowRecommandation] = useState(false);
   const [deliveryType, setDeliveryType] = useState("Dine-in");
-  const [paymentSuccess, setPaymentSuccess] = useState(false);
-
-  const [pan] = useState(new Animated.ValueXY());
+  const [notes , setNotes] = useState("")
+  const [showRequest , setShowRequest] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false);
   const [circlePositionX, setCirclePositionX] = useState(0);
 
@@ -73,7 +73,7 @@ export default function Cart({ navigation, route }) {
       const maxX = 300 - RFValue(50); // Adjust 300 to the width of your view, and RFValue(50) to the size of your circle button
 
       if (gesture.moveX > thresholdX) {
-        navigation.navigate('Payment',{ cartData : {amount: findPrice() + 5 + (deliveryType === "Dine-in" ? 0 : 5) , deliveryType : deliveryType}})
+        navigation.navigate('Payment',{ cartData : {amount: findPrice() + 5 + (deliveryType === "Dine-in" ? 0 : 5) , deliveryType : deliveryType , notes}})
        // Payment successful
         console.log("Payment",);
         setShowSuccess(true); // Set a state to show the payment success message
@@ -233,6 +233,7 @@ export default function Cart({ navigation, route }) {
                 </View>
                 {showRecommandation && <Reccomandation />}
                 <View
+                onTouchEnd={()=> setShowRequest(!showRequest)}
                   style={[
                     styles.smallContainer,
                     { marginVertical: RFValue(2) },
@@ -249,6 +250,12 @@ export default function Cart({ navigation, route }) {
                   </Text>
                   <FontAwesome name="sticky-note" size={18} color="green" />
                 </View>
+                {showRequest && <TextInput
+                  onChange={(e) => setNotes(e.nativeEvent.text)}
+                  value={notes}
+                  style={styles.input}
+                  />
+                }
                 <Text
                   style={[
                     styles.text,
@@ -451,6 +458,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginVertical: RFValue(10),
     height: RFValue(40),
+  },
+  input:{
+    width:'90%',
+    padding:10,
+    borderRadius:10,
+    marginVertical:10,
+    marginHorizontal:'auto',
+    backgroundColor:'white',
+    elevation:5
   },
   card: {
     width: "40%",
