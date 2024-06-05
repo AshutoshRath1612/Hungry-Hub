@@ -16,6 +16,7 @@ import CartCard from "../../components/CartCard";
 import { Host, SearchRoute } from "../../Constants";
 import { LinearGradient } from "expo-linear-gradient";
 import ShopModal from "../../components/ShopModal";
+import LottieView from "lottie-react-native";
 
 export default function SearchResults({ route, navigation }) {
   const vegLogo = require("../../assets/icons/VegLogo.png");
@@ -145,7 +146,7 @@ export default function SearchResults({ route, navigation }) {
                           key={index}
                         >
                           <LinearGradient
-                            colors={["#C38888", "white"]}
+                            colors={[foodItem.type === 'Vegetarian' ? "green" : "red", "white"]}
                             style={styles.foodItems}
                           >
                             <View style={styles.foodItemsInfo}>
@@ -194,14 +195,19 @@ export default function SearchResults({ route, navigation }) {
                               </Text>
                             </View>
                             <View style={styles.foodItemsImage}>
-                              <Image
+                              {/* <Image
                                 source={require("../../assets/images/Logo.png")}
                                 style={{
                                   width: "100%",
                                   height: "90%",
                                   borderRadius: 10,
                                 }}
-                              />
+                              /> */}
+                              <LottieView style={{
+                                  width: "100%",
+                                  height: "90%",
+                                  borderRadius: 10,
+                                }} source={require('../../assets/icons/Food.json')} autoPlay loop />
                               {findItem(foodItem) ?
                                 (
                                   <View style={[styles.addButton,{
@@ -267,7 +273,7 @@ export default function SearchResults({ route, navigation }) {
               fontSize: RFValue(15),
             }}
           >
-            {searchResults ? searchResults.message : "Loading..."}
+            {searchResults ? searchResults.message : <LottieView source={require('../../assets/icons/Loading.json')} autoPlay loop />}
           </Text>
         </View>
       )}

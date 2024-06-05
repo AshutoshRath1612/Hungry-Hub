@@ -45,6 +45,7 @@ export default function ShopMenu({ route }) {
     fetch(`${Host}${GetFoodByShopRoute}/${route.params.shopName}`)
       .then((res) => res.json())
       .then((data) => {
+        console.log(data[0])
         setData(data[0]);
         setIsLoading(false);
       });
@@ -275,7 +276,7 @@ const findItem = (foodItem) => {
             />
             <View style={styles.shopInfo}>
               <Text style={{ fontSize: RFValue(25), fontWeight: "bold" }}>
-                {route.params.shopName}
+                {data.shop.name}
               </Text>
               <View
                 style={{

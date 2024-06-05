@@ -291,6 +291,11 @@ export default function OrderSummary({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   scrollContainer: {
     flexGrow: 1,
     justifyContent: "center",

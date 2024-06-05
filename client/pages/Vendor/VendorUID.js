@@ -15,7 +15,7 @@ export default function VendorUID({ navigation }) {
   };
 
   return (
-    <LinearGradient colors={["#FFFF66", "white"]} style={styles.UIDContainer}>
+    <LinearGradient colors={["#C38888", "white"]} style={styles.UIDContainer}>
       <Container position="top" width="80%" />
       <View style={styles.container}>
         <Text style={styles.containerTitleText}>
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   },
   container: {
     alignItems: 'center',
-    backgroundColor: '#ADFFAD', // Light green color
+    backgroundColor: 'white', // Light green color
     padding: 5,
     width: '90%',
     height: '20%',
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   btn: {
-    backgroundColor: "#228B22",
+    backgroundColor: "#915858",
     borderRadius: 10,
     height: 50,
     width: "40%",

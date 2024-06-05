@@ -1,36 +1,40 @@
 import {
   View,
-  ImageBackground,
   Text,
   FlatList,
   StyleSheet,
   Pressable,
-  Image,
   Modal,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import { useCart } from "../CartContext";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 import ShopModal from "./ShopModal";
 import { Host, getPopularFoodRoute } from "../Constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import LottieView from "lottie-react-native";
+import { RFValue } from "react-native-responsive-fontsize";
+import { LinearGradient } from "expo-linear-gradient";
 
-
-export default function Reccomandation() {
+export default function Recommendation() {
 
   const { dispatch, cart } = useCart();
   const [modalVisible, setModalVisible] = useState(false);
   const [currentData, setCurrentData] = useState(null);
-  const [data,setData] = useState(null)
+  const [data, setData] = useState(null)
 
-  const image = require("../assets/images/Logo.png")
+  const image = require("../assets/icons/Food.json")
 
   const route = useRoute();
 
   useEffect(() => {
     getPopularFood();
   }, [route]);
+
+  useEffect(() => {
+    getPopularFood();
+  },[cart]);
 
   const getPopularFood = async () => {
     const user = JSON.parse(await AsyncStorage.getItem("user"));
@@ -45,12 +49,12 @@ export default function Reccomandation() {
 
   const addToCart = (item) => {
     if (cart.length === 0) {
-      dispatch({ type: "ADD_TO_CART", payload: { shopName: item.shopName,shopId:item.shopId, items: [item.itemDetails] } });
+      dispatch({ type: "ADD_TO_CART", payload: { shopName: item.shopName, shopId: item.shopId, items: [item.itemDetails] } });
     } else {
       if (cart[0].shopName === item.shopName) {
-        dispatch({ type: "ADD_TO_CART", payload: { shopName: item.shopName,shopId:item.shopId, items: [item.itemDetails] } });
+        dispatch({ type: "ADD_TO_CART", payload: { shopName: item.shopName, shopId: item.shopId, items: [item.itemDetails] } });
       } else {
-        setCurrentData({ shopName: item.shopName,shopId:item.shopId, items: [item.itemDetails] });
+        setCurrentData({ shopName: item.shopName, shopId: item.shopId, items: [item.itemDetails] });
         setModalVisible(true);
       }
     }
@@ -59,42 +63,48 @@ export default function Reccomandation() {
   const CardItem = ({ item }) => {
     return (
       <>
-          <View style={[styles.card, item.itemDetails.type === "Vegetarian" ? { backgroundColor: "#127311" } : { backgroundColor: "#D31911" }]}>
-            <Image source={image} resizeMode="contain" style={styles.itemImg} />
-            <View style={styles.cardInfo}>
-              <View style={styles.leftInfo}>
-                <Text style={styles.text}>{item.itemDetails.name && item.itemDetails.name.length > 14 ? item.itemDetails.name.substring(0, 14) + "..." : item.itemDetails.name}</Text>
-                <Text style={[styles.text, { fontWeight: "bold" }]}>{item.shopName && item.shopName.length > 14 ? item.shopName.substring(0, 14) + "..." : item.shopName}</Text>
-              </View>
-              <View style={styles.rightInfo}>
-                <Text style={styles.text}>₹ {item.itemDetails.price}</Text>
-                <Pressable style={styles.btn} onPress={() => addToCart(item)}>
-                  <Text style={{ color: "white", fontSize: 13 }}>Add <FontAwesome color="white" name="plus" /></Text>
-                </Pressable>
-              </View>
+        <LinearGradient colors={[item.itemDetails.type === 'Vegetarian' ? "green" : "red" , "white"]} style={[
+          styles.card,
+          item.itemDetails.type === "Vegetarian"
+            ? { shadowColor: "#127311", shadowOffset: { width: 0, height: 10 }, shadowOpacity: 0.8, shadowRadius: 10 }
+            : { shadowColor: "#D31911", shadowOffset: { width: 0, height: 10 }, shadowOpacity: 0.8, shadowRadius: 10 }
+        ]}>
+          <LottieView source={image} autoPlay loop style={styles.itemImg} />
+          <View style={styles.cardInfo}>
+            <View style={styles.leftInfo}>
+              <Text style={styles.text}>{item.itemDetails.name && item.itemDetails.name.length > 14 ? item.itemDetails.name.substring(0, 14) + "..." : item.itemDetails.name}</Text>
+              <Text style={[styles.text, { fontWeight: "bold" }]}>{item.shopName && item.shopName.length > 14 ? item.shopName.substring(0, 14) + "..." : item.shopName}</Text>
+            </View>
+            <View style={styles.rightInfo}>
+              <Text style={styles.text}>₹ {item.itemDetails.price}</Text>
+              <Pressable style={styles.btn} onPress={() => addToCart(item)}>
+                <Text style={{ color: "white", fontSize: 13 }}>Add <FontAwesome color="white" name="plus" /></Text>
+              </Pressable>
             </View>
           </View>
+        </LinearGradient>
       </>
     );
   };
 
   return (
     <>
-    {data && data.length>0 ? (<View style={styles.recommendation}>
-      <Text style={styles.title}>Recommended for You</Text>
-      <FlatList
-        horizontal
-        data={data}
-        renderItem={({ item }) => <CardItem item={item} />}
-        keyExtractor={(item, index) => index.toString()}
-        showsHorizontalScrollIndicator={false}
-      />
-      <ShopModal data={currentData} shopName={cart[0]?.shopName} visible={modalVisible} onClose={() => setModalVisible(false)} />
-    </View>):(<></>)}
+      {data && data.length > 0 ? (
+        <View style={styles.recommendation}>
+          <Text style={styles.title}>Recommended for You</Text>
+          <FlatList
+            horizontal
+            data={data}
+            renderItem={({ item }) => <CardItem item={item} />}
+            keyExtractor={(item, index) => index.toString()}
+            showsHorizontalScrollIndicator={false}
+          />
+          <ShopModal data={currentData} shopName={cart[0]?.shopName} visible={modalVisible} onClose={() => setModalVisible(false)} />
+        </View>
+      ) : (<></>)}
     </>
   );
 }
-
 
 const styles = StyleSheet.create({
   recommendation: {
@@ -109,9 +119,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 10,
     elevation: 6,
+    backgroundColor: "white",
   },
   title: {
-    fontSize: 25,
+    fontSize: RFValue(25),
     marginLeft: 15,
     textAlign: "center",
     fontFamily: "Ubuntu_700Bold",
@@ -144,8 +155,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   text: {
-    fontSize: 15,
-    color: "white",
+    fontSize: RFValue(12),
     fontFamily: "Ubuntu_400Regular",
   },
   btn: {

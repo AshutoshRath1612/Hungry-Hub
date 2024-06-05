@@ -45,14 +45,14 @@ export default function Header() {
         <View style={styles.headerLeft}>
           <Image
             style={styles.logo}
-            source={require("../assets/images/Logo.png")}
+            source={require("../assets/images/HLogo.png")}
             resizeMode="contain"
           />
           <Text style={styles.title}>HungerHub</Text>
         </View>
         <View onTouchEnd={() => handleShowProfile()} style={styles.profile}>
           <Image
-            source={require("../assets/icons/icon.png")}
+            source={require("../assets/images/User.png")}
             style={styles.profileImage}
             resizeMode="contain"
           ></Image>
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   logo: {
-    height: 50,
+    height: 70,
     width: 100,
   },
   title: {

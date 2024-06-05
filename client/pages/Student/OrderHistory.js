@@ -28,6 +28,7 @@ export default function OrderHistory() {
   const route = useRoute();
   const { dispatch } = useOrderStatus();
   const [orders, setOrders] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
 
   useEffect(() => {
@@ -53,6 +54,7 @@ export default function OrderHistory() {
 
         setOrders(data);
         dispatch({ type: 'ORDERS', payload: data });
+        setIsLoading(false);
       }
     } catch (error) {
       console.error("Failed to fetch orders", error);
@@ -221,12 +223,17 @@ export default function OrderHistory() {
   };
 
   return (
+    <>
+      {isLoading ? (
+        <LottieView
+          source={require("../../assets/icons/Loading.json")}
+          autoPlay
+          loop
+          style={{ flex: 1 }}
+        />
+       ) : (
     <OrderStatusProvider>
     <Container position='top' width='90%' />
-      {orders === null ? 
-        (
-          <LottieView source={require("../../assets/icons/Loading.json")} autoPlay loop style={{alignSelf: "center"}}/>
-        ) : (
           <View style={styles.container}>
             <NavigationContext.Provider value={{ navigation, route }}>
               <FlatList
@@ -241,9 +248,10 @@ export default function OrderHistory() {
               </View>
             </NavigationContext.Provider>
           </View>
+    </OrderStatusProvider>
         )
       }
-    </OrderStatusProvider>
+        </>
   );
 }
 

@@ -118,7 +118,7 @@ export default function Cart({ navigation, route }) {
   };
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
-      <View style={styles.container}>
+      <LinearGradient colors={["white","#EEBBBB"]} style={styles.container}>
         <NavigationContext.Provider value={{ navigation, route }}>
           {cart.length !== 0 ? (
             <View style={styles.viewContainer}>
@@ -341,7 +341,7 @@ export default function Cart({ navigation, route }) {
             </View>
           )}
         </NavigationContext.Provider>
-      </View>
+      </LinearGradient>
       { cart.length !==0 ? (<View style={styles.fixedContainer}>
         <LinearGradient
           colors={["#4a47a3", "#706fd3", "#8d86c9"]}
@@ -378,7 +378,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    marginVertical: 10,
   },
   fixedContainer: {
     height: "10%",
@@ -387,6 +386,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
+    position:'absolute',
+    bottom:0
   },
   viewContainer: {
     marginHorizontal: 10,

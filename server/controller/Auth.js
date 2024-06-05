@@ -112,10 +112,10 @@ const OTPGenerate = async (req, res) => {
   await Otp.deleteOne({ phone: phone });
   const newOtp = new Otp({ phone, otp });
   await newOtp.save();
-
-  client.validationRequests
-    .create({ friendlyName: phone, phoneNumber: `+91${phone}` })
-    .then((validation_request) => console.log(validation_request.friendlyName));
+  try{
+  // await client.validationRequests
+  //   .create({ friendlyName: phone, phoneNumber: `+91${phone}` })
+  //   .then((validation_request) => console.log(validation_request.friendlyName));
 
   client.messages
     .create({
@@ -125,6 +125,11 @@ const OTPGenerate = async (req, res) => {
     })
     .then((message) => console.log(message.sid));
   res.status(200).send({ success: true, message: "OTP sent successfully" });
+  }
+  catch(err){
+    console.log(err);
+    res.status(500).send({success: false, message: "Error sending OTP"});
+  }
 };
 
 const OTPVerify = async (req, res) => {
