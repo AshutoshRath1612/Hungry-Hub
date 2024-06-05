@@ -141,9 +141,8 @@ export default function SearchResults({ route, navigation }) {
                   renderItem={({ item:category }) => (
                     <>
                       {category.items.map((foodItem, index) => (
-                        <TouchableOpacity
+                        <View
                           key={index}
-                          onPress={() => console.log("Item pressed")}
                         >
                           <LinearGradient
                             colors={["#C38888", "white"]}
@@ -249,7 +248,7 @@ export default function SearchResults({ route, navigation }) {
                               </Pressable>)}
                             </View>
                           </LinearGradient>
-                        </TouchableOpacity>
+                        </View>
                       ))}
                     </>
                   )}

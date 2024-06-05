@@ -70,20 +70,20 @@ export default function Header() {
               <View style={styles.modalHeader}>
               <View style={{flexDirection:'row' , alignItems:'center',justifyContent:'space-evenly', width:'70%',height:'100%'}}>
               <View>
-                <FontAwesome name="user" size={40} color="green" /> 
+                <FontAwesome name="user" size={40} color="#915858" /> 
               </View>
-                <Text style={styles.modalText}>{userData.isStudent ? userData.regdNo : userData.uniqueId}</Text>
+                <Text style={styles.modalText}>{userData.isStudent ? (userData.name !== null ? userData.name : userData.regdNo) : userData.username}</Text>
               </View>
-                <Entypo name="cross"onPress={() => setModalVisible(false)}  size={30} color="green" />
+                <Entypo name="cross"onPress={() => setModalVisible(false)}  size={30} color="#915858" />
               </View>
               <View style={styles.line} ></View>
               <View style={{height:'60%' , justifyContent:'space-around',width:'90%',alignItems:'flex-start'}}>
               <View style={styles.modalBody} onTouchEnd={()=>handleNavigate()}>
-              <MaterialCommunityIcons name="card-account-details" size={26} color="green" />
+              <MaterialCommunityIcons name="card-account-details" size={26} color="#915858" />
               <Text style={styles.modalBodyText}>Account Details</Text>
               </View>
               <View style={styles.modalBody} onTouchEnd={()=>Logout()}>
-              <MaterialCommunityIcons name="logout" size={26} color="green" />
+              <MaterialCommunityIcons name="logout" size={26} color="#915858" />
               <Text style={styles.modalBodyText}>Logout</Text>
               </View>
               </View>

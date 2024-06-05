@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
-    width: "50%",
+    width: "30%",
   },
   foodContainer: {
     flexDirection: "row",

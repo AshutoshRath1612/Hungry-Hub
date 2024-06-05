@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
   },
   bottom: {
-    height: "73%",
+    height: "74%",
     paddingVertical: 10,
   },
   nav: {

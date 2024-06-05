@@ -57,6 +57,10 @@ const orderSchema = new mongoose.Schema({
   notes: {
     type: String,
   },
+  ratings: {
+    type: Number,
+    default: 0
+  },
   createdDate: {
     type: Date,
     default: Date.now

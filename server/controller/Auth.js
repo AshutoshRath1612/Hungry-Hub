@@ -246,20 +246,28 @@ const changePassword = async (req, res) => {
 };
 
 const updateProfile = async (req, res) => {
-  const data = req.body;
-  const id = data.id;
+  const data = req.body.data;
+  const id = data._id;
   const isStudent = data.isStudent;
   try {
+    let user;
     if (isStudent) {
-      await Users.findByIdAndUpdate(id, data);
+      user = await Users.findByIdAndUpdate(id, data, { new: true });
     } else {
-      await Vendors.findByIdAndUpdate(id, data);
+      user = await Vendors.findByIdAndUpdate(id, data, { new: true });
     }
-    res.status(200).json({ isSuccess: true });
+
+    if (!user) {
+      return res.status(404).json({ isSuccess: false, message: "User not found" });
+    }
+
+    res.status(200).json({ isSuccess: true, user });
   } catch (err) {
-    res.status(500).json({ isSuccess: false });
+    console.error(err);
+    res.status(500).json({ isSuccess: false, error: err.message });
   }
 };
+
 
 module.exports = {
   StudentRegister,

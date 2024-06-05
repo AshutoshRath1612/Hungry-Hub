@@ -24,10 +24,14 @@ export default function Profile({ route, navigation }) {
     })
       .then((res) => res.json())
       .then(async (data) => {
+        console.log(data)
         if (data.isSuccess) {
           Toast.success("Profile Updated Successfully");
           await AsyncStorage.setItem("user", JSON.stringify(data.user));
-          navigation.navigate("Home", { user: data.user });
+          if(data.user.isStudent)
+            navigation.navigate("Student Home", { user: data.user });
+          else
+            navigation.navigate("Vendor Home" , {user: data.user})
         } else {
           Toast.error(data.message);
         }
@@ -70,7 +74,6 @@ export default function Profile({ route, navigation }) {
               : route.params.userData.shopName}
           </Text>
         )}
-        <View style={styles.marginBox}></View>
         <Text style={styles.title}>
           {route.params.userData.isStudent ? "Registration No" : "Username"}
         </Text>

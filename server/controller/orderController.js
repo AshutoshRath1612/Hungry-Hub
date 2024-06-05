@@ -5,6 +5,7 @@ const Payment = require("../model/Payment");
 const Shop = require("../model/Shop");
 const User = require("../model/Users");
 const Order = require("../model/Order");
+const Food = require('../model/Food');
 
 const expo = new Expo();
 
@@ -341,12 +342,66 @@ const getMostOrder = async (req, res) => {
   }
 };
 
+const addRating = async (req, res) => {
+  const { id, foods, shopId, ratings } = req.body;
+  console.log("id", id, "food", foods, "shop", shopId, "Ratings", ratings);
+
+  try {
+    // Update the order rating
+    const order = await Order.findById(id);
+
+    if (order.ratings === 0) {
+      order.ratings = ratings;
+      await order.save();
+    // Find the shop and update its ratings
+    const shop = await Shop.findById(shopId._id);
+    console.log(shop);
+
+    if (shop) {
+      const newShopRating = (shop.ratings * shop.ratingCount + ratings) / (shop.ratingCount + 1);
+      shop.ratings = isNaN(newShopRating) ? shop.ratings : newShopRating;
+      shop.ratingCount = shop.ratingCount + 1;
+      await shop.save();
+    } else {
+      console.error("Shop not found");
+      return res.status(404).json({ message: "Shop not found" });
+    }
+
+    // Update the ratings of each food item
+    await Promise.all(
+      foods.map(async (food) => {
+        const item = await Food.findById(food._id);
+        if (item) {
+          const newItemRating = (item.ratings * item.ratingCount + ratings) / (item.ratingCount + 1);
+          item.ratings = isNaN(newItemRating) ? item.ratings : newItemRating;
+          item.ratingCount = item.ratingCount + 1;
+          await item.save();
+        } else {
+          console.error(`Food item with id ${food._id} not found`);
+        }
+      })
+    );
+  }
+  else{
+    order.ratings = ratings;
+    await order.save();
+  }
+
+    res.status(200).json({ isSuccess: true, message: "Rating added Successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
 module.exports = {
   createOrder,
   addOrder,
   getUserOrders,
   getCurrentOrders,
   getAllOrders,
+  addRating,
   todayOrder,
   getMostOrder,
   updateOrderStatus,

@@ -88,7 +88,7 @@ export default function ShopMenu({ route }) {
   const [scrollY] = useState(new Animated.Value(0));
   const [expanded, setExpanded] = useState(false);
 
-  const HEADER_MAX_HEIGHT = 150;
+  const HEADER_MAX_HEIGHT = 0;
   const HEADER_MIN_HEIGHT = 0;
   const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
@@ -188,11 +188,11 @@ const findItem = (foodItem) => {
                   style={{
                     flexDirection: "row",
                     justifyContent: "space-between",
-                    width: "50%",
+                    width: "40%",
                     alignItems: "center",
                   }}
                 >
-                  <FontAwesome name="star" size={18} color="black" />
+                  <FontAwesome name="star" size={15} color="black" />
                   <Text style={{marginHorizontal:2}}>
                     {foodItem.ratings} ({foodItem.ratingCount}+)
                   </Text>
@@ -269,15 +269,27 @@ const findItem = (foodItem) => {
           { transform: [{ translateY: headerTranslateY }] },
         ]}
       >
-        <ImageBackground
-          source={require("../../assets/images/foodsbg.jpg")}
-          style={styles.shopImage}
-        />
-        <View style={styles.shopInfo}>
-          <FontAwesome name="star" size={20} color="black" />
-          <Text style={{ fontSize: 18 }}>3.8</Text>
-          <Text style={{ fontSize: 18 }}>(600+ ratings)</Text>
-        </View>
+        <Image
+              style={{ resizeMode: "contain", width: "30%" }}
+              source={require("../../assets/images/Logo.png")}
+            />
+            <View style={styles.shopInfo}>
+              <Text style={{ fontSize: RFValue(25), fontWeight: "bold" }}>
+                {route.params.shopName}
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  width: "40%",
+                  justifyContent: "space-between",
+                }}
+              >
+                <FontAwesome name="star" size={15} color="orange" />
+                <Text style={{ fontSize: 18 }}>{data.shop.ratings}</Text>
+                <Text style={{ fontSize: 18 }}>({data.shop.ratingCount}+)</Text>
+              </View>
+            </View>
       </Animated.View>
       <Animated.View
         style={[
@@ -334,19 +346,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f9f9f9",
   },
-  header: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    // backgroundColor: "#fff",
+ header: {
+    height:'25%',
+    backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 100,
-    // elevation: 3,
-    // borderBottomWidth: 1,
-    // borderBottomColor: "#ccc",
+    elevation: 3,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
     overflow: "hidden",
+    flexDirection: "row",
   },
   shopImage: {
     width: "100%",
@@ -356,7 +365,6 @@ const styles = StyleSheet.create({
     backgroundColor: "red",
   },
   shopInfo: {
-    flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
     width: "50%",

@@ -24,7 +24,7 @@ export default function Reccomandation() {
   const [currentData, setCurrentData] = useState(null);
   const [data,setData] = useState(null)
 
-  const image = require("../assets/images/LandingBG.png")
+  const image = require("../assets/images/Logo.png")
 
   const route = useRoute();
 

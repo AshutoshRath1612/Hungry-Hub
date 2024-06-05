@@ -14,10 +14,11 @@ import { NavigationContext } from "../../NavContext";
 import { RFValue } from "react-native-responsive-fontsize";
 import { OrderStatusProvider, useOrderStatus } from "../../OrderStatusContext";
 import { LinearGradient } from "expo-linear-gradient";
-import { GetOrderByUserRoute, Host } from "../../Constants";
+import { GetOrderByUserRoute, Host, ratingRoute } from "../../Constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LottieView from "lottie-react-native";
 import { FontAwesome } from "@expo/vector-icons";
+import Container  , {Toast} from 'toastify-react-native'
 
 export default function OrderHistory() {
   const VegLogo = require("../../assets/icons/VegLogo.png");
@@ -57,14 +58,14 @@ export default function OrderHistory() {
       console.error("Failed to fetch orders", error);
     }
   };
-  
 
+  
   const getStatusColor = (status) => {
     switch (status) {
       case "Preparing":
         return "orange";
-      case "Cancelled":
-        return "red";
+        case "Cancelled":
+          return "red";
       case "Delivered":
         return "green";
       default:
@@ -76,6 +77,7 @@ export default function OrderHistory() {
     navigation.navigate("Order Summary", { item:item });
   };
 
+  
   const CardItem = ({ item }) => {
     const [rating, setRating] = useState(0);
     const findPrice = (items) => {
@@ -85,7 +87,26 @@ export default function OrderHistory() {
       });
       return price;
     };
-
+    
+    const handleRating = (item , value) => {
+      setRating(value);
+      console.log(item)
+      fetch(`${Host}${ratingRoute}` , {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({id : item._id , foods: item.items , shopId: item.shopId , ratings: value})
+      })
+      .then(res=> res.json())
+      .then(data => {
+        if(data.isSuccess){
+          Toast.success(data.message)
+          getUserAndFetchOrders();
+        }
+      })
+    }
+    
     const Rating = ({ value, onChange }) => {
       const stars = [1, 2, 3, 4, 5];
     
@@ -94,7 +115,7 @@ export default function OrderHistory() {
           {stars.map((star) => (
             <Pressable key={star} onPress={() => onChange(star)}>
               <FontAwesome
-                name={value >= star ? "star" : "star-o"}
+                name={value >= star ? "star" : value >= (star - 0.5) ? "star-half-o" : "star-o"}
                 size={20}
                 color="#FFD700"
               />
@@ -107,6 +128,7 @@ export default function OrderHistory() {
 
     return (
       <LinearGradient colors={["#C0A2A2", "white"]} style={styles.items}>
+      
         <Pressable
           onPress={() => {
             showOrderDetails(item);
@@ -187,11 +209,11 @@ export default function OrderHistory() {
               ₹ {findPrice(item.items)}
             </Text>
           </View>
-          <View style={{ marginTop: 10, flexDirection:"row",justifyContent:'space-between' }}>
+          <View style={{ marginTop: 10, flexDirection:"row",justifyContent:'space-between',alignItems:'center' }}>
           <Text style={{ fontSize: RFValue(15), fontWeight: "bold" }}>
             Rate this order:
           </Text>
-          <Rating value={rating} onChange={(value) => setRating(value)} />
+          <Rating value={rating == 0 && item.rating !== null ? item.ratings : rating} onChange={(value) => handleRating(item,value)} />
         </View>
         </Pressable>
       </LinearGradient>
@@ -200,6 +222,7 @@ export default function OrderHistory() {
 
   return (
     <OrderStatusProvider>
+    <Container position='top' width='90%' />
       {orders === null ? 
         (
           <LottieView source={require("../../assets/icons/Loading.json")} autoPlay loop style={{alignSelf: "center"}}/>
