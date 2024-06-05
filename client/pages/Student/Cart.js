@@ -26,7 +26,6 @@ export default function Cart({ navigation, route }) {
   const nonVegLogo = require("../../assets/icons/NonVegLogo.png");
 
   const { cart, dispatch } = useCart();
-  console.log(cart)
 
   const [showRecommandation, setShowRecommandation] = useState(false);
   const [deliveryType, setDeliveryType] = useState("Dine-in");
@@ -75,7 +74,6 @@ export default function Cart({ navigation, route }) {
       if (gesture.moveX > thresholdX) {
         navigation.navigate('Payment',{ cartData : {amount: findPrice() + 5 + (deliveryType === "Dine-in" ? 0 : 5) , deliveryType : deliveryType , notes}})
        // Payment successful
-        console.log("Payment",);
         setShowSuccess(true); // Set a state to show the payment success message
       }
         // Payment not successful, animate the circle back to its initial position

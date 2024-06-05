@@ -122,64 +122,6 @@ export default function OrderSummary({ navigation }) {
                 ? `This Order is ${orderStatus}`
                 : `This Order was ${orderStatus}`}
             </Text>
-            {summary.status !== "Cancelled" &&
-              summary.status !== "Delivered" && (
-                <View style={styles.status}>
-                  <View style={styles.statusinfo}>
-                    <View
-                      style={[
-                        styles.imgOuter,
-                        {
-                          backgroundColor:
-                            summary.status === "Accepted" ? "green" : "",
-                        },
-                      ]}
-                    >
-                      <Image
-                        style={[styles.statusimg, { width: "40%" }]}
-                        source={require("../../assets/icons/orderaccept.png")}
-                      />
-                    </View>
-                    <Text style={styles.text}>Accepted</Text>
-                  </View>
-                  <View style={[styles.line, { width: "10%" }]}></View>
-                  <View style={styles.statusinfo}>
-                    <View
-                      style={[
-                        styles.imgOuter,
-                        {
-                          backgroundColor:
-                            summary.status === "Preparing" ? "green" : "",
-                        },
-                      ]}
-                    >
-                      <Image
-                        style={[styles.statusimg, { width: 90 }]}
-                        source={require("../../assets/icons/orderpreparing.png")}
-                      />
-                    </View>
-                    <Text style={styles.text}>Preparing</Text>
-                  </View>
-                  <View style={[styles.line, { width: "10%" }]}></View>
-                  <View style={styles.statusinfo}>
-                    <View
-                      style={[
-                        styles.imgOuter,
-                        {
-                          backgroundColor:
-                            summary.status === "Ready" ? "green" : "",
-                        },
-                      ]}
-                    >
-                      <Image
-                        style={styles.statusimg}
-                        source={require("../../assets/icons/orderprepared.png")}
-                      />
-                    </View>
-                    <Text style={styles.text}>Ready</Text>
-                  </View>
-                </View>
-              )}
             <Text style={styles.heading}>Your Order</Text>
             <View style={styles.line}></View>
             <View style={styles.itemList}>
@@ -411,17 +353,6 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
   },
-  btn: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#C41214",
-    padding: 10,
-    borderRadius: 10,
-    marginTop: 20,
-    width: "100%",
-    alignContent: "center",
-  },
   heading: {
     fontSize: 20,
     fontWeight: "bold",
@@ -486,11 +417,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   btn: {
+    flexDirection: "row",
     backgroundColor: "#A33C3C",
     padding: 10,
     borderRadius: 10,
     margin: 10,
-    width: "40%",
+    width: "90%",
     justifyContent: "center",
     alignItems: "center",
   },

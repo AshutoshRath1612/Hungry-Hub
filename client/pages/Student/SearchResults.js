@@ -30,7 +30,6 @@ export default function SearchResults({ route, navigation }) {
   useEffect(() => {
     if (route.params && route.params.searchItem) {
       const { searchItem } = route.params;
-      console.log(searchItem)
       fetch(
         `${Host}${SearchRoute}?name=${searchItem.name}&shopName=${searchItem.shopName}&type=${searchItem.type}&category=${searchItem.category}`
       )
@@ -131,7 +130,7 @@ export default function SearchResults({ route, navigation }) {
                     name="arrow-right"
                     size={25}
                     color="grey"
-                    onPress={() => navigation.navigate("Shop Menu", { item })}
+                    onPress={() => navigation.navigate("Shop Menu", { shopName: item.shop.name, id: item.shop._id })}
                   />
                 </View>
                 <FlatList

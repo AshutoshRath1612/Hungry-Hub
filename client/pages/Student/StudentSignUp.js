@@ -28,7 +28,6 @@ export default function StudentSignUp({ navigation }) {
         }
       })
       .catch(error => {
-        console.log(error.message)
         Toast.error(error.message)
       })
     }

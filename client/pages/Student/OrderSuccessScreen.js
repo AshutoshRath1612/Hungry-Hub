@@ -51,7 +51,6 @@ const OrderSuccessScreen = ({ navigation,route }) => {
     })
     .then(res => res.json())
     .then(data => {
-      console.log(data)
       setIsSuccess(data.success)
       if(data.success === true){
         dispatch({ type: "CLEAR_CART" });

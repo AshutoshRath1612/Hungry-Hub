@@ -17,6 +17,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { GetOrderByUserRoute, Host } from "../../Constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LottieView from "lottie-react-native";
+import { FontAwesome } from "@expo/vector-icons";
 
 export default function OrderHistory() {
   const VegLogo = require("../../assets/icons/VegLogo.png");
@@ -26,6 +27,7 @@ export default function OrderHistory() {
   const route = useRoute();
   const { dispatch } = useOrderStatus();
   const [orders, setOrders] = useState(null);
+
 
   useEffect(() => {
     
@@ -75,6 +77,7 @@ export default function OrderHistory() {
   };
 
   const CardItem = ({ item }) => {
+    const [rating, setRating] = useState(0);
     const findPrice = (items) => {
       let price = 0;
       items.forEach((item) => {
@@ -82,6 +85,25 @@ export default function OrderHistory() {
       });
       return price;
     };
+
+    const Rating = ({ value, onChange }) => {
+      const stars = [1, 2, 3, 4, 5];
+    
+      return (
+        <View style={{ flexDirection: "row", marginTop: 5, justifyContent:'space-around',width:'40%' }}>
+          {stars.map((star) => (
+            <Pressable key={star} onPress={() => onChange(star)}>
+              <FontAwesome
+                name={value >= star ? "star" : "star-o"}
+                size={20}
+                color="#FFD700"
+              />
+            </Pressable>
+          ))}
+        </View>
+      );
+    };
+    
 
     return (
       <LinearGradient colors={["#C0A2A2", "white"]} style={styles.items}>
@@ -165,6 +187,12 @@ export default function OrderHistory() {
               ₹ {findPrice(item.items)}
             </Text>
           </View>
+          <View style={{ marginTop: 10, flexDirection:"row",justifyContent:'space-between' }}>
+          <Text style={{ fontSize: RFValue(15), fontWeight: "bold" }}>
+            Rate this order:
+          </Text>
+          <Rating value={rating} onChange={(value) => setRating(value)} />
+        </View>
         </Pressable>
       </LinearGradient>
     );

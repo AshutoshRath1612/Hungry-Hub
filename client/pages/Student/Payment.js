@@ -21,7 +21,6 @@ const createOrder = async (amount) => {
         });
 
         const data = await response.json();
-        console.log(data);
         return data;
     } catch (error) {
         console.error('Error creating order:', error);
@@ -71,7 +70,6 @@ export default function Payment({ navigation, route }) {
             RazorpayCheckout.open(options)
                 .then(data => {
                     // handle success
-                    console.log(data);
                     setIsSuccess(true);
                     setPayment(data);
                     // Show success animation and navigate after a delay
@@ -86,7 +84,6 @@ export default function Payment({ navigation, route }) {
                 })
                 .catch(error => {
                     // handle failure
-                    console.log(error);
                     setIsSuccess(false);
                     setPayment(error);
                     // Show failed animation and navigate after a delay

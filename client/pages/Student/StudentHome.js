@@ -1,7 +1,6 @@
 import {
   View,
   StyleSheet,
-  Animated,
   StatusBar,
 } from "react-native";
 import React, { useEffect, useState } from "react";
@@ -26,7 +25,6 @@ export default function StudentHome() {
 
   const setData = async() => {
     const {token,...userDetails} = route.params.user
-    console.log(userDetails)
     await AsyncStorage.setItem('user' , JSON.stringify(userDetails))
     await AsyncStorage.setItem('token' , JSON.stringify(token))
   }
@@ -37,12 +35,12 @@ export default function StudentHome() {
     <LinearGradient colors={["#C38888","white"]} style={styles.container}>
     <StatusBar backgroundColor='#C38888'  barStyle='dark-content' showHideTransition='fade' />
       <NavigationContext.Provider value={{ navigation, route }}>
-        <Animated.View style={styles.top}>
+        <View style={styles.top}>
           <Header />
           <Search />
-        </Animated.View>
+        </View>
         <View style={styles.bottom}>
-          {/* <Reccomandation /> */}
+          <Reccomandation />  
           <CurrentOrder />
           <ShopList />
         </View>

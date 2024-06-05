@@ -99,7 +99,8 @@ export default function VendorOrderSummary() {
     });
     return total;
   };
-  console.log(summary.userId.name)
+
+  
   return (
     <LinearGradient colors={["#C38888", "white"]} style={{ flex: 1 }}>
     <Container position='top' />

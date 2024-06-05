@@ -299,18 +299,40 @@ const todayOrder = async (req, res) => {
 
 const getMostOrder = async (req, res) => {
   const userId = req.params.id;
-
+  console.log(userId)
   try {
     const orders = await Order.aggregate([
       { $match: { userId: new mongoose.Types.ObjectId(userId) } }, // Filter by userId
       { $unwind: '$items' }, // Deconstruct the items array field
-      { $group: { _id: '$items.name', count: { $sum: '$items.quantity' } } }, // Group by item name and sum quantities
+      { 
+        $group: { 
+          _id: { itemName: '$items.name', shopId: '$shopId' }, 
+          count: { $sum: '$items.quantity' },
+          details: { $first: '$items' } 
+        } 
+      }, // Group by item name and shopId, sum quantities, and get item details
       { $sort: { count: -1 } }, // Sort by count in descending order
       { $limit: 5 }, // Limit to top 5 items
-      { $project: { _id: 0, itemName: '$_id', count: 1 } } // Project the required fields
+      {
+        $lookup: {
+          from: 'shops', // Collection to join (assuming your shop details are in 'shops' collection)
+          localField: '_id.shopId',
+          foreignField: '_id',
+          as: 'shopDetails'
+        }
+      }, // Lookup shop details
+      { $unwind: '$shopDetails' }, // Unwind the shopDetails array
+      { 
+        $project: { 
+          _id: 0,
+          itemName: '$_id.itemName',
+          count: 1,
+          itemDetails: '$details',
+          shopId: '$_id.shopId',
+          shopName: '$shopDetails.name' // Assuming 'name' is the field for shop name
+        } 
+      } // Project the required fields
     ]);
-
-    console.log('Aggregated orders:', orders); // Debugging: log the result
 
     res.status(200).json(orders);
   } catch (err) {

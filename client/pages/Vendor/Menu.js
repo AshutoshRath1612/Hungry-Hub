@@ -58,7 +58,6 @@ export default function Menu({ navigation, route }) {
     fetch(`${Host}${GetFoodByShopRoute}/${route.params.shopName}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data)
         setData(data[0]);
         setIsLoading(false);
       });
@@ -141,10 +140,17 @@ export default function Menu({ navigation, route }) {
   );
 
   const scrollToCategory = (categoryIndex) => {
-    const yOffset = HEADER_MAX_HEIGHT + 20 + categoryIndex * 300; // Assuming each category occupies 300 units of space
+    let yOffset = HEADER_MAX_HEIGHT + 20; // Initial offset
+  
+    // Calculate the offset based on the cumulative heights of items in previous categories
+    for (let i = 0; i < categoryIndex; i++) {
+      yOffset += data.categories[i].items.reduce((acc, curr) => acc + 100, 0);
+    }
+  
     listRef.current.scrollToOffset({ animated: true, offset: yOffset });
     setExpanded(false);
   };
+  
 
   const renderCategoryButton = (item, index) => (
     <TouchableOpacity key={index} onPress={() => scrollToCategory(index)}>
