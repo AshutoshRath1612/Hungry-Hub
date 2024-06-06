@@ -190,7 +190,7 @@ export default function VendorHome({ navigation, route }) {
                   numColumns={2} // Display two columns
                   contentContainerStyle={{ paddingHorizontal: 10, paddingTop: 10 }}
                   renderItem={({ item }) => (
-                    <View
+                    <LinearGradient colors={item.status === 'Pending' ? ["red","white"] : item.status === 'Accepted' ? ["#FFA500", "#FFD700"] : item.status === 'Prepared' ? ["#00FF00", "#32CD32"] : ["#FF0000", "#FF6347"]}
                       onTouchEnd={() => navigation.navigate("Vendor Order Summary", { item: item })}
                       style={styles.ordercard}
                     >
@@ -206,7 +206,7 @@ export default function VendorHome({ navigation, route }) {
                           RegdNo: {item.userId.regdNo}
                         </Text>
                       )}
-                    </View>
+                    </LinearGradient>
                   )}
                 />
               ) : (

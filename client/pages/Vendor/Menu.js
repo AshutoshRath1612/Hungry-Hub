@@ -24,12 +24,10 @@ import { DeleteFoodRoute, GetFoodByShopRoute, Host, SearchRoute } from "../../Co
 import Container, { Toast } from "toastify-react-native";
 import LottieView from "lottie-react-native";
 import EditFoodModal from "../../components/EditFoodModal";
-
+import { LinearGradient } from "expo-linear-gradient";
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
-
 export default function Menu({ navigation, route }) {
   const listRef = useRef(null);
-
   const [scrollY] = useState(new Animated.Value(0));
   const [expanded, setExpanded] = useState(false);
   const [editModal, setEditModal] = useState(false);
@@ -48,21 +46,19 @@ export default function Menu({ navigation, route }) {
   });
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
     setShop(route.params.shopName)
     getMenu();
   }, []);
-
   const getMenu = () => {
     fetch(`${Host}${GetFoodByShopRoute}/${route.params.shopName}`)
       .then((res) => res.json())
       .then((data) => {
+        console.log(data)
         setData(data[0]);
         setIsLoading(false);
       });
   };
-
   useEffect(() => {
     if (route.params && route.params.searchItem) {
       const { searchItem } = route.params;
@@ -75,7 +71,6 @@ export default function Menu({ navigation, route }) {
         });
     }
   }, [route.params.searchItem]);
-
   useEffect(() => {
     if (isUpdated) {
       getMenu();
@@ -83,27 +78,22 @@ export default function Menu({ navigation, route }) {
       setIsUpdated(false);
     }
   }, [isUpdated]);
-
   const HEADER_MAX_HEIGHT = 150;
   const HEADER_MIN_HEIGHT = 0;
   const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
-
   const headerTranslateY = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
     outputRange: [0, -HEADER_SCROLL_DISTANCE],
     extrapolate: "clamp",
   });
-
   const searchTranslateY = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
     outputRange: [HEADER_MAX_HEIGHT, 0],
     extrapolate: "clamp",
   });
-
   const toggleExpand = () => {
     setExpanded(!expanded);
   };
-
   const handleDelete = () => {
     fetch(`${Host}${DeleteFoodRoute}/${currentItem._id}`, {
       method: "DELETE",
@@ -115,7 +105,6 @@ export default function Menu({ navigation, route }) {
         Toast.error("Food Deleted Successfully");
       });
   };
-
   const DeleteModal = () => (
     <Modal visible={warningModal} animationType="fade" transparent>
       <View style={styles.modalcontainer}>
@@ -138,7 +127,6 @@ export default function Menu({ navigation, route }) {
       </View>
     </Modal>
   );
-
   const scrollToCategory = (categoryIndex) => {
     let yOffset = HEADER_MAX_HEIGHT + 20; // Initial offset
   
@@ -151,7 +139,6 @@ export default function Menu({ navigation, route }) {
     setExpanded(false);
   };
   
-
   const renderCategoryButton = (item, index) => (
     <TouchableOpacity key={index} onPress={() => scrollToCategory(index)}>
       <View style={styles.categoryButton}>
@@ -167,7 +154,7 @@ export default function Menu({ navigation, route }) {
   const renderItem = ({ item }) => {
     return (
       <TouchableWithoutFeedback onPress={() => setExpanded(false)}>
-        <View key={item.category} style={styles.categoryContainer}>
+        <LinearGradient colors={["#FFD7D7","white"]} key={item.category} style={styles.categoryContainer}>
           <Text style={styles.category}>{item.category}</Text>
           {item.items.map((foodItem, index) => (
             <View key={index} style={styles.menuItem}>
@@ -253,11 +240,11 @@ export default function Menu({ navigation, route }) {
               </View>
             </View>
           ))}
-        </View>
+        </LinearGradient>
       </TouchableWithoutFeedback>
     );
   };
-
+  console.log("data" , data)
   return (
     <NavigationContext.Provider value={{ navigation, route }}>
       {isLoading ? (
@@ -268,7 +255,10 @@ export default function Menu({ navigation, route }) {
           style={{ flex: 1 }}
         />
       ) : (
-        <View style={styles.container}>
+        <>
+        {
+          data && data !== null ? (
+            <View style={styles.container}>
           <Container position="top" width="90%" />
           <Animated.View style={[styles.header]}>
             <Image
@@ -277,7 +267,7 @@ export default function Menu({ navigation, route }) {
             />
             <View style={styles.shopInfo}>
               <Text style={{ fontSize: RFValue(25), fontWeight: "bold" }}>
-                {route.params.shopName}
+                {data.shop.name}
               </Text>
               <View
                 style={{
@@ -296,7 +286,6 @@ export default function Menu({ navigation, route }) {
           <Animated.View style={[styles.searchContainer]}>
             <Search />
           </Animated.View>
-
           <AnimatedFlatList
             ref={listRef}
             style={{ marginBottom: RFValue(50) }}
@@ -334,11 +323,22 @@ export default function Menu({ navigation, route }) {
             <Nav />
           </View>
         </View>
+          )
+          :(
+            <LottieView
+              source={require("../../assets/icons/Loading.json")}
+              autoPlay
+              loop
+              style={{ flex: 1 }}
+            />
+          )
+        }
+        </>
+        
       )}
     </NavigationContext.Provider>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -3,9 +3,8 @@ const Shop = require("../model/Shop"); // Import the Shop model
 
 // Controller function to search food items by type and category
 const searchFood = async (req, res) => {
-  console.log(req.query)
-  const { name, type, category, shopName } = req.query;
-
+  let { name, type, category, shopName } = req.query;
+  name = name.trim()
   try {
     let query = {};
 
@@ -76,7 +75,6 @@ const searchFood = async (req, res) => {
     
     let updatedFood = await Promise.all(
       foods.map(async (food) => {
-        console.log(food)
         const shop = await Shop.findOne({ name: food.shopName });
         return {
           shop, // Set default value if shop is null

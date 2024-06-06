@@ -196,6 +196,11 @@ export default function VendorOrderSummary() {
                 ₹ {findPrice(summary.items)}
               </Text>
             </View>
+            {summary.notes && <View style={{width:"100%"}} >
+            <Text style={styles.heading}>Notes</Text>
+            <View style={styles.line}></View>
+            <Text style={styles.text}>{summary.notes}</Text>
+            </View>}
             <View style={{ width: "100%" }}>
               <Text style={styles.heading}>Order Details</Text>
               <View style={styles.line}></View>
