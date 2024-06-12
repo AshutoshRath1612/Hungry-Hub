@@ -36,7 +36,6 @@ const getAllFoods = async (req, res) => {
 
 // Controller function to get a specific food item by name
 const getFoodByName = async (req, res) => {
-  console.log(req.params);
   const foodName = req.params.name;
 
   try {
@@ -56,7 +55,6 @@ const getFoodByName = async (req, res) => {
 // Controller function to get a specific food item by shopName
 const getFoodByShopName = async (req, res) => {
   const shopName = req.params.shopName;
-  console.log(shopName)
   try {
     let foods = await Food.find({ shopName });
 
@@ -70,7 +68,6 @@ const getFoodByShopName = async (req, res) => {
 
     let updatedFood = await Promise.all(
       foods.map(async (food) => {
-        console.log(food)
         const shop = await Shop.findOne({ name: food.shopName });
         return {
           shop, // Set default value if shop is null
@@ -87,7 +84,6 @@ const getFoodByShopName = async (req, res) => {
 
 // Controller function to update a food item by ID
 const updateFoodById = async (req, res) => {
-  console.log(req.body);
   try {
     const { name, price, category, type, isAvailable } = req.body;
     const foodId = req.params.id;

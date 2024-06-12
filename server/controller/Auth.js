@@ -134,7 +134,6 @@ const OTPGenerate = async (req, res) => {
 
 const OTPVerify = async (req, res) => {
   const { mobileNo, otp } = req.body;
-  console.log(req.body);
   const existingOtp = await Otp.findOne({ phone: mobileNo, otp });
   if (existingOtp) {
     await Otp.deleteOne({ phone: mobileNo, otp });
@@ -165,7 +164,6 @@ const VendorUnique = async (req, res) => {
   const vendorUsername = await Vendors.findOne({ username: username });
   const vendorMobile = await Vendors.findOne({ mobileNo: mobileNo });
   if (vendor || vendorUsername || vendorMobile) {
-    console.log(vendor);
     res.status(400).send("User Already Exists");
   } else {
     res.status(200).send("Success");
@@ -184,7 +182,6 @@ const saveToken = async (req, res) => {
     if (!user) {
       return res.status(404).send({ message: "User not found" });
     }
-    console.log(user);
     res.status(200).send("Token saved");
   } catch (error) {
     res.status(500).send("Error saving token");

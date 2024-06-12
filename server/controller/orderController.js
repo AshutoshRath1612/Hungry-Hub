@@ -261,7 +261,6 @@ const sendPushNotification = async (expoPushToken, message) => {
   });
 
   const chunks = expo.chunkPushNotifications(messages);
-  console.log("Chunks", chunks)
   for (const chunk of chunks) {
     try {
       const receipts = await expo.sendPushNotificationsAsync(chunk);
@@ -300,7 +299,6 @@ const todayOrder = async (req, res) => {
 
 const getMostOrder = async (req, res) => {
   const userId = req.params.id;
-  console.log(userId)
   try {
     const orders = await Order.aggregate([
       { $match: { userId: new mongoose.Types.ObjectId(userId) } }, // Filter by userId
@@ -344,7 +342,6 @@ const getMostOrder = async (req, res) => {
 
 const addRating = async (req, res) => {
   const { id, foods, shopId, ratings } = req.body;
-  console.log("id", id, "food", foods, "shop", shopId, "Ratings", ratings);
 
   try {
     // Update the order rating
@@ -355,7 +352,6 @@ const addRating = async (req, res) => {
       await order.save();
     // Find the shop and update its ratings
     const shop = await Shop.findById(shopId._id);
-    console.log(shop);
 
     if (shop) {
       const newShopRating = (shop.ratings * shop.ratingCount + ratings) / (shop.ratingCount + 1);
