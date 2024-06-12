@@ -184,13 +184,13 @@ export default function VendorHome({ navigation, route }) {
               {currentOrders.length > 0 ? (
                 <FlatList
                   data={currentOrders}
-                  style={{ marginBottom: "2%",flex:1,width:'100%' }}
+                  style={{ marginBottom: "12%",flex:1,width:'100%' }}
                   showsVerticalScrollIndicator={false}
                   keyExtractor={(item, index) => index.toString()}
                   numColumns={2} // Display two columns
                   contentContainerStyle={{ paddingHorizontal: 10, paddingTop: 10 }}
                   renderItem={({ item }) => (
-                    <LinearGradient colors={item.status === 'Pending' ? ["red","white"] : item.status === 'Accepted' ? ["#FFA500", "#FFD700"] : item.status === 'Prepared' ? ["#00FF00", "#32CD32"] : ["#FF0000", "#FF6347"]}
+                    <LinearGradient colors={item.status === 'Pending' ? ["red","white"] : item.status === 'Accepted' ? ["blue", "white"] : item.status === 'Prepared' ? ["green", "white"] : ["yellow", "white"]}
                       onTouchEnd={() => navigation.navigate("Vendor Order Summary", { item: item })}
                       style={styles.ordercard}
                     >

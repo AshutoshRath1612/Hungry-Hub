@@ -20,6 +20,7 @@ import CartCard from "../../components/CartCard";
 import { LinearGradient } from "expo-linear-gradient";
 import { GetFoodByShopRoute, Host, SearchRoute } from "../../Constants";
 import LottieView from "lottie-react-native";
+import { StatusBar } from "react-native";
 
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
@@ -253,6 +254,7 @@ const findItem = (foodItem) => {
 
   return (
     <>
+    <StatusBar backgroundColor='white'  barStyle='dark-content' showHideTransition='fade' />
     {
       isLoading ? (
         <LottieView

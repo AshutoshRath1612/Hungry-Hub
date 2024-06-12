@@ -325,12 +325,7 @@ export default function Menu({ navigation, route }) {
         </View>
           )
           :(
-            <LottieView
-              source={require("../../assets/icons/Loading.json")}
-              autoPlay
-              loop
-              style={{ flex: 1 }}
-            />
+            <Text>No Food Items Added</Text>
           )
         }
         </>

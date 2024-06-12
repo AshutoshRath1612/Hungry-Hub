@@ -20,6 +20,7 @@ import io from 'socket.io-client';
 import { Host } from "../../Constants";
 import { Modal } from "react-native-paper";
 import LottieView from "lottie-react-native";
+import { StatusBar } from "react-native";
 
 export default function OrderSummary({ navigation }) {
   const VegLogo = require("../../assets/icons/VegLogo.png");
@@ -83,6 +84,7 @@ export default function OrderSummary({ navigation }) {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
+    <StatusBar backgroundColor='#E0A2A2'  barStyle='dark-content' showHideTransition='fade' />
       <LinearGradient colors={["#E0A2A2", "white"]} style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.OrderSummaryContainer}>

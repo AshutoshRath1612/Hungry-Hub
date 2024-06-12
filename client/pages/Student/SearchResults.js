@@ -17,6 +17,7 @@ import { Host, SearchRoute } from "../../Constants";
 import { LinearGradient } from "expo-linear-gradient";
 import ShopModal from "../../components/ShopModal";
 import LottieView from "lottie-react-native";
+import { StatusBar } from "react-native";
 
 export default function SearchResults({ route, navigation }) {
   const vegLogo = require("../../assets/icons/VegLogo.png");
@@ -93,6 +94,7 @@ export default function SearchResults({ route, navigation }) {
 
   return (
     <>
+    <StatusBar backgroundColor='white'  barStyle='dark-content' showHideTransition='fade' />
       {searchResults && !searchResults.message ? (
         <View style={{ flex: 1, backgroundColor: "white" }}>
           <View style={styles.searchBox}>
@@ -195,14 +197,6 @@ export default function SearchResults({ route, navigation }) {
                               </Text>
                             </View>
                             <View style={styles.foodItemsImage}>
-                              {/* <Image
-                                source={require("../../assets/images/Logo.png")}
-                                style={{
-                                  width: "100%",
-                                  height: "90%",
-                                  borderRadius: 10,
-                                }}
-                              /> */}
                               <LottieView style={{
                                   width: "100%",
                                   height: "90%",
@@ -270,7 +264,8 @@ export default function SearchResults({ route, navigation }) {
             style={{
               justifyContent: "center",
               alignItems: "center",
-              fontSize: RFValue(15),
+              fontSize: RFValue(20),
+              fontWeight:'bold'
             }}
           >
             {searchResults ? searchResults.message : <LottieView source={require('../../assets/icons/Loading.json')} autoPlay loop />}

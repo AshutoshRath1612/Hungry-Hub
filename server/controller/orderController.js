@@ -359,7 +359,7 @@ const addRating = async (req, res) => {
 
     if (shop) {
       const newShopRating = (shop.ratings * shop.ratingCount + ratings) / (shop.ratingCount + 1);
-      shop.ratings = isNaN(newShopRating) ? shop.ratings : newShopRating;
+      shop.ratings = isNaN(newShopRating) ? shop.ratings : Math.round(newShopRating * 100) / 100;
       shop.ratingCount = shop.ratingCount + 1;
       await shop.save();
     } else {
@@ -373,7 +373,7 @@ const addRating = async (req, res) => {
         const item = await Food.findById(food._id);
         if (item) {
           const newItemRating = (item.ratings * item.ratingCount + ratings) / (item.ratingCount + 1);
-          item.ratings = isNaN(newItemRating) ? item.ratings : newItemRating;
+          item.ratings = isNaN(newItemRating) ? item.ratings : Math.round(newItemRating * 100) / 100;
           item.ratingCount = item.ratingCount + 1;
           await item.save();
         } else {

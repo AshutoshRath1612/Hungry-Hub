@@ -72,9 +72,6 @@ export default function Scanner() {
       });
   };
 
-  const handleScanAgain = () => {
-    setScanned(false);
-  };
 
   const toggleFlash = () => {
     setFlash(!flash);
@@ -103,43 +100,11 @@ export default function Scanner() {
     setScanned(false);
   };
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      const imageUri = result.assets[0].uri;
-      const imageBase64 = await FileSystem.readAsStringAsync(imageUri, {
-        encoding: "base64",
-      });
-      const base64 = `data:image/jpeg;base64,${imageBase64}`;
-      const img = new Image();
-      img.src = base64;
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0, img.width, img.height);
-        const imageData = ctx.getImageData(0, 0, img.width, img.height);
-        const code = jsQR(imageData.data, imageData.width, imageData.height);
-        if (code) {
-          handleBarCodeScanned({ type: "QR_CODE", data: code.data });
-        } else {
-          alert("No QR code found");
-        }
-      };
-    }
-  };
-
   return (
     <LinearGradient colors={["#C38888", "white"]} style={styles.container}>
       <Container
         width="90%"
-        textStyle={{ fontSize: RFValue(15) }}
+        textStyle={{ fontSize: RFValue(15)}}
         position="top"
       />
       {modalVisible && (

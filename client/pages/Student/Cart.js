@@ -20,6 +20,7 @@ import Reccomandation from "../../components/Reccomandation";
 import { RadioButton, TextInput } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
 import QRcode from "../../components/QRCode";
+import { StatusBar } from "react-native";
 
 export default function Cart({ navigation, route }) {
   const vegLogo = require("../../assets/icons/VegLogo.png");
@@ -118,6 +119,7 @@ export default function Cart({ navigation, route }) {
   };
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
+    <StatusBar backgroundColor='white'  barStyle='dark-content' showHideTransition='fade' />
       <LinearGradient colors={["white","#EEBBBB"]} style={styles.container}>
         <NavigationContext.Provider value={{ navigation, route }}>
           {cart.length !== 0 ? (
@@ -391,6 +393,7 @@ const styles = StyleSheet.create({
   },
   viewContainer: {
     marginHorizontal: 10,
+    marginBottom:'20%'
   },
   title: {
     fontSize: 24,

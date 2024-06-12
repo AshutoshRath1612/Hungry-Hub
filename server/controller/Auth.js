@@ -214,7 +214,7 @@ const orderDelivery = async (req, res) => {
             .json({ message: "Order Already Delivered", isSuccess: false });
         }
       }
-    } else res.status(404).json({ isSuccess: false });
+    } else res.status(404).json({ isSuccess: false,message: "Invalid QR Code" });
   } catch (err) {
     res.status(500).json({ message: "Internal Server Error" });
   }

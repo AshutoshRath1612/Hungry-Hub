@@ -19,6 +19,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import LottieView from "lottie-react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import Container  , {Toast} from 'toastify-react-native'
+import { StatusBar } from "react-native";
 
 export default function OrderHistory() {
   const VegLogo = require("../../assets/icons/VegLogo.png");
@@ -130,7 +131,7 @@ export default function OrderHistory() {
 
     return (
       <LinearGradient colors={["#C0A2A2", "white"]} style={styles.items}>
-      
+      <StatusBar backgroundColor='white'  barStyle='dark-content' showHideTransition='fade' />
         <Pressable
           onPress={() => {
             showOrderDetails(item);
@@ -164,6 +165,8 @@ export default function OrderHistory() {
                   resizeMode="contain"
                   source={item.orderType === "Vegeterian" ? VegLogo : NonVegLogo}
                 />
+                <View style={{justifyContent:'space-around',flexDirection:'row' , width:'20%'}}>
+
                 <Text
                   style={{
                     fontWeight: "bold",
@@ -182,9 +185,13 @@ export default function OrderHistory() {
                 >
                   x
                 </Text>
+                </View>
+                <View style={{flexDirection:'row' , width:'60%'}}>
+
                 <Text style={{ fontWeight: "bold", fontSize: RFValue(12) }}>
                   {item.name}
                 </Text>
+                </View>
               </View>
             )}
             keyExtractor={(item, index) => index.toString()}

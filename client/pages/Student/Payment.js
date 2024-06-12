@@ -4,6 +4,7 @@ import RazorpayCheckout from 'react-native-razorpay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CreateOrderRoute, Host } from '../../Constants';
 import LottieView from 'lottie-react-native';
+import Logo from '../../assets/images/User.png';
 
 const createOrder = async (amount) => {
     const order = {
@@ -53,7 +54,7 @@ export default function Payment({ navigation, route }) {
 
             var options = {
                 description: 'Credits towards consultation',
-                image: '../../assets/images/Logo.png',
+                image: 'https://github.com/AshutoshRath1612/Hungry-Hub/blob/main/client/assets/images/Logo.png?raw=true',
                 currency: 'INR',
                 key: 'rzp_test_1iMLg2obI6ZsN0', // Your api key
                 amount: amount * 100, // Convert to paise
