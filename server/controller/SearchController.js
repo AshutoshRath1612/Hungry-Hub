@@ -67,7 +67,7 @@ const searchFood = async (req, res) => {
 
     if (foods.length === 0) {
       const message = `No food items found matching the search criteria`;
-      return res.status(404).json({ message });
+      return res.status(404).json({ message , shopName });
     }
     // Update the foods array with shop information
     

@@ -35,6 +35,12 @@
       ],
       "expo-font"
     ],
+    "notification": {
+      "icon": "./assets/images/Logo.png",
+      "color": "#000000",
+      "androidMode": "default",
+      "androidCollapsedTitle": "#{unread_notifications} new notifications"
+    },
     "android": {
       "permissions": [
         "WRITE_EXTERNAL_STORAGE",

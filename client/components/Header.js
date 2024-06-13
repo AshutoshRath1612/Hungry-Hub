@@ -72,7 +72,7 @@ export default function Header() {
               <View>
                 <FontAwesome name="user" size={40} color="#915858" /> 
               </View>
-                <Text style={styles.modalText}>{userData.isStudent ? (userData.name !== null ? userData.name : userData.regdNo) : userData.username}</Text>
+                <Text style={styles.modalText}>{userData.isStudent ? (userData.name !== undefined ? userData.name : userData.regdNo) : userData.username}</Text>
               </View>
                 <Entypo name="cross"onPress={() => setModalVisible(false)}  size={30} color="#915858" />
               </View>

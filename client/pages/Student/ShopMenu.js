@@ -21,7 +21,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { GetFoodByShopRoute, Host, SearchRoute } from "../../Constants";
 import LottieView from "lottie-react-native";
 import { StatusBar } from "react-native";
-
+import Nav from "../../components/Nav";
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -36,22 +36,21 @@ export default function ShopMenu({ route }) {
   const [isLoading, setIsLoading] = useState(true);
   const [shop, setShop] = useState(null);
 
-
   useEffect(() => {
-    setShop({shopName: route.params.shopName , id: route.params.id});
+    setShop({ shopName: route.params.shopName, id: route.params.id });
     getMenu();
   }, []);
-  
+
   const getMenu = () => {
     fetch(`${Host}${GetFoodByShopRoute}/${route.params.shopName}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data[0])
+        console.log(data[0]);
         setData(data[0]);
         setIsLoading(false);
       });
   };
-  
+
   useEffect(() => {
     if (route.params && route.params.searchItem) {
       const { searchItem } = route.params;
@@ -60,16 +59,14 @@ export default function ShopMenu({ route }) {
       )
         .then((res) => res.json())
         .then((data) => {
-          if(!data.message)
-            setData(data[0])
-          else
-            setData(data)
+          if (!data.message) setData(data[0]);
+          else setData(data);
         });
     }
   }, [route.params.searchItem]);
 
   const addToCart = (item) => {
-     if (cart.length === 0) {
+    if (cart.length === 0) {
       dispatch({ type: "ADD_TO_CART", payload: item });
     } else {
       if (cart[0].shopName === item.shopName) {
@@ -84,8 +81,6 @@ export default function ShopMenu({ route }) {
   const removeFromCart = (item) => {
     dispatch({ type: "REMOVE_FROM_CART", payload: item });
   };
-
- 
 
   const [scrollY] = useState(new Animated.Value(0));
   const [expanded, setExpanded] = useState(false);
@@ -112,36 +107,34 @@ export default function ShopMenu({ route }) {
 
   const handleAddItem = (item, foodItem) => {
     addToCart({
-      items: [{...foodItem , quantity:1 , category:item.category}],
+      items: [{ ...foodItem, quantity: 1, category: item.category }],
       shopName: data.shop.name,
-      shopId: data.shop._id
+      shopId: data.shop._id,
     });
   };
 
-  const handleRemoveItem = (foodItem)=>{
+  const handleRemoveItem = (foodItem) => {
     removeFromCart(foodItem.name);
-  }
+  };
   const scrollToCategory = (categoryIndex) => {
     let yOffset = HEADER_MAX_HEIGHT + 20; // Initial offset
-  
+
     // Calculate the offset based on the cumulative heights of items in previous categories
     for (let i = 0; i < categoryIndex; i++) {
       yOffset += data.categories[i].items.reduce((acc, curr) => acc + 100, 0);
     }
-  
+
     listRef.current.scrollToOffset({ animated: true, offset: yOffset });
     setExpanded(false);
   };
-  
 
-
-const findItem = (foodItem) => {
-  if (cart.length > 0 && cart[0].items) {
-  return cart[0].items.some((item) => {
-      return item.name === foodItem.name;
-    });
-}
-};
+  const findItem = (foodItem) => {
+    if (cart.length > 0 && cart[0].items) {
+      return cart[0].items.some((item) => {
+        return item.name === foodItem.name;
+      });
+    }
+  };
 
   const renderCategoryButton = (item, index) => (
     <TouchableOpacity key={index} onPress={() => scrollToCategory(index)}>
@@ -158,95 +151,128 @@ const findItem = (foodItem) => {
   const renderItem = ({ item }) => {
     return (
       <TouchableWithoutFeedback onPress={() => setExpanded(false)}>
-        <LinearGradient colors={["#FFD7D7","white"]} key={item.category} style={styles.categoryContainer}>
+        <LinearGradient
+          colors={["#FFD7D7", "white"]}
+          key={item.category}
+          style={styles.categoryContainer}
+        >
           <Text style={styles.category}>{item.category}</Text>
           {item.items.map((foodItem, index) => (
             <>
-            {foodItem.isAvailable && <View key={index} style={styles.menuItem}>
-              <View style={styles.logoContainer}>
-                {foodItem.type === "Vegetarian" ? (
-                  <Image
-                    source={require("../../assets/icons/VegLogo.png")}
-                    style={styles.logo}
-                  />
-                ) : (
-                  <Image
-                    source={require("../../assets/icons/NonVegLogo.png")}
-                    style={styles.logo}
-                  />
-                )}
-              </View>
-              <View style={styles.itemDetails}>
-                <Text style={{ fontSize: RFValue(15) }}>{foodItem.name}</Text>
-                <Text
-                  style={{
-                    marginVertical: RFValue(5),
-                    color: "red",
-                    fontWeight: "bold",
-                  }}
-                >
-                  ₹ {foodItem.price}
-                </Text>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    width: "40%",
-                    alignItems: "center",
-                  }}
-                >
-                  <FontAwesome name="star" size={15} color="black" />
-                  <Text style={{marginHorizontal:2}}>
-                    {foodItem.ratings} ({foodItem.ratingCount}+)
-                  </Text>
-                </View>
-              </View>
-              {findItem(foodItem) ? (
-                <View style={[styles.addButton,{
-                      borderColor:
-                        foodItem.type === "Vegetarian" ? "green" : "red",
-                      shadowColor:
-                        foodItem.type === "Vegetarian" ? "green" : "red",
-                      justifyContent:'space-between'
-                    },]}>
-                  <TouchableOpacity onPress={()=>handleRemoveItem(foodItem)}>
-                    <FontAwesome name="minus" size={18} color='#4ab557'/>
-                  </TouchableOpacity>
-                  {cart[0].items.map(
-                    (items) =>
-                        items.name === foodItem.name && (
-                        <Text key={index} style={{color:'#4ab557' , fontWeight:'bold',fontSize: RFValue(14)}}>{items.quantity}</Text>
-                      )
+              {foodItem.isAvailable && (
+                <View key={index} style={styles.menuItem}>
+                  <View style={styles.logoContainer}>
+                    {foodItem.type === "Vegetarian" ? (
+                      <Image
+                        source={require("../../assets/icons/VegLogo.png")}
+                        style={styles.logo}
+                      />
+                    ) : (
+                      <Image
+                        source={require("../../assets/icons/NonVegLogo.png")}
+                        style={styles.logo}
+                      />
+                    )}
+                  </View>
+                  <View style={styles.itemDetails}>
+                    <Text style={{ fontSize: RFValue(15) }}>
+                      {foodItem.name}
+                    </Text>
+                    <Text
+                      style={{
+                        marginVertical: RFValue(5),
+                        color: "red",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      ₹ {foodItem.price}
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        width: "40%",
+                        alignItems: "center",
+                      }}
+                    >
+                      <FontAwesome name="star" size={15} color="black" />
+                      <Text style={{ marginHorizontal: 2 }}>
+                        {foodItem.ratings} ({foodItem.ratingCount}+)
+                      </Text>
+                    </View>
+                  </View>
+                  {findItem(foodItem) ? (
+                    <View
+                      style={[
+                        styles.addButton,
+                        {
+                          borderColor:
+                            foodItem.type === "Vegetarian" ? "green" : "red",
+                          shadowColor:
+                            foodItem.type === "Vegetarian" ? "green" : "red",
+                          justifyContent: "space-between",
+                        },
+                      ]}
+                    >
+                      <TouchableOpacity
+                        onPress={() => handleRemoveItem(foodItem)}
+                      >
+                        <FontAwesome name="minus" size={18} color="#4ab557" />
+                      </TouchableOpacity>
+                      {cart[0].items.map(
+                        (items) =>
+                          items.name === foodItem.name && (
+                            <Text
+                              key={index}
+                              style={{
+                                color: "#4ab557",
+                                fontWeight: "bold",
+                                fontSize: RFValue(14),
+                              }}
+                            >
+                              {items.quantity}
+                            </Text>
+                          )
+                      )}
+                      <TouchableOpacity
+                        onPress={() => handleAddItem(item, foodItem)}
+                      >
+                        <FontAwesome name="plus" size={18} color="#4ab557" />
+                      </TouchableOpacity>
+                    </View>
+                  ) : (
+                    <TouchableOpacity
+                      onPress={() => handleAddItem(item, foodItem)}
+                      style={[
+                        styles.addButton,
+                        {
+                          borderColor:
+                            foodItem.type === "Vegetarian" ? "green" : "red",
+                          shadowColor:
+                            foodItem.type === "Vegetarian" ? "green" : "red",
+                        },
+                      ]}
+                    >
+                      <Text
+                        style={{
+                          fontSize: RFValue(14),
+                          paddingHorizontal: 5,
+                          fontWeight: "bold",
+                          color: "#4ab557",
+                        }}
+                      >
+                        ADD
+                      </Text>
+                      <FontAwesome
+                        style={{ alignItems: "center" }}
+                        name="plus"
+                        size={18}
+                        color="#4ab557"
+                      />
+                    </TouchableOpacity>
                   )}
-                  <TouchableOpacity onPress={()=>handleAddItem(item,foodItem)}>
-                    <FontAwesome name="plus" size={18} color='#4ab557' />
-                  </TouchableOpacity>
                 </View>
-              ) : (
-                <TouchableOpacity
-                  onPress={() => handleAddItem(item, foodItem)}
-                  style={[
-                    styles.addButton,
-                    {
-                      borderColor:
-                        foodItem.type === "Vegetarian" ? "green" : "red",
-                      shadowColor:
-                        foodItem.type === "Vegetarian" ? "green" : "red",
-                    },
-                  ]}
-                >
-                  <Text style={{ fontSize: RFValue(14), paddingHorizontal: 5,fontWeight:'bold',color:'#4ab557' }}>
-                    ADD
-                  </Text>
-                  <FontAwesome
-                    style={{ alignItems: "center" }}
-                    name="plus"
-                    size={18}
-                    color="#4ab557"
-                  />
-                </TouchableOpacity>
               )}
-            </View>}
             </>
           ))}
         </LinearGradient>
@@ -256,25 +282,29 @@ const findItem = (foodItem) => {
 
   return (
     <>
-    <StatusBar backgroundColor='white'  barStyle='dark-content' showHideTransition='fade' />
-    {
-      isLoading ? (
+      <StatusBar
+        backgroundColor="white"
+        barStyle="dark-content"
+        showHideTransition="fade"
+      />
+      {isLoading ? (
         <LottieView
           source={require("../../assets/icons/Loading.json")}
           autoPlay
           loop
           style={{ flex: 1 }}
         />
-
-      ):
-      (<View style={styles.container}>
-      <Animated.View
-        style={[
-          styles.header,
-          { transform: [{ translateY: headerTranslateY }] },
-        ]}
-      >
-        <Image
+      ) : (
+        <View style={styles.container}>
+          {data && !data.message ? (
+            <>
+          <Animated.View
+            style={[
+              styles.header,
+              { transform: [{ translateY: headerTranslateY }] },
+            ]}
+            >
+            <Image
               style={{ resizeMode: "contain", width: "30%" }}
               source={require("../../assets/images/Logo.png")}
             />
@@ -295,53 +325,75 @@ const findItem = (foodItem) => {
                 <Text style={{ fontSize: 18 }}>({data.shop.ratingCount}+)</Text>
               </View>
             </View>
-      </Animated.View>
-      <Animated.View
-        style={[
-          styles.searchContainer,
-          { transform: [{ translateY: searchTranslateY }] },
-        ]}
-      >
-        <Search />
-      </Animated.View>
-      <ShopModal data={currentData} shopName={cart[0]?.shopName} visible={modalVisible} onClose={() => setModalVisible(false)} />
-   
-      {data && !data.message ? (<AnimatedFlatList
-        ref={listRef}
-        data={data.categories}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderItem}
-        contentContainerStyle={{ paddingTop: HEADER_MAX_HEIGHT }} // Add some initial padding
-        scrollEventThrottle={16}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: true }
-        )}
-      />)
-      : (
-        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-          <Text style={{fontSize:RFValue(20),fontWeight:'bold',color:'red'}}>{data.message}</Text>
-        </View>
-      )
-      }
-      {expanded && !data.message &&  (
-        <View style={styles.categoryButtonsContainer}>
-          <FlatList
-            data={data.categories}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item, index }) => renderCategoryButton(item, index)}
+          </Animated.View>
+          <Animated.View
+            style={[
+              styles.searchContainer,
+              { transform: [{ translateY: searchTranslateY }] },
+            ]}
+          >
+            <Search />
+          </Animated.View>
+          <ShopModal
+            data={currentData}
+            shopName={cart[0]?.shopName}
+            visible={modalVisible}
+            onClose={() => setModalVisible(false)}
           />
+
+            <AnimatedFlatList
+              ref={listRef}
+              data={data.categories}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={renderItem}
+              contentContainerStyle={{ paddingTop: HEADER_MAX_HEIGHT }} // Add some initial padding
+              scrollEventThrottle={16}
+              onScroll={Animated.event(
+                [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                { useNativeDriver: true }
+              )}
+            />
+            </>
+          ) : (
+            <View style={{flex:1}}>
+            <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+            <LottieView source={require('../../assets/icons/NoMenu.json')} autoPlay loop style={{width:RFValue(200),height:RFValue(200),marginBottom:RFValue(20)}} />
+              <Text style={{fontSize:RFValue(20),fontWeight:'bold'}}>No Food In The Menu</Text>
+            </View>
+            <View style={{position:'absolute' , bottom:0 , width:'100%'}}>
+            <Nav />
+            </View>
+            </View>
+          )}
+          {expanded && !data.message && (
+            <View style={styles.categoryButtonsContainer}>
+              <FlatList
+                data={data.categories}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item, index }) =>
+                  renderCategoryButton(item, index)
+                }
+              />
+            </View>
+          )}
+          {data && !data.message && (
+            <TouchableOpacity
+              style={[
+                styles.floatingButton,
+                { bottom: cart.length != 0 ? 90 : 20 },
+              ]}
+              onPress={toggleExpand}
+            >
+              <FontAwesome
+                name={expanded ? "sticky-note" : "book"}
+                size={24}
+                color="white"
+              />
+            </TouchableOpacity>
+          )}
+          {cart.length !== 0 && <CartCard />}
         </View>
       )}
-      {data && !data.message && <TouchableOpacity style={[styles.floatingButton , {bottom: cart.length != 0 ? 90 : 20}]} onPress={toggleExpand}>
-        <FontAwesome
-          name={expanded ? "sticky-note" : "book"}
-          size={24}
-          color="white"
-        />
-      </TouchableOpacity>}
-      {cart.length !== 0 && <CartCard />}
-    </View>)}
     </>
   );
 }
@@ -351,8 +403,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f9f9f9",
   },
- header: {
-    height:'25%',
+  header: {
+    height: "25%",
     backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
@@ -372,7 +424,7 @@ const styles = StyleSheet.create({
   shopInfo: {
     alignItems: "center",
     justifyContent: "space-around",
-    width: "50%",
+    width: "60%",
     paddingVertical: 10,
   },
   searchContainer: {
@@ -437,7 +489,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
     borderWidth: 2,
     elevation: 5,
-    width:'30%'
+    width: "30%",
   },
   categoryButtonsContainer: {
     position: "absolute",

@@ -251,7 +251,11 @@ export default function OrderHistory() {
                 keyExtractor={(item) => item._id.toString()}
               />
               : 
-              <LottieView source={require('../../assets/icons/NoOrder.json')} autoPlay loop style={{width:RFValue(200),height:RFValue(200),marginBottom:RFValue(20)}} />
+              (
+                <View style={{flex:1,justifyContent:'center',alignItems:'center',backgroundColor:'white'}}>
+                <LottieView source={require('../../assets/icons/NoOrder.json')} autoPlay loop style={{width:RFValue(250),height:RFValue(250),marginBottom:RFValue(20)}} />
+                </View>
+              )
               }
               <View style={styles.nav}>
                 <Nav navigation={navigation} currentRoute={route.name} />

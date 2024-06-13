@@ -197,9 +197,12 @@ const orderDelivery = async (req, res) => {
     });
     if (paymentData) {
       const order = await Order.findOne({ orderId: paymentData.orderId });
-      const paymentCode = `${paymentData.orderId}|${paymentData.paymentId}|${paymentData.signature}`;
+      if (!order) {
+        res.status(404).json({ isSuccess: false, message: "Order not found" });
+      }
+      const paymentCode = `${paymentData.orderId}|${paymentData.paymentId}|${paymentData.signature}|${uniqueCode.split("|")[3]}`;
       if (uniqueCode === paymentCode && order.status !== "Delivered") {
-        res.status(200).json({ isSuccess: true });
+        res.status(200).json({ isSuccess: true, uniqueCode });
       } else {
         if (uniqueCode !== paymentCode) {
           res

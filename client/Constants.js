@@ -1,5 +1,5 @@
 // export const Host = 'https://hungry-hub-c46z.onrender.com/'
-export const Host = 'http://192.168.29.62:5000/'
+export const Host = 'http://192.168.29.151:5000/'
 
 export const LoginRoute = 'auth/login'
 export const StudentRegisterRoute = 'auth/student/register'

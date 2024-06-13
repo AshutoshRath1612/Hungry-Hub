@@ -70,7 +70,6 @@ export default function OrderSummary({ navigation }) {
       }
     }
   };
-
   const reOrder = () => {
     summary.items.forEach((item) => {
       addToCart({
@@ -259,7 +258,7 @@ export default function OrderSummary({ navigation }) {
           showQR && (
             <View style={styles.qrcontainer}>
               <QRcode
-                data={`${summary.orderId}|${summary.paymentId.paymentId}|${summary.paymentId.signature}`}
+                data={`${summary.orderId}|${summary.paymentId.paymentId}|${summary.paymentId.signature}|${summary.shopId.name}`}
               />
               <Text style={{ fontSize: RFValue(15), fontWeight: "bold" }}>
                 Scan it to get your item delivered

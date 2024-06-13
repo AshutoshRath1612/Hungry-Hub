@@ -16,6 +16,7 @@ import LottieView from "lottie-react-native";
 import { Host, orderDelivery, updateStatusRoute } from "../../Constants";
 import Container, { Toast } from "toastify-react-native";
 import { RFValue } from "react-native-responsive-fontsize";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Scanner() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -61,10 +62,18 @@ export default function Scanner() {
       body: JSON.stringify({ code: data }),
     })
       .then((res) => res.json())
-      .then((data) => {
-        console.log(data)
+      .then(async(data) => {
           if (data.isSuccess) {
+            const user  = JSON.parse
+            (await AsyncStorage.getItem('user'));
+          console.log(user , "code", data.uniqueCode.split("|")[3])
+            if(user.shopName === data.uniqueCode.split("|")[3]){ 
             setModalVisible(true);
+          }
+          else{
+            Toast.error("You are not authorized to deliver this order")
+            setScanned(false)
+          }
           } else {
             Toast.error(data.message);
             setScanned(false)
@@ -88,9 +97,9 @@ export default function Scanner() {
         body: JSON.stringify({orderId: data.split("|")[0] , status: "Delivered"})
       })
       .then(res=>res.json())
-      .then(data => {
+      .then(async(data) => {
         if(data.isSuccess){
-          setSuccessModal(true)
+            setSuccessModal(true)
         }
         else{
           Toast.error(data.message)
@@ -103,7 +112,7 @@ export default function Scanner() {
   return (
     <LinearGradient colors={["#C38888", "white"]} style={styles.container}>
       <Container
-        width="90%"
+        width="95%"
         textStyle={{ fontSize: RFValue(15)}}
         position="top"
       />
