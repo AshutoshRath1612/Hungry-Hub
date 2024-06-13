@@ -12,6 +12,9 @@ import { FontAwesome } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { Host, getOrderByVendorRoute } from "../../Constants";
 import Nav from "../../components/Nav";
+import LottieView from "lottie-react-native";
+import Header from "../../components/Header";
+import { NavigationContext } from "../../NavContext";
 
 export default function OrderHistory() {
   const navigation = useNavigation();
@@ -100,6 +103,8 @@ const handleSearch = (text) => {
   };
 
   return (
+    <NavigationContext.Provider value={{ navigation, route }}>
+    {data && data.length > 0 ?
     <LinearGradient colors={["#C38888", "white"]} style={styles.container}>
       <View style={{ flexDirection: "row", justifyContent: "space-around", alignItems: "center" }}>
         <Text style={{ fontSize: RFValue(20), fontWeight: 'bold' }}>Order History</Text>
@@ -116,19 +121,30 @@ const handleSearch = (text) => {
           />
         </View>
       </View>
-      <View style={{ height: '85%', width: '95%', padding: 15 }}>
-        <FlatList
+      <View style={{flex:1, height: '85%', width: '95%', padding: 15 }}>
+         <FlatList
           style={styles.historyContainer}
           data={data}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => item.orders.length !== 0 && <CardItem item={item} />}
           keyExtractor={(item, index) => index.toString()}
         />
+        
       </View>
+    </LinearGradient>
+    :(
+      <>
+      <Header />
+          <View style={{flex:1,justifyContent:'center',alignItems:'center',backgroundColor:'white'}}>
+            <LottieView source={require('../../assets/icons/NoOrder.json')} autoPlay loop style={{width:RFValue(200),height:RFValue(200),marginBottom:RFValue(20)}} />
+            </View>
+            </>
+        )
+        }
       <View style={{ position: "absolute", width: "100%", bottom: 0 }}>
         <Nav />
       </View>
-    </LinearGradient>
+    </NavigationContext.Provider>
   );
 }
 

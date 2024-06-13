@@ -161,7 +161,8 @@ const findItem = (foodItem) => {
         <LinearGradient colors={["#FFD7D7","white"]} key={item.category} style={styles.categoryContainer}>
           <Text style={styles.category}>{item.category}</Text>
           {item.items.map((foodItem, index) => (
-            <View key={index} style={styles.menuItem}>
+            <>
+            {foodItem.isAvailable && <View key={index} style={styles.menuItem}>
               <View style={styles.logoContainer}>
                 {foodItem.type === "Vegetarian" ? (
                   <Image
@@ -245,7 +246,8 @@ const findItem = (foodItem) => {
                   />
                 </TouchableOpacity>
               )}
-            </View>
+            </View>}
+            </>
           ))}
         </LinearGradient>
       </TouchableWithoutFeedback>

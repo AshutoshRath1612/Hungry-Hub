@@ -25,6 +25,7 @@ import Container, { Toast } from "toastify-react-native";
 import LottieView from "lottie-react-native";
 import EditFoodModal from "../../components/EditFoodModal";
 import { LinearGradient } from "expo-linear-gradient";
+import Header from "../../components/Header";
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 export default function Menu({ navigation, route }) {
   const listRef = useRef(null);
@@ -325,7 +326,16 @@ export default function Menu({ navigation, route }) {
         </View>
           )
           :(
-            <Text>No Food Items Added</Text>
+            <View style={{flex:1}}>
+            <Header />
+            <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+            <LottieView source={require('../../assets/icons/NoMenu.json')} autoPlay loop style={{width:RFValue(200),height:RFValue(200),marginBottom:RFValue(20)}} />
+              <Text style={{fontSize:RFValue(20),fontWeight:'bold'}}>No Food In The Menu</Text>
+            </View>
+            <View style={{position:'absolute' , bottom:0 , width:'100%'}}>
+            <Nav />
+            </View>
+            </View>
           )
         }
         </>
@@ -447,7 +457,7 @@ const styles = StyleSheet.create({
   },
   floatingButton: {
     position: "absolute",
-    bottom: RFValue(70),
+    bottom: RFValue(100),
     right: 20,
     backgroundColor: "black",
     width: 50,

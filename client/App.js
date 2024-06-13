@@ -13,7 +13,6 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import { CartProvider } from './CartContext';
 import { OrderStatusProvider } from './OrderStatusContext';
 
-import LandingPage from './pages/LandingPage';
 import ChooseUser from './pages/ChooseUser';
 import Login from './pages/Login';
 import VendorSignUp from './pages/Vendor/VendorSignUp';
@@ -102,11 +101,9 @@ export default function App() {
       token = (await Notifications.getExpoPushTokenAsync({
         projectId: Constants.expoConfig?.extra?.projectId,
       })).data;
-      console.log(token);
 
       // Save the token to your server
       const user = JSON.parse(await AsyncStorage.getItem('user'));
-      console.log(user)
       if (user) {
         await fetch(`${Host}${SaveTokenRoute}`, {
           method: 'POST',

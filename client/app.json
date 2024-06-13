@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "hungerhub",
-    "slug": "hungerhub",
+    "name": "Hunger Hub",
+    "slug": "Hunger Hub",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icons/icon.png",
+    "icon": "./assets/images/Logo.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/images/Splash.png",

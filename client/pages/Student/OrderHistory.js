@@ -243,13 +243,16 @@ export default function OrderHistory() {
     <Container position='top' width='90%' />
           <View style={styles.container}>
             <NavigationContext.Provider value={{ navigation, route }}>
-              <FlatList
+              {orders && orders.length> 0 ? <FlatList
                 style={styles.historyContainer}
                 data={orders}
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => <CardItem item={item} />}
                 keyExtractor={(item) => item._id.toString()}
               />
+              : 
+              <LottieView source={require('../../assets/icons/NoOrder.json')} autoPlay loop style={{width:RFValue(200),height:RFValue(200),marginBottom:RFValue(20)}} />
+              }
               <View style={styles.nav}>
                 <Nav navigation={navigation} currentRoute={route.name} />
               </View>
