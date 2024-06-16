@@ -1,6 +1,10 @@
 # Hunger Hub
 
 <h1>An food ordering app that can be used in college cafeterias. It acts as a medium for Students and Vendors of a cafeteria</h1>
+
+<h1>About</h1>
+<h3>Students can order food from the available shops in the app. Every order creates a unique QR code which student can show it in the shop and the vendor can scan the QR through the app to verify the order.</h3>
+
 <h1>Built With:
 <br/>
 <a  href="[https://reactnative.org/en/](https://reactnative.dev/)">
