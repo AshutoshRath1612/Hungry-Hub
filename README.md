@@ -33,13 +33,24 @@
 </h1>
 
 # Some important information
+## Prerequisite
+1. Install Node.js
+2. Must have an Expo account
 ## Getting Started
+
 ```
 cd server
 npm i
-nodemon index.js
+nodemon index.js or node index.js
 ```
 <p>This runs the node server on localhost:5000</p>
+Before starting the Expo App, Go to:
+
+```
+1. Open Client folder
+2. Open Constants.js
+3. Replace "Your-Device-IP" with your device ip
+```
 Open a new terminal and run the following command:
 
 ```
